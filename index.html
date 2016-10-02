@@ -15,19 +15,6 @@ window.onload = function( e )
 		}
 	});
 	
-	this.divise = element5( '#tao' ); 
-	divise.SetStyles( { 'width' : '200px', 'height' : '200px', 'background': 'blue' } ); 
-	// divise.addEventListener( 'animationstart', function( e ) 
-	// divise.addEventListener( 'animationend', function( e ) 
-	// divise.addEventListener( 'animationiteration', function( e ) 
-	// {
-	//		console.log( e.elapsedTime );
-	// }, false); 
-	
-	var video = element5.Create( 'video' );
-	video.AddClass( 'shido' );
-	video.AddProperty( 'background', 'red' );
-	
 	this.uptotop = timeline5.Create( 
 	{
 		name: 'uptotop', 
@@ -37,22 +24,43 @@ window.onload = function( e )
 				timek: '0', 
 				style: 
 				{
-					bottom: '0%', 
-					background: '#00f',
+					opacity: '0', 
 				}, 
 			}, 
 			{
 				timek: '100', 
 				style: 
 				{
-					bottom: '100%', 
-					background:  '#ddd',
+					opacity: '1', 
 				}, 
 			}, 
 		], 
 	});
 	
-	divise.Run( uptotop );
+	element5.body.AddProperty( 'background', '#333' );
+	
+	var header = element5.Create( 'header' ); 
+	
+	header.SetStyles({ 
+		'width' : '100%', 
+		'height' : '70px', 
+		'background': '#222', 
+		'bottom' : 'auto', 
+		'opacity': '0', 
+		'border-bottom': '1px solid #444'
+	}); 
+	
+	function headerAnimationEndEventHandle( e ) 
+	{
+		var index = uptotop.keyframes.length - 1; 
+		var style = uptotop.keyframes[ index ].style;
+		e.target.SetStyles( style ); 
+		header.innerHTML = "<p>LOGO</p>";
+	} 
+	
+	header.addEventListener( 'animationend', headerAnimationEndEventHandle , false );
+	
+	header.Run( uptotop, 0.5, 1 ); 
 	
 	var xhr = request5.Create(); 
 };
