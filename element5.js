@@ -228,9 +228,9 @@ function Factory()
 				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
 				
 				var elementAnimationModifier = {
-					EffectedBy: function( timeline ) 
+					EffectedBy: function( timeline, duration, delay, timing ) 
 					{
-						timeline.Effect( this );
+						timeline.Effect( this, duration, delay, timing );
 					}, 
 				};
 				elementAnimationModifier.Animation = elementAnimationModifier.EffectedBy;
@@ -613,15 +613,15 @@ function Factory()
 				Style.AddLine( 'hidden' ).SetStyles( { bottom : '-100%', left : '-100%' } ); 
 				Style.AddLine( 'transparent' ).SetStyles( { background : 'transparent' } ); 
 				Style.AddLine( 'invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
-				var bodyStyle = Style.AddLine( 'body' ).SetStyles( { margin: '0', width: '100%', height : '100%', background : '#000' } ); 
+				element5.body = Style.AddLine( 'body' ).SetStyles( { margin: '0', width: '100%', height : '100%', background : '#000' } ); 
 				
-				bodyStyle.AddProperty( 'width', window.innerWidth + 'px' );
-				bodyStyle.AddProperty( 'height', window.innerHeight + 'px' );
+				element5.body.AddProperty( 'width', window.innerWidth + 'px' );
+				element5.body.AddProperty( 'height', window.innerHeight + 'px' );
 				
 				window.addEventListener( 'resize', function( e ) 
 				{
-					bodyStyle.AddProperty( 'width', window.innerWidth + 'px' );
-					bodyStyle.AddProperty( 'height', window.innerHeight + 'px' );
+					element5.body.AddProperty( 'width', window.innerWidth + 'px' );
+					element5.body.AddProperty( 'height', window.innerHeight + 'px' );
 				}, false);
 	
 				module.exports = Style;
