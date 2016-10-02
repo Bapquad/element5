@@ -4,7 +4,7 @@
  * element5 support on Microsoft Edge, Chrome, Firefox, ... 
  */
  
-function Element5IniversalExport( root, factory ) 
+function Element5UniversalExport( root, factory ) 
 {
 	if( typeof exports === 'object' && typeof module === 'object' ) 
 	{
@@ -16,7 +16,6 @@ function Element5IniversalExport( root, factory )
 	}
 	else 
 	{
-		console.log( 'hehe' );
 		var a = factory(); 
 		for( var i in a ) 
 		{
@@ -228,10 +227,21 @@ function Factory()
 				// Alias Section for Element DOM Modifier.
 				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
 				
+				var elementAnimationModifier = {
+					EffectedBy: function( timeline ) 
+					{
+						timeline.Effect( this );
+					}, 
+				};
+				elementAnimationModifier.Animation = elementAnimationModifier.EffectedBy;
+				elementAnimationModifier.Run = elementAnimationModifier.EffectedBy;
+				elementAnimationModifier.Play = elementAnimationModifier.EffectedBy;
+				
 				var cert = function( el ) 
 				{
 					element5.Extend( el, elementDOMModifier ); 
 					element5.Extend( el, elementStyleModifier ); 
+					element5.Extend( el, elementAnimationModifier ); 
 					
 					var extLen = elementExtCollection.length; 
 					elementExtCollection.forEach( function( item, index ) { element5.Extend( el, item ) });
@@ -511,14 +521,21 @@ function Factory()
 					
 					timeline.Effect = function( el, duration, delay, timing ) 
 					{
-						delay = (delay || 1 ) + 's'; 
+						var timeline = this;
+						delay = (delay || 0 ) + 's'; 
 						duration = ( duration || 1 ) + 's'; 
 						timing = timing || 'linear';
 						
 						el.AddProperty( 'animation-delay', delay ); 
 						el.AddProperty( 'animation-duration', duration ); 
 						el.AddProperty( 'animation-timing-function', timing ); 
-						el.AddProperty( 'animation-name', this.name ); 
+						
+						el.AddProperty( 'animation-name', '' );
+						var timer = setTimeout( function() 
+						{
+							el.AddProperty( 'animation-name', timeline.name ); 
+							clearTimeout( timer );
+						}, 30); 
 					};
 					
 					timeline.keyframes = keyframes; 
@@ -639,4 +656,8 @@ function Factory()
 			}
 		]
 	);
-}
+} 
+
+// Export Element 5
+Element5UniversalExport( this, Factory ); 
+	

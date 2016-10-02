@@ -8,17 +8,14 @@
 
 window.onload = function( e ) 
 {
-	// Export Element 5
-	Element5IniversalExport( this, Factory ); 
-	
 	element5.Extension( {
-		hit: function() 
+		hit: function( fx ) 
 		{
-			return this;
+			fx.Effect( this );
 		}
 	});
 	
-	var divise = element5( '#tao' ); 
+	this.divise = element5( '#tao' ); 
 	divise.SetStyles( { 'width' : '200px', 'height' : '200px', 'background': 'blue' } ); 
 	// divise.addEventListener( 'animationstart', function( e ) 
 	// divise.addEventListener( 'animationend', function( e ) 
@@ -31,7 +28,7 @@ window.onload = function( e )
 	video.AddClass( 'shido' );
 	video.AddProperty( 'background', 'red' );
 	
-	var uptotop = timeline5.Create( 
+	this.uptotop = timeline5.Create( 
 	{
 		name: 'uptotop', 
 		keyframes: 
@@ -54,7 +51,8 @@ window.onload = function( e )
 			}, 
 		], 
 	});
-	uptotop.Effect( divise );
+	
+	divise.Run( uptotop );
 	
 	var xhr = request5.Create(); 
 };
