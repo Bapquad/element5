@@ -122,13 +122,13 @@ function Factory()
 							}
 							if( self != undefined ) 
 							{
-								el.CssSelf = style.find( self ); 
+								el.CssSelf = style.Find( self ); 
 							}
 						};
 						
 						if( typeof target == 'string' ) 
 						{
-							css = style.find( target );
+							css = style.Find( target );
 							
 							var collect = document.querySelectorAll( target ); 
 							len = collect.length;
@@ -377,7 +377,7 @@ function Factory()
 				style.sheet.detach = style.sheet.deleteRule || style.sheet.removeRule; 
 				style.currentIndex = -1;
 				
-				style.delete = function( index ) 
+				style.Delete = function( index ) 
 				{
 					style.sheet.detach( index );
 				};
@@ -397,11 +397,12 @@ function Factory()
 				{
 					var keyframes = timeline.keyframes;
 					
-					this.find( timeline.name );
+					this.Find( timeline.name );
 					
 					if( style.currentIndex >= 0 ) 
 					{
-						style.delete( style.currentIndex );
+						style.Delete( style.currentIndex ); 
+						style.currentIndex = -1;
 					}
 					
 					var index = style.sheet.cssRules.length; 
@@ -442,15 +443,19 @@ function Factory()
 					return timeline;
 				}; 
 				
-				style.find = function( selector, autoplus ) 
+				style.Find = function( selector, autoplus ) 
 				{
-					var len = this.sheet.cssRules.length;
-					autoplus = ( autoplus != undefined ) ? autoplus : true;
+					if( autoplus == undefined ) 
+					{
+						autoplus = true;
+					} 
+					
+					var len = this.sheet.cssRules.length; 
+					var result = 0;
 					style.currentIndex = -1;
 					
 					if( len ) 
 					{
-						var result = 0;
 						for( var i = 0; i < len; i++ ) 
 						{
 							if( selector == this.sheet.cssRules[ i ].selectorText ) 
@@ -458,15 +463,27 @@ function Factory()
 								result = this.sheet.cssRules[ i ];
 							} 
 						}
-						if( result ) 
-						{
-							return result;
-						} 
 					} 
 					
-					if( autoplus ) 
+					if( typeof autoplus == 'boolean' && autoplus ) 
 					{
-						return this.AddLine( selector );
+						if( !result ) 
+						{
+							return this.AddLine( selector );
+						}
+					}
+					else if( typeof autoplus == 'function' ) 
+					{
+						autoplus(); 
+					} 
+					
+					if( result ) 
+					{
+						return result;
+					} 
+					else 
+					{
+						return -1;
 					}
 				};
 				
