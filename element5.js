@@ -16,6 +16,7 @@ function Element5IniversalExport( root, factory )
 	}
 	else 
 	{
+		console.log( 'hehe' );
 		var a = factory(); 
 		for( var i in a ) 
 		{
@@ -82,11 +83,7 @@ function Factory()
 				 *
 				 * @description . Uses find element5
 				 */
-				document.body.equip = function( el ) 
-				{
-					document.body.appendChild( el ); 
-					return el;
-				} 
+				var elementExtCollection = [];
 				
 				var elementStyleModifier = 
 				{
@@ -187,7 +184,8 @@ function Factory()
 					ShiftClass: function( clsn ) 
 					{
 						var clsnAttr = this.getAttribute( 'class' ); 
-						this.setAttribute( 'class', clsn.trim() + ' ' + clsnAttr.trim() ); 
+						clsnAttr = ( clsnAttr != null ) ? clsnAttr.trim() : ''; 
+						this.setAttribute( 'class', (clsn.trim() + ' ' + clsnAttr ).trim() ); 
 						return this;
 					}, 
 					
@@ -219,8 +217,9 @@ function Factory()
 					
 					EquipedBy: function( el ) 
 					{
-						var nodeType = parseInt( el.nodeType );
-						if( el.enable && nodeType === 1 ) 
+						var nodeType = parseInt( el.nodeType ); 
+						
+						if( ( el.enable || el.tagName === 'BODY') && nodeType === 1 ) 
 						{
 							el.appendChild( this );
 						}
@@ -229,6 +228,40 @@ function Factory()
 				// Alias Section for Element DOM Modifier.
 				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
 				
+				var cert = function( el ) 
+				{
+					element5.Extend( el, elementDOMModifier ); 
+					element5.Extend( el, elementStyleModifier ); 
+					
+					var extLen = elementExtCollection.length; 
+					elementExtCollection.forEach( function( item, index ) { element5.Extend( el, item ) });
+					
+					el.enable = true; 
+					if( el.tagName != 'BODY' ) 
+						el.EquipedBy( document.body ); 
+					
+					// Add Class Css Self
+					if( el.CssSelf != undefined ) 
+					{
+						var clsn = el.CssSelf.selectorText.slice( 1 ); 
+						el.ShiftClass( clsn ); 
+					}
+					
+					return el;
+				}; 
+				
+				var effect = function( el, css, self ) 
+				{
+					if( el.css == undefined && css != 0 ) 
+					{
+						el.Css = css;
+					}
+					if( self != undefined ) 
+					{
+						el.CssSelf = style5.Find( self ); 
+					}
+				};
+				
 				var element5 = function( target, limit ) 
 				{
 					try 
@@ -236,48 +269,17 @@ function Factory()
 						var elTag = 'div';
 						var len = 0; 
 						var css = 0;
-						var cert = function( el ) 
-						{
-							element5.Extend( el, elementDOMModifier ); 
-							element5.Extend( el, elementStyleModifier );
-							el.enable = true; 
-							
-							if( el.tagName != 'BODY' ) 
-								document.body.equip( el ); 
-							
-							// Add Class Css Self
-							if( el.CssSelf != undefined ) 
-							{
-								var clsn = el.CssSelf.selectorText.slice( 1 );
-								el.ShiftClass( clsn ); 
-							}
-							
-							return el;
-						}; 
-						var effect = function( el, css, self ) 
-						{
-							if( el.css == undefined && css != 0 ) 
-							{
-								el.Css = css;
-							}
-							if( self != undefined ) 
-							{
-								el.CssSelf = style5.Find( self ); 
-							}
-						};
 						
 						if( typeof target == 'string' ) 
 						{
 							css = style5.Find( target );
 							
 							var collect = document.querySelectorAll( target ); 
+							
 							len = collect.length;
 							
-							if( target.indexOf( '#' || '.' ) == 0 ) 
-							{
-								var name = target.slice( 1 );
-								var queryType = target.slice( 0, 1 ); 
-							}
+							var name = target.slice( 1 );
+							var queryType = target.slice( 0, 1 ); 
 
 							// Element had existed.
 							if ( len ) 
@@ -300,7 +302,6 @@ function Factory()
 								else 						// Multiple
 								{
 									var childs = []; 
-									var dateTime = new Date();
 									for( var i = 0; i < len; i++ ) 
 									{
 										var el = collect[ i ]; 
@@ -310,10 +311,10 @@ function Factory()
 										
 										if( el.CssSelf == undefined ) 
 										{
-											effect( el, css, '.el5_' + dateTime.getTime() + i );	
+											effect( el, css, '.el5_' + element5.Deep() );	
 										}
 										
-										childs[ i ] = element5( el ); 
+										childs[ i ] = cert( el ); 
 									} 
 									return childs; 
 								}
@@ -331,12 +332,10 @@ function Factory()
 								
 								return el;
 							} 
-							else 							// Multiple
+							else if( queryType == '.' )		// Multiple
 							{
 								limit = limit || 10;
 								var childs = [];
-								
-								var dateTime = new Date();
 								
 								for( var i = 0; i < limit; i++ ) 
 								{
@@ -344,9 +343,9 @@ function Factory()
 									
 									el.setAttribute( 'class', target.slice( 1 ) ); 
 									
-									effect( el, css, '.el5_' + dateTime.getTime() + i ); 
+									effect( el, css, '.el5_' + element5.Deep() ); 
 									
-									childs[ i ] = element5( el ); 
+									childs[ i ] = cert( el ); 
 								} 								
 								return childs;
 							}
@@ -386,7 +385,52 @@ function Factory()
 					}
 				}; 
 				
-				element5.Body = document.body;
+				element5.Body = document.body; 
+				element5.Deep = function( numLen ) 
+				{
+					numLen = numLen || 4;
+					
+					if( element5.Deep.deepIndex == undefined )
+					{
+						element5.Deep.deepIndex = 0;
+					} 
+					
+					var deep = element5.Deep.deepIndex.toString(); 
+					element5.Deep.deepIndex++; 
+					
+					var dateTime = new Date(); 
+					var time = ( dateTime.getTime() ).toString();
+					var limit = numLen - deep.length; 
+					
+					limit = ( limit < 0 ) ? 0 : limit;
+					time = time.slice( time.length - ( limit ) ); 
+					
+					return ( deep + time );
+				};
+				
+				element5.Create = function( tagName ) 
+				{
+					var pat = ( /^[a-zA-Z0-9]+$/ ) . exec ( tagName );
+					if( pat ) 
+					{
+						var clsName = '.el5_' + element5.Deep();
+						
+						var css = style5.Find( clsName ); 
+						
+						var el = document.createElement( pat.input ); 
+						
+						// make the private class style for element.
+						el.CssSelf = css; 
+						
+						cert( el );
+					}
+					return el;
+				}; 
+				
+				element5.Extension = function( ext ) 
+				{
+					elementExtCollection.push( ext ); 
+				};
 				
 				element5.Extend = function( applier, hier ) 
 				{
@@ -596,5 +640,3 @@ function Factory()
 		]
 	);
 }
- 
- 

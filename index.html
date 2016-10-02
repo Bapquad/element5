@@ -11,6 +11,26 @@ window.onload = function( e )
 	// Export Element 5
 	Element5IniversalExport( this, Factory ); 
 	
+	element5.Extension( {
+		hit: function() 
+		{
+			return this;
+		}
+	});
+	
+	var divise = element5( '#tao' ); 
+	divise.SetStyles( { 'width' : '200px', 'height' : '200px', 'background': 'blue' } ); 
+	// divise.addEventListener( 'animationstart', function( e ) 
+	// divise.addEventListener( 'animationend', function( e ) 
+	// divise.addEventListener( 'animationiteration', function( e ) 
+	// {
+	//		console.log( e.elapsedTime );
+	// }, false); 
+	
+	var video = element5.Create( 'video' );
+	video.AddClass( 'shido' );
+	video.AddProperty( 'background', 'red' );
+	
 	var uptotop = timeline5.Create( 
 	{
 		name: 'uptotop', 
@@ -21,7 +41,7 @@ window.onload = function( e )
 				style: 
 				{
 					bottom: '0%', 
-					color: '#333',
+					background: '#00f',
 				}, 
 			}, 
 			{
@@ -29,25 +49,14 @@ window.onload = function( e )
 				style: 
 				{
 					bottom: '100%', 
-					color:  '#ddd',
+					background:  '#ddd',
 				}, 
 			}, 
 		], 
 	});
-	
-	var divise = element5( '#tao' ); 
-	divise.SetStyles( { 'width' : '200px', 'height' : '200px', 'background': 'blue' } ); 
-	// divise.addEventListener( 'animationstart', function( e ) 
-	// divise.addEventListener( 'animationend', function( e ) 
-	// divise.addEventListener( 'animationiteration', function( e ) 
-	// {
-	//		console.log( e.elapsedTime );
-	// }, false);
-	
 	uptotop.Effect( divise );
 	
-	var xhr = request5.Create; 
-	console.log( xhr );
+	var xhr = request5.Create(); 
 };
 
 </script>
