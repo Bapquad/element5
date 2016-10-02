@@ -68,10 +68,9 @@ function Factory()
 			function( module, __webpack_require__ ) 
 			{
 				module.exports.element5 = __webpack_require__( 1 ); 
-				module.exports.modify = __webpack_require__( 2 ); 
-				module.exports.style = __webpack_require__( 3 ); 
-				module.exports.styleMod = __webpack_require__( 4 ); 
-				module.exports.timeline = __webpack_require__( 5 );
+				module.exports.style5 = __webpack_require__( 2 ); 
+				module.exports.timeline5 = __webpack_require__( 3 ); 
+				module.exports.request5 = __webpack_require__( 4 );
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -89,6 +88,147 @@ function Factory()
 					return el;
 				} 
 				
+				var elementStyleModifier = 
+				{
+					Style: function( styles ) 
+					{
+						if( this.CssSelf )
+							this.CssSelf.SetStyles( styles ); 
+						else 
+							this.Css.SetStyles( styles ); 
+						return this;
+					}, 
+					
+					AddProperty: function( name, value ) 
+					{
+						if( this.CssSelf ) 
+							this.CssSelf.AddProperty( name, value ); 
+						else 
+							this.Css.AddProperty( name, value ); 
+						return this;
+					}, 
+					
+					SetStyles: function( styles ) 
+					{
+						if( this.CssSelf )
+							this.CssSelf.SetStyles( styles ); 
+						else 
+							this.Css.SetStyles( styles ); 
+						return this;
+					}, 
+					
+					SetWidth: function( v ) 
+					{
+						console.log( this ); 
+						return this;
+					}, 
+					
+					SetHeight: function( v ) 
+					{
+						
+					}, 
+				};
+				// Alias Section for Element Style Modifier.
+				elementStyleModifier.SetProperty = elementStyleModifier.SetStyles; 
+				
+				var elementDOMModifier = 
+				{
+					AddClass: function( clsn ) 
+					{
+						if( this.HasClass( clsn.trim() ) ) 
+						{
+							return this; 
+						} 
+						
+						var clsnAttr = this.getAttribute( 'class' ); 
+						if( clsnAttr == null || clsnAttr == '' )
+						{
+							this.setAttribute( 'class', clsn );
+						} 
+						else if( clsnAttr.indexOf( clsn ) <= -1 ) 
+						{
+							clsnAttr = clsnAttr.trim() + ' ' + clsn;
+							this.setAttribute( 'class', clsnAttr.trim() );
+						}					
+						return this;
+					}, 
+					
+					HasClass: function( clsn ) 
+					{
+						var clsnAttr = this.getAttribute( 'class' ); 
+						return ( clsnAttr != null && clsnAttr != '' && clsnAttr.indexOf( clsn ) >= 0 ); 
+					}, 
+					
+					RemoveClass: function( clsn ) 
+					{
+						if( clsn.indexOf( 'el5_' ) >= 0 ) 
+							return this;
+						
+						if( this.HasClass( clsn ) ) 
+						{
+							var clsnAttr = this.getAttribute( 'class' );
+							var classies = clsnAttr.trim().split( ' ' ); 
+							console.log( clsnAttr );
+							classies.find( function( value, index, arr ) 
+							{
+								if( value == clsn ) 
+								{
+									classies.splice( index, 1 ); 
+									return value;
+								}
+							});
+							
+							this.setAttribute( 'class', classies.join( ' ' ).trim() );
+						} 
+						
+						return this;
+					}, 
+					
+					ShiftClass: function( clsn ) 
+					{
+						var clsnAttr = this.getAttribute( 'class' ); 
+						this.setAttribute( 'class', clsn.trim() + ' ' + clsnAttr.trim() ); 
+						return this;
+					}, 
+					
+					SetId: function( idstr ) 
+					{
+						// Processing for id
+						if( idstr.indexOf( '#' ) >= 0 ) 
+						{
+							this.id  = idstr.slice( 1 ); 
+						}
+						else if( idstr != '' )
+						{
+							this.id = idstr; 
+						} 
+						else 
+						{
+							return this;
+						}
+					}, 
+					
+					Equip: function( el ) 
+					{
+						var nodeType = parseInt( el.nodeType );
+						if( el.enable && nodeType === 1 ) 
+						{
+							this.appendChild( el );
+						}
+					}, 
+					
+					EquipedBy: function( el ) 
+					{
+						var nodeType = parseInt( el.nodeType );
+						if( el.enable && nodeType === 1 ) 
+						{
+							el.appendChild( this );
+						}
+					}, 
+				}; 
+				// Alias Section for Element DOM Modifier.
+				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
+				
 				var element5 = function( target, limit ) 
 				{
 					try 
@@ -98,8 +238,8 @@ function Factory()
 						var css = 0;
 						var cert = function( el ) 
 						{
-							element5.extend( el, modify ); 
-							element5.extend( el, styleMod );
+							element5.Extend( el, elementDOMModifier ); 
+							element5.Extend( el, elementStyleModifier );
 							el.enable = true; 
 							
 							if( el.tagName != 'BODY' ) 
@@ -122,13 +262,13 @@ function Factory()
 							}
 							if( self != undefined ) 
 							{
-								el.CssSelf = style.Find( self ); 
+								el.CssSelf = style5.Find( self ); 
 							}
 						};
 						
 						if( typeof target == 'string' ) 
 						{
-							css = style.Find( target );
+							css = style5.Find( target );
 							
 							var collect = document.querySelectorAll( target ); 
 							len = collect.length;
@@ -244,9 +384,11 @@ function Factory()
 							console.log( err ); 
 						return;
 					}
-				};
+				}; 
 				
-				element5.extend = function( applier, hier ) 
+				element5.Body = document.body;
+				
+				element5.Extend = function( applier, hier ) 
 				{
 					for( var x in hier ) 
 					{
@@ -264,148 +406,46 @@ function Factory()
 				};
 				
 				module.exports = element5; 
-			}, 
+			},  
 			function( module, __webpack_require__ ) 		// pack require ( 2 ) 
-			{				
-				var modify = 
-				{
-					AddClass: function( clsn ) 
-					{
-						if( this.HasClass( clsn.trim() ) ) 
-						{
-							return this; 
-						} 
-						
-						var clsnAttr = this.getAttribute( 'class' ); 
-						if( clsnAttr == null || clsnAttr == '' )
-						{
-							this.setAttribute( 'class', clsn );
-						} 
-						else if( clsnAttr.indexOf( clsn ) <= -1 ) 
-						{
-							clsnAttr = clsnAttr.trim() + ' ' + clsn;
-							this.setAttribute( 'class', clsnAttr.trim() );
-						}					
-						return this;
-					}, 
-					
-					HasClass: function( clsn ) 
-					{
-						var clsnAttr = this.getAttribute( 'class' ); 
-						return ( clsnAttr != null && clsnAttr != '' && clsnAttr.indexOf( clsn ) >= 0 ); 
-					}, 
-					
-					RemoveClass: function( clsn ) 
-					{
-						if( clsn.indexOf( 'el5_' ) >= 0 ) 
-							return this;
-						
-						if( this.HasClass( clsn ) ) 
-						{
-							var clsnAttr = this.getAttribute( 'class' );
-							var classies = clsnAttr.trim().split( ' ' ); 
-							console.log( clsnAttr );
-							classies.find( function( value, index, arr ) 
-							{
-								if( value == clsn ) 
-								{
-									classies.splice( index, 1 ); 
-									return value;
-								}
-							});
-							
-							this.setAttribute( 'class', classies.join( ' ' ).trim() );
-						} 
-						
-						return this;
-					}, 
-					
-					ShiftClass: function( clsn ) 
-					{
-						var clsnAttr = this.getAttribute( 'class' ); 
-						this.setAttribute( 'class', clsn.trim() + ' ' + clsnAttr.trim() ); 
-						return this;
-					}, 
-					
-					SetId: function( idstr ) 
-					{
-						// Processing for id
-						if( idstr.indexOf( '#' ) >= 0 ) 
-						{
-							this.id  = idstr.slice( 1 ); 
-						}
-						else if( idstr != '' )
-						{
-							this.id = idstr; 
-						} 
-						else 
-						{
-							return this;
-						}
-					}, 
-					
-					Equip: function( el ) 
-					{
-						var nodeType = parseInt( el.nodeType );
-						if( el.enable && nodeType === 1 ) 
-						{
-							this.appendChild( el );
-						}
-					}, 
-					
-					EquipedBy: function( el ) 
-					{
-						var nodeType = parseInt( el.nodeType );
-						if( el.enable && nodeType === 1 ) 
-						{
-							el.appendChild( this );
-						}
-					}, 
-				}; 
-				
-				modify.PushClass = modify.AddClass; 
-				
-				module.exports = modify; 
-			}, 
-			function( module, __webpack_require__ ) 
 			{
 				var element5 = __webpack_require__( 1 ); 
 				
-				var style = document.createElement( 'style' ); 
-				document.head.appendChild( style ); 
-				style.sheet.attach = style.sheet.insertRule || style.sheet.addRule; 
-				style.sheet.detach = style.sheet.deleteRule || style.sheet.removeRule; 
-				style.currentIndex = -1;
+				var Style = document.createElement( 'style' ); 
+				document.head.appendChild( Style ); 
+				Style.sheet.attach = Style.sheet.insertRule || Style.sheet.addRule; 
+				Style.sheet.detach = Style.sheet.deleteRule || Style.sheet.removeRule; 
+				Style.currentIndex = -1;
 				
-				style.Delete = function( index ) 
+				Style.Delete = function( index ) 
 				{
-					style.sheet.detach( index );
+					Style.sheet.detach( index );
 				};
 				
-				style.AddLine = function( selector ) 
+				Style.AddLine = function( selector ) 
 				{
-					var index = style.sheet.cssRules.length; 
+					var index = Style.sheet.cssRules.length; 
 					
-					style.sheet.attach( selector + ' {}', index ); 
+					Style.sheet.attach( selector + ' {}', index ); 
 					
-					var rule = style.sheet.cssRules[ index ];
+					var rule = Style.sheet.cssRules[ index ];
 					
-					return element5.extend( rule, style.modify ); 
+					return element5.Extend( rule, Style.ruleModifier ); 
 				}; 
 				
-				style.AddTimeLine = function( timeline ) 
+				Style.AddTimeLine = function( timeline ) 
 				{
 					var keyframes = timeline.keyframes;
 					
-					this.Find( timeline.name );
-					
-					if( style.currentIndex >= 0 ) 
+					this.Find( timeline.name, function() 
 					{
-						style.Delete( style.currentIndex ); 
-						style.currentIndex = -1;
-					}
+						if( Style.currentIndex >= 0 ) 
+						{
+							Style.Delete( Style.currentIndex ); 
+						}
+					}); 
 					
-					var index = style.sheet.cssRules.length; 
+					var index = Style.sheet.cssRules.length; 
 					var len = keyframes.length;
 					var content = [];
 					
@@ -414,13 +454,13 @@ function Factory()
 						content.push( keyframes[ i ].timek + '% { }' );
 					}
 					
-					style.sheet.attach( '@keyframes ' + timeline.name + ' { ' + content.join( ' ' ) + ' } ' , index );
+					Style.sheet.attach( '@keyframes ' + timeline.name + ' { ' + content.join( ' ' ) + ' } ' , index );
 					
-					timeline = style.sheet.cssRules[ index ]; 
+					timeline = Style.sheet.cssRules[ index ]; 
 					
 					for( var i = 0; i < len; i++ ) 
 					{
-						element5.extend( timeline.cssRules[ i ], style.modify );
+						element5.Extend( timeline.cssRules[ i ], Style.ruleModifier );
 						
 						timeline.cssRules[ i ].SetStyles( keyframes[ i ].style );
 					}
@@ -443,7 +483,7 @@ function Factory()
 					return timeline;
 				}; 
 				
-				style.Find = function( selector, autoplus ) 
+				Style.Find = function( selector, autoplus ) 
 				{
 					if( autoplus == undefined ) 
 					{
@@ -452,15 +492,16 @@ function Factory()
 					
 					var len = this.sheet.cssRules.length; 
 					var result = 0;
-					style.currentIndex = -1;
+					Style.currentIndex = -1;
 					
 					if( len ) 
 					{
 						for( var i = 0; i < len; i++ ) 
 						{
-							if( selector == this.sheet.cssRules[ i ].selectorText ) 
+							if( selector == ( this.sheet.cssRules[ i ].selectorText || this.sheet.cssRules[ i ].name ) )
 							{
-								result = this.sheet.cssRules[ i ];
+								Style.currentIndex = i;
+								result = this.sheet.cssRules[ i ]; 
 							} 
 						}
 					} 
@@ -477,6 +518,8 @@ function Factory()
 						autoplus(); 
 					} 
 					
+					Style.currentIndex = -1;
+					
 					if( result ) 
 					{
 						return result;
@@ -487,7 +530,7 @@ function Factory()
 					}
 				};
 				
-				style.modify = 
+				Style.ruleModifier = 
 				{
 					AddProperty: function( name, value ) 
 					{
@@ -505,11 +548,11 @@ function Factory()
 					}, 
 				};
 				
-				style.AddLine( '*' ).SetStyles( { position: 'absolute', bottom : '0', left : '0' } ); 
-				style.AddLine( 'hidden' ).SetStyles( { bottom : '-100%', left : '-100%' } ); 
-				style.AddLine( 'transparent' ).SetStyles( { background : 'transparent' } ); 
-				style.AddLine( 'invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
-				var bodyStyle = style.AddLine( 'body' ).SetStyles( { margin: '0', width: '100%', height : '100%', background : '#000' } ); 
+				Style.AddLine( '*' ).SetStyles( { position: 'absolute', bottom : '0', left : '0' } ); 
+				Style.AddLine( 'hidden' ).SetStyles( { bottom : '-100%', left : '-100%' } ); 
+				Style.AddLine( 'transparent' ).SetStyles( { background : 'transparent' } ); 
+				Style.AddLine( 'invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
+				var bodyStyle = Style.AddLine( 'body' ).SetStyles( { margin: '0', width: '100%', height : '100%', background : '#000' } ); 
 				
 				bodyStyle.AddProperty( 'width', window.innerWidth + 'px' );
 				bodyStyle.AddProperty( 'height', window.innerHeight + 'px' );
@@ -520,65 +563,36 @@ function Factory()
 					bodyStyle.AddProperty( 'height', window.innerHeight + 'px' );
 				}, false);
 	
-				module.exports = style;
+				module.exports = Style;
 			}, 
-			function( module, __webpack_require__ ) 
-			{				
-				var styleMod = 
-				{
-					Style: function( styles ) 
-					{
-						if( this.CssSelf )
-							this.CssSelf.SetStyles( styles ); 
-						else 
-							this.Css.SetStyles( styles ); 
-						return this;
-					}, 
-					
-					AddProperty: function( name, value ) 
-					{
-						if( this.CssSelf ) 
-							this.CssSelf.AddProperty( name, value ); 
-						else 
-							this.Css.AddProperty( name, value ); 
-						return this;
-					}, 
-					
-					SetStyles: function( styles ) 
-					{
-						if( this.CssSelf )
-							this.CssSelf.SetStyles( styles ); 
-						else 
-							this.Css.SetStyles( styles ); 
-						return this;
-					}, 
-					
-					SetWidth: function( v ) 
-					{
-						console.log( this ); 
-						return this;
-					}, 
-					
-					SetHeight: function( v ) 
-					{
-						
-					}, 
-				};
-				
-				module.exports = styleMod;
-			}, 
-			function( module, __webpack_require__ ) 
+			function( module, __webpack_require__ ) 		// pack require ( 3 ) 
 			{
 				var Timeline = 
 				{
 					Create: function( timeline ) 
 					{
-						return style.AddTimeLine( timeline );
+						return style5.AddTimeLine( timeline );
 					}
 				};
 				
 				module.exports = Timeline;
 			}, 
+			function( module, __webpack_require__ )  		// pack require ( 4 ) 
+			{
+				var Request = 
+				{
+					Create: function( url, data, onload ) 
+					{
+						var xhRequest = new XMLHttpRequest(); 
+						xhRequest.requestUrl = data || '';
+						xhRequest.requestData = data || null;
+						xhRequest.onload = onload;
+						return xhRequest;
+					},
+				} 
+				
+				module.exports = Request;
+			}
 		]
 	);
 }

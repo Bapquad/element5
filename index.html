@@ -11,7 +11,7 @@ window.onload = function( e )
 	// Export Element 5
 	Element5IniversalExport( this, Factory ); 
 	
-	var uptotop = timeline.Create( 
+	var uptotop = timeline5.Create( 
 	{
 		name: 'uptotop', 
 		keyframes: 
@@ -36,17 +36,18 @@ window.onload = function( e )
 	});
 	
 	var divise = element5( '#tao' ); 
-	
 	divise.SetStyles( { 'width' : '200px', 'height' : '200px', 'background': 'blue' } ); 
-	
 	// divise.addEventListener( 'animationstart', function( e ) 
-	divise.addEventListener( 'animationend', function( e ) 
+	// divise.addEventListener( 'animationend', function( e ) 
 	// divise.addEventListener( 'animationiteration', function( e ) 
-	{
-		console.log( e.elapsedTime );
-	}, false);
+	// {
+	//		console.log( e.elapsedTime );
+	// }, false);
 	
 	uptotop.Effect( divise );
+	
+	var xhr = request5.Create; 
+	console.log( xhr );
 };
 
 </script>
