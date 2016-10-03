@@ -123,6 +123,41 @@ function Factory()
 					{
 						
 					}, 
+					
+					Show: function() 
+					{
+						if( this.HasClass( 'hidden' ) )
+						{
+							this.RemoveClass( 'hidden' );
+						}
+					}, 
+					
+					IsShow: function() 
+					{
+						return ( !this.HasClass( 'hidden' ) );
+					}, 
+					
+					Hide: function() 
+					{
+						this.AddClass( 'hidden' );
+					}, 
+					
+					IsHide: function() 
+					{
+						return ( this.HasClass( 'hidden' ) );
+					}, 
+					
+					Toggle: function() 
+					{
+						if( this.HasClass( 'hidden' ) ) 
+						{
+							this.RemoveClass( 'hidden' );
+						} 
+						else 
+						{
+							this.AddClass( 'hidden' );
+						}
+					}
 				};
 				// Alias Section for Element Style Modifier.
 				elementStyleModifier.SetProperty = elementStyleModifier.SetStyles; 
@@ -164,7 +199,6 @@ function Factory()
 						{
 							var clsnAttr = this.getAttribute( 'class' );
 							var classies = clsnAttr.trim().split( ' ' ); 
-							console.log( clsnAttr );
 							classies.find( function( value, index, arr ) 
 							{
 								if( value == clsn ) 
@@ -208,6 +242,7 @@ function Factory()
 					Equip: function( el ) 
 					{
 						var nodeType = parseInt( el.nodeType );
+
 						if( el.enable && nodeType === 1 ) 
 						{
 							this.appendChild( el );
@@ -217,7 +252,7 @@ function Factory()
 					EquipedBy: function( el ) 
 					{
 						var nodeType = parseInt( el.nodeType ); 
-						
+
 						if( ( el.enable || el.tagName === 'BODY') && nodeType === 1 ) 
 						{
 							el.appendChild( this );
@@ -247,8 +282,11 @@ function Factory()
 					elementExtCollection.forEach( function( item, index ) { element5.Extend( el, item ) });
 					
 					el.enable = true; 
-					if( el.tagName != 'BODY' ) 
+					
+					if( el.tagName != 'BODY' && el.createdBy ) 
+					{
 						el.EquipedBy( document.body ); 
+					}
 					
 					// Add Class Css Self
 					if( el.CssSelf != undefined ) 
@@ -297,6 +335,7 @@ function Factory()
 								if( len == 1 ) 				// Single
 								{
 									var el = collect[ 0 ]; 
+									el.createdBy = false;
 									
 									effect( el, css );
 									
@@ -315,7 +354,7 @@ function Factory()
 									for( var i = 0; i < len; i++ ) 
 									{
 										var el = collect[ i ]; 
-										
+										el.createdBy = false;
 										if( el.enable ) 
 											continue;
 										
@@ -333,7 +372,7 @@ function Factory()
 							{
 								// target.attributes.length
 								var el = document.createElement( elTag ); 
-								
+								el.createdBy = true;
 								el.id = name; 
 								
 								effect( el, css );
@@ -350,7 +389,7 @@ function Factory()
 								for( var i = 0; i < limit; i++ ) 
 								{
 									var el = document.createElement( elTag ); 
-									
+									el.createdBy = true;
 									el.setAttribute( 'class', target.slice( 1 ) ); 
 									
 									effect( el, css, '.el5_' + element5.Deep() ); 
@@ -609,20 +648,8 @@ function Factory()
 					}, 
 				};
 				
-				Style.AddLine( '*' ).SetStyles( { position: 'absolute', bottom : '0', left : '0' } ); 
-				Style.AddLine( 'hidden' ).SetStyles( { bottom : '-100%', left : '-100%' } ); 
-				Style.AddLine( 'transparent' ).SetStyles( { background : 'transparent' } ); 
-				Style.AddLine( 'invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
-				element5.body = Style.AddLine( 'body' ).SetStyles( { margin: '0', width: '100%', height : '100%', background : '#000' } ); 
-				
-				element5.body.AddProperty( 'width', window.innerWidth + 'px' );
-				element5.body.AddProperty( 'height', window.innerHeight + 'px' );
-				
-				window.addEventListener( 'resize', function( e ) 
-				{
-					element5.body.AddProperty( 'width', window.innerWidth + 'px' );
-					element5.body.AddProperty( 'height', window.innerHeight + 'px' );
-				}, false);
+				Style.AddLine( '.hidden' ).SetStyles( { position: 'fixed', bottom : '-100%', left : '-100%', top : 'auto', right : 'auto' } ); 
+				Style.AddLine( '.invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
 	
 				module.exports = Style;
 			}, 
