@@ -116,13 +116,14 @@ function Factory()
 					
 					SetWidth: function( v ) 
 					{
-						console.log( this ); 
+						this.AddProperty( 'width', v + 'px' );
 						return this;
 					}, 
 					
 					SetHeight: function( v ) 
 					{
-						
+						this.AddProperty( 'height', v + 'px' ); 
+						return this;
 					}, 
 					
 					Show: function() 
@@ -130,7 +131,8 @@ function Factory()
 						if( this.HasClass( 'hidden' ) )
 						{
 							this.RemoveClass( 'hidden' );
-						}
+						} 
+						return this;
 					}, 
 					
 					IsShow: function() 
@@ -140,7 +142,8 @@ function Factory()
 					
 					Hide: function() 
 					{
-						this.AddClass( 'hidden' );
+						this.AddClass( 'hidden' ); 
+						return this;
 					}, 
 					
 					IsHide: function() 
@@ -157,7 +160,8 @@ function Factory()
 						else 
 						{
 							this.AddClass( 'hidden' );
-						}
+						} 
+						return this;
 					}
 				};
 				// Alias Section for Element Style Modifier.
@@ -268,6 +272,14 @@ function Factory()
 				// Alias Section for Element DOM Modifier.
 				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
 				
+				var elementDOMLoader = 
+				{
+					includeHTML: function() 
+					{
+						element5.includeHtml( this );
+					},
+				};
+				
 				var elementAnimationModifier = {
 					EffectedBy: function( timeline, duration, delay, timing ) 
 					{
@@ -283,6 +295,7 @@ function Factory()
 					element5.Extend( el, elementDOMModifier ); 
 					element5.Extend( el, elementStyleModifier ); 
 					element5.Extend( el, elementAnimationModifier ); 
+					element5.Extend( el, elementDOMLoader ); 
 					
 					var extLen = elementExtCollection.length; 
 					elementExtCollection.forEach( function( item, index ) { element5.Extend( el, item ) });
@@ -440,7 +453,57 @@ function Factory()
 					}
 				}; 
 				
-				element5.Body = document.body; 
+				element5.fps = 60;
+				element5.GetWindow = function() 
+				{
+					return window;
+				};
+				
+				element5.GetBody = function() 
+				{ 
+					var BODY = document.body;
+					if( BODY != undefined && BODY.tagName === 'BODY' && BODY.el5 == undefined ) 
+					{
+						BODY.scrollToY = function( position, duration ) 
+						{
+							var maxScrollY = document.body.scrollHeight - window.innerHeight; 
+							
+							var anime = element5.Math.ComAni1( BODY.scrollTop, position, duration );
+							
+							var timer = setInterval( function() 
+							{
+								// Update the scroll.
+								BODY.scrollTop -= anime.d; 
+								
+								// Check the down scroll.
+								if( anime.d < 0 && BODY.scrollTop >= position ) 
+									clearInterval( timer ); 
+								
+								// Check the up scroll.
+								else if( anime.d > 0 && BODY.scrollTop <= position ) 
+									clearInterval( timer ); 
+								
+								// Check the min and max scroll.
+								else if( BODY.scrollTop <= 0 || BODY.scrollTop >= maxScrollY )
+									clearInterval( timer );
+							}, anime.t );
+						}
+						BODY.el5 = true;
+						return BODY; 
+					}
+				}; 
+				
+				element5.Math = {};
+				
+				element5.Math.ComAni1 = function( c, e, d ) 
+				{
+					var comObj = new Object();
+					d = d || 1000;
+					comObj.d = ( c - e ) / element5.fps; 
+					comObj.t = d / element5.fps; 
+					return comObj;
+				};
+				
 				element5.Deep = function( numLen ) 
 				{
 					numLen = numLen || 4;
@@ -502,7 +565,41 @@ function Factory()
 					} 
 					
 					return applier;
-				};
+				}; 
+				
+				element5.includeHtml = function( el ) 
+				{
+					if ( el.getAttribute("w3-include-html") ) 
+					{
+						var a = el.cloneNode( false );
+						
+						var file = el.getAttribute("w3-include-html");
+						
+						var xhr = new XMLHttpRequest();
+						
+						xhr.onreadystatechange = function() 
+						{
+							if ( xhr.readyState == 4 && xhr.status == 200 ) 
+							{
+								a.removeAttribute( "w3-include-html" );
+								
+								a.innerHTML = xhr.responseText; 
+								
+								el.parentNode.replaceChild( a, el );
+								
+								var callback = el.getAttribute( 'callback' );
+								if( callback ) 
+									new Function( callback )();
+							}
+						}      
+						
+						xhr.open("GET", file, true);
+						
+						xhr.send();
+						
+						return;
+					}
+				}
 				
 				module.exports = element5; 
 			},  
