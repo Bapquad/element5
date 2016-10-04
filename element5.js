@@ -70,7 +70,8 @@ function Factory()
 				module.exports.element5 = __webpack_require__( 1 ); 
 				module.exports.style5 = __webpack_require__( 2 ); 
 				module.exports.timeline5 = __webpack_require__( 3 ); 
-				module.exports.request5 = __webpack_require__( 4 );
+				module.exports.request5 = __webpack_require__( 4 ); 
+				module.exports.solution5 = __webpack_require__( 5 );
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -223,6 +224,11 @@ function Factory()
 							el.appendChild( this );
 						}
 					}, 
+					
+					EquipEvent: function( addHandle, removeHandle ) 
+					{
+						solution5.SetMutationEvent( this, addHandle, removeHandle );
+					},
 				}; 
 				// Alias Section for Element DOM Modifier.
 				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
@@ -653,6 +659,63 @@ function Factory()
 				} 
 				
 				module.exports = Request;
+			}, 
+			function( module, __webpack_require__ ) 		// pack require ( 5 ) 
+			{
+				var Solution = {};
+				
+				Solution.SetMutationEvent = (function()
+				{
+					var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+						eventListenerSupported = window.addEventListener;
+					
+					return function(obj, addDomHandle, removeDomHandle)
+					{
+						if(MutationObserver)
+						{
+							// define a new observer
+							var obs = new MutationObserver( function( mutations, observer ) 
+							{
+								mutations.forEach( function( item, index ) 
+								{
+									if( item.addedNodes.length 
+									&&  item.addedNodes[0] . nodeType == 1 
+									&& 	addDomHandle != undefined ) 
+									{
+										var customEvent = 
+										{
+											target : item.addedNodes[0], 
+											srcElement : item.addedNodes[0], 
+											observe : observer, 
+										};
+										addDomHandle( customEvent );
+									} 
+									else if ( item.removedNodes.length 
+									&&	item.removedNodes[0] . nodeType == 1 
+									&& 	removeDomHandle != undefined ) 
+									{
+										var customEvent = 
+										{
+											target : item.removedNodes[0], 
+											srcElement : item.removedNodes[0], 
+											observe : observer, 
+										};
+										removeDomHandle( customEvent );
+									}
+								}); 
+							});
+							// have the observer observe foo for changes in children
+							obs.observe( obj, { childList:true, subtree:true });
+						}
+						else if(eventListenerSupported)
+						{
+							obj.addEventListener('DOMNodeInserted', addDomHandle, false);
+							obj.addEventListener('DOMNodeRemoved', removeDomHandle, false);
+						}
+					}
+				})(); 
+				
+				module.exports = Solution;
 			}
 		]
 	);
