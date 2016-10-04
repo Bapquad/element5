@@ -89,11 +89,12 @@ function Factory()
 				var cert = function( el ) 
 				{
 					// Registry the element5 extension el with modifier, loader, ...
-					element5.Extend( el, elementDOMModifier ); 
-					element5.Extend( el, elementStyleModifier ); 
-					element5.Extend( el, elementAnimationModifier ); 
-					element5.Extend( el, elementDOMLoader ); 
-					element5.Extend( el, elementMediaModifier ); 
+					element5.Extend( el, DOMMod ); 
+					element5.Extend( el, StyleMod ); 
+					element5.Extend( el, AniMod ); 
+					element5.Extend( el, DOMLoader ); 
+					element5.Extend( el, MediaMod ); 
+					element5.Extend( el, ClimbMod ); 
 					
 					// Execute the giving extension.
 					elementExtCollection.forEach( function( item, index ) 
@@ -157,12 +158,12 @@ function Factory()
 				{
 					try 
 					{
-						var elTag = 'div';
-						var len = 0; 
-						var css = 0;
-						
 						if( typeof target == 'string' ) 
 						{
+							var elTag = 'div';
+							var len = 0; 
+							var css = 0;
+							
 							css = style5.Find( target );
 							
 							var collect = document.querySelectorAll( target ); 
@@ -277,7 +278,200 @@ function Factory()
 					}
 				}; 
 				
-				var elementStyleModifier = 
+				var ClimbMod = 
+				{
+					Find: function( selector ) 
+					{
+						if( selector == undefined ) 
+						{
+							return null;
+						}
+						
+						var el = this;
+						var domNodes = this.querySelectorAll( selector ); 
+						var len = domNodes.length;
+						if( len == 1 ) 
+						{
+							el = domNodes[ 0 ]; 
+							return ( !el.el5 ) ? element5( el ) : el;
+						} 
+						else if( len > 1 )
+						{
+							var childs = [];
+							for( var i = 0; i < len; i++ ) 
+							{
+								var el = domNodes[ i ];
+								childs.push( ( !el.el5 ) ? element5( el ) : el );
+							} 
+							return childs;
+						} 
+						else 
+						{
+							return len;
+						}
+					}, 
+					Parents: function( selector ) 
+					{
+						var el = this;
+						if( el.Parent ) 
+						{
+							return el.Parent( selector, true );
+						} 
+						else 
+						{
+							return ClimbMod.Parent( selector, true, el );
+						}
+					},
+					Parent: function( selector, s, target ) 
+					{
+						var el = target || this;
+						var parentEl = 0;
+						
+						if( selector == undefined )
+						{
+							var parentEl = this.parentNode || this.parentElement; 
+						} 
+						else 
+						{
+							var pat = /(#|.|\[|[a-zA-Z0-9]*)([a-zA-Z0-9]+)/;
+							var selector = pat.exec( selector );
+							
+							if( selector )
+							{
+								if( el.ParentUntil ) 
+								{
+									var parentEl = el.ParentUntil( selector, s ); 
+								} 
+								else 
+								{
+									var parentEl = ClimbMod.ParentUntil( selector, s, el );
+								}
+							}
+						}
+						
+						if( parentEl ) 
+							return parentEl;
+						else 
+							return null;
+					}, 
+					ParentUntil : function( selector, s, target ) 
+					{
+						var el = target || this;
+						var correct;
+						var collect;
+						
+						if( s ) 
+						{
+							collect = new Array();
+						}
+						
+						while( el ) 
+						{
+							el = el.parentNode || el.parentElement;
+							
+							if( el == null ) 
+							{
+								break;
+							}
+							
+							if( s ) 
+							{
+								collect.push( el );
+							}
+							
+							if( el.typing )
+							{
+								correct = el.typing( selector );
+							}
+							else 
+							{
+								correct = ClimbMod.typing( selector, el );
+							}
+							
+							if( correct ) 
+							{
+								break;
+							}
+						}
+						
+						if( !correct ) 
+						{
+							return null;
+						}
+						
+						if( collect ) 
+						{
+							collect.forEach( function( item, index ) 
+							{
+								if( !item.el5 ) 
+								{
+									return element5( item );
+								}
+							});
+							return collect;
+						} 
+						
+						if( !el.el5 ) 
+						{
+							return element5( el );
+						}
+						return el;
+					}
+				};
+				ClimbMod.typing = function( selector, target ) 
+				{
+					var el = target || this;
+					
+					var selectType = selector[ 1 ];
+								
+					if( selectType === '#' )
+					{
+						if( el.HasId ) 
+						{
+							return el.HasId( selector[ 2 ] );
+						} 
+						else 
+						{
+							return DOMMod.HasId( selector[ 2 ], el );
+						}
+					} 
+					else if( selectType === '.') 
+					{
+						if( el.HasClass ) 
+						{
+							return el.HasClass( selector[ 2 ] );
+						} 
+						else 
+						{
+							return DOMMod.HasClass( selector[ 2 ], el );
+						}
+					} 
+					else if( selectType === '[' ) 
+					{
+						var pat = /\[([a-zA-Z0-9]+)=([a-zA-Z0-9]+)(\])/
+						selector = pat.exec( selector.input ); 
+						if( el.getAttribute ) 
+						{
+							var attrValue = el.getAttribute( selector[ 1 ] );
+							return ( selector[ 2 ] == attrValue ); 
+						}
+					}
+					else 
+					{
+						var pat = /^([a-zA-Z0-9]+)$/g;
+						selector = pat.exec( selector.input );
+						if( el.tagName ) 
+						{
+							return ( el.tagName.toLowerCase() == selector.input ); 
+						} 
+						else 
+						{
+							return false;
+						}
+					}
+				};
+				
+				var StyleMod = 
 				{
 					Style: function( styles ) 
 					{
@@ -359,9 +553,9 @@ function Factory()
 					}
 				};
 				// Alias Section for Element Style Modifier.
-				elementStyleModifier.SetProperty = elementStyleModifier.SetStyles; 
+				StyleMod.SetProperty = StyleMod.SetStyles; 
 				
-				var elementMediaModifier = 
+				var MediaMod = 
 				{
 					onMedia : function( media ) 
 					{
@@ -495,7 +689,7 @@ function Factory()
 					},
 				};
 				
-				var elementDOMModifier = 
+				var DOMMod = 
 				{
 					AddClass: function( clsn ) 
 					{
@@ -517,9 +711,10 @@ function Factory()
 						return this;
 					}, 
 					
-					HasClass: function( clsn ) 
+					HasClass: function( clsn, target ) 
 					{
-						var clsnAttr = this.getAttribute( 'class' ); 
+						var el = target || this;
+						var clsnAttr = el.getAttribute( 'class' ); 
 						return ( clsnAttr != null && clsnAttr != '' && clsnAttr.indexOf( clsn ) >= 0 ); 
 					}, 
 					
@@ -572,6 +767,12 @@ function Factory()
 						}
 					}, 
 					
+					HasId: function( idstr, target ) 
+					{
+						var el = target || this;
+						return ( el.id === idstr );
+					},
+					
 					Equip: function( el ) 
 					{
 						var nodeType = parseInt( el.nodeType );
@@ -598,9 +799,9 @@ function Factory()
 					},
 				}; 
 				// Alias Section for Element DOM Modifier.
-				elementDOMModifier.PushClass = elementDOMModifier.AddClass; 
+				DOMMod.PushClass = DOMMod.AddClass; 
 				
-				var elementDOMLoader = 
+				var DOMLoader = 
 				{
 					includeHTML: function() 
 					{
@@ -608,15 +809,15 @@ function Factory()
 					},
 				};
 				
-				var elementAnimationModifier = {
+				var AniMod = {
 					EffectedBy: function( timeline, duration, delay, timing ) 
 					{
 						timeline.Effect( this, duration, delay, timing );
 					}, 
 				};
-				elementAnimationModifier.Animation = elementAnimationModifier.EffectedBy;
-				elementAnimationModifier.Run = elementAnimationModifier.EffectedBy;
-				elementAnimationModifier.Play = elementAnimationModifier.EffectedBy;
+				AniMod.Animation = AniMod.EffectedBy;
+				AniMod.Run = AniMod.EffectedBy;
+				AniMod.Play = AniMod.EffectedBy;
 				
 				element5.fps = 60;
 				element5.GetWindow = function() 
@@ -831,8 +1032,8 @@ function Factory()
 					timeline.Effect = function( el, duration, delay, timing ) 
 					{
 						var timeline = this;
-						delay = (delay || 0 ) + 's'; 
-						duration = ( duration || 1 ) + 's'; 
+						delay = ( ( delay / 1000 ) || 0 ) + 's'; 
+						duration = ( ( duration / 1000 ) || 1 ) + 's'; 
 						timing = timing || 'linear';
 						
 						el.AddProperty( 'animation-delay', delay ); 
