@@ -70,8 +70,9 @@ function Factory()
 				module.exports.element5 = __webpack_require__( 1 ); 
 				module.exports.style5 = __webpack_require__( 2 ); 
 				module.exports.timeline5 = __webpack_require__( 3 ); 
-				module.exports.request5 = __webpack_require__( 4 ); 
-				module.exports.solution5 = __webpack_require__( 5 );
+				module.exports.media5 = __webpack_require__( 4 );
+				module.exports.request5 = __webpack_require__( 5 ); 
+				module.exports.solution5 = __webpack_require__( 6 );
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -85,13 +86,204 @@ function Factory()
 				 */
 				var elementExtCollection = [];
 				
+				var cert = function( el ) 
+				{
+					// Registry the element5 extension el with modifier, loader, ...
+					element5.Extend( el, elementDOMModifier ); 
+					element5.Extend( el, elementStyleModifier ); 
+					element5.Extend( el, elementAnimationModifier ); 
+					element5.Extend( el, elementDOMLoader ); 
+					element5.Extend( el, elementMediaModifier ); 
+					
+					// Execute the giving extension.
+					elementExtCollection.forEach( function( item, index ) 
+					{ 
+						element5.Extend( el, item ); 
+					});
+					
+					// Check the body.
+					if( el.tagName != 'BODY' && el.createdBy ) 
+					{
+						el.EquipedBy( document.body ); 
+					}
+					
+					// Add Class Css Self
+					if( el.CssSelf != undefined ) 
+					{
+						var clsn = (/^(.)(el5\_[a-zA-Z0-9]+)$/).exec( el.CssSelf.selectorText ); 
+						if( clsn ) 
+						{
+							el.ShiftClass( clsn[ 2 ] ); 
+						}
+					} 
+					
+					el.el5 = true; 
+					
+					return el;
+				}; 
+				
+				var effect = function( el, css, self ) 
+				{
+					if( el.Css == undefined && css != 0 ) 
+					{
+						el.Css = css;
+					} 
+
+					// Case of body
+					if( el.tagName === 'BODY' )
+					{
+						if( el.CssSelf === undefined ) 
+						{
+							// Search and fill the body css rule.
+							el.CssSelf = style5.Find( 'body' ); 
+							return;
+						}
+						else 
+						{
+							return;
+						}
+					} 
+					
+					if( self != undefined ) 
+					{ 
+						if( (/^(.)(el5\_[a-zA-Z0-9]+)$/).exec( self ) ) 
+						{
+							el.CssSelf = style5.Find( self ); 
+						}
+					}
+				};
+				
+				var element5 = function( target, limit ) 
+				{
+					try 
+					{
+						var elTag = 'div';
+						var len = 0; 
+						var css = 0;
+						
+						if( typeof target == 'string' ) 
+						{
+							css = style5.Find( target );
+							
+							var collect = document.querySelectorAll( target ); 
+							
+							len = collect.length;
+							
+							
+							var name = target.slice( 1 );
+							var queryType = target.slice( 0, 1 ); 
+
+							// Element had existed.
+							if ( len ) 
+							{
+								if( len == 1 ) 				// Single
+								{
+									var el = collect[ 0 ]; 
+									el.createdBy = false; 
+									effect( el, css ); 
+									if( !el.el5 ) 
+									{
+										return cert( el );
+									} 
+									else 
+									{
+										return el;
+									}
+								}
+								else 						// Multiple
+								{
+									var childs = []; WZQB8524uscm
+									for( var i = 0; i < len; i++ ) 
+									{
+										var el = collect[ i ]; 
+										el.createdBy = false; 
+										if( el.el5 ) 
+											continue; 
+										if( el.CssSelf == undefined ) 
+										{
+											effect( el, css, '.el5_' + element5.ComDeep() );	
+										} 
+										childs[ i ] = cert( el ); 
+									} 
+									return childs; 
+								}
+							} 
+							else 
+							{
+								// Check pass
+								if( ( /^(.|#)[a-zA-Z0-9\-]+$/ ).exec( target ) == null ) 
+									return null;
+								
+								if( queryType == '#' )							// Single
+								{
+									var el = document.createElement( elTag ); 
+									el.createdBy = true; 
+									el.id = name; 
+									effect( el, css ); 
+									cert( el ); 
+									return el;
+								} 
+								else if( queryType == '.' )						// Multiple
+								{
+									limit = limit || 10;
+									var childs = []; 
+									for( var i = 0; i < limit; i++ ) 
+									{
+										var el = document.createElement( elTag ); 
+										el.createdBy = true; 
+										el.setAttribute( 'class', target.slice( 1 ) ); 
+										effect( el, css, '.el5_' + element5.ComDeep() ); 
+										childs[ i ] = cert( el ); 
+									} 								
+									return childs;
+								}
+							}
+						} 
+						else if( typeof target == 'object' ) 
+						{
+							if( target.nodeType != undefined && parseInt( target.nodeType ) === 1 ) 
+							{
+								if( !target.el5 ) 
+								{
+									effect( target, 0, '.el5_' + element5.ComDeep() );
+									return cert( target ); 
+								}
+								else 
+									return target;
+							} 
+							else if( target.length ) 
+							{
+								var limit = target.length; 
+								for( var i = 0;  i < limit; i++ ) 
+								{
+									if( target[ i ].el5 == undefined && ( parseInt( target[ i ].nodeType ) === 1 ) ) 
+									{
+										element5( target[ i ] );
+									} 
+								} 
+								return target;
+							}
+							return;
+						} 
+						
+					} 
+					catch ( err ) 
+					{
+						if( console.error ) 
+							console.error( err );
+						else 
+							console.log( err ); 
+						return;
+					}
+				}; 
+				
 				var elementStyleModifier = 
 				{
 					Style: function( styles ) 
 					{
 						if( this.CssSelf )
 							this.CssSelf.SetStyles( styles ); 
-						else 
+						else if( this.Css )
 							this.Css.SetStyles( styles ); 
 						return this;
 					}, 
@@ -100,8 +292,10 @@ function Factory()
 					{
 						if( this.CssSelf ) 
 							this.CssSelf.AddProperty( name, value ); 
-						else 
+						else if( this.Css )
 							this.Css.AddProperty( name, value ); 
+						else 
+							this.style[ name ] = value;
 						return this;
 					}, 
 					
@@ -109,7 +303,7 @@ function Factory()
 					{
 						if( this.CssSelf )
 							this.CssSelf.SetStyles( styles ); 
-						else 
+						else if( this.Css )
 							this.Css.SetStyles( styles ); 
 						return this;
 					}, 
@@ -166,6 +360,140 @@ function Factory()
 				};
 				// Alias Section for Element Style Modifier.
 				elementStyleModifier.SetProperty = elementStyleModifier.SetStyles; 
+				
+				var elementMediaModifier = 
+				{
+					onMedia : function( media ) 
+					{
+						/**
+						 *{
+						 *	deviceOption: '(not|only)', 
+						 *	deviceType: '(all|print|screen|tv)', 
+						 *	features: [ 'max-width : 100px', 'min-width : 200px' ], 
+						 *	producted: false,
+						 *}
+						 */
+						// Check exporting device
+						if( media.producted == false ) 
+						{
+							var feature = 0;
+							var device = 0;
+							var deviceOption = 0;
+							var deviceType = 0;
+							
+							if( media.deviceOption == undefined ) 
+							{
+								deviceOption = '';
+							} 
+							else 
+							{
+								deviceOption = media.deviceOption.trim(); 
+							}
+							
+							if( [ 'not', 'only', '' ].indexOf( deviceOption ) < 0 ) 
+							{
+								deviceOption = '';
+							}
+							
+							media.deviceOption = deviceOption;
+							
+							if( media.deviceType == undefined ) 
+							{
+								deviceType = '';
+							} 
+							else 
+							{
+								deviceType = media.deviceType.trim();
+							} 
+							
+							if( [ 'all', 'print', 'screen' ].indexOf( deviceType ) < 0 ) 
+							{
+								deviceType = '';
+							} 
+							
+							media.deviceType = deviceType; 
+							
+							if( deviceOption != '' ) 
+							{
+								if( deviceType != '' ) 
+								{
+									deviceOption = deviceOption + ' '; 
+								} 
+								else 
+								{
+									deviceOption = ''; 
+									media.deviceOption = deviceOption;
+								}
+							}
+							
+							device = deviceOption + deviceType; 
+							
+							if( typeof media.features != 'object' && media.features.length <= 0 ) 
+							{
+								feature = ''; 
+							} 
+							else 
+							{
+								var features = new Array(); 
+								var featureTypes = 
+								[ 
+									'aspect-ratio', 'color', 'color-index', 'device-aspect-ratio', 'device-height', 'device-width', 
+									'grid', 'height', 'max-aspect-ratio', 'max-color', 'max-color-index', 'max-device-aspect-ratio', 
+									'max-device-height', 'max-device-width', 'max-height', 'max-monochrome', 'max-resolution', 'max-width', 
+									'min-aspect-ratio', 'min-color', 'min-color-index', 'min-device-aspect-ratio', 'min-device-width', 'min-device-height', 
+									'min-height', 'min-monochrome', 'min-resolution', 'min-width', 'monochrome', 'orientation', 
+									'overflow-block', 'overflow-inline', 'resolution', 'scan', 'update-frequency', 'width',
+								]; 
+								
+								media.features.forEach( function( item, index ) 
+								{
+									var featureItem = item.split( ':' );
+									if( featureItem.length === 2 ) 
+									{
+										featureItem.name = featureItem[ 0 ].trim();
+										featureItem.value = featureItem[ 1 ].trim(); 
+										if( featureTypes.indexOf( featureItem.name ) >= 0 ) 
+										{
+											features.push( '( ' + featureItem.name + ': ' + featureItem.value + ' )' );
+										}
+									} 
+								});
+								
+								feature = features.join( ' and ' );
+							} 
+							
+							if( feature != '' ) 
+							{
+								feature = ' ' + feature;
+							} 
+							
+							media.product = style5.AddMedia( device, feature ); 
+							media.producted = true;
+							
+							if( this.devices == undefined ) 
+							{
+								this.devices = [ media.product ];
+							}
+							else 
+							{
+								this.devices.push( media.product );
+							} 
+						} 
+						
+						var selector = 0;
+							
+						if( this.CssSelf != undefined ) 
+						{
+							selector = this.CssSelf.selectorText;
+						} 
+						else if( this.Css != undefined ) 
+						{
+							selector = this.Css.selectorText;
+						} 
+						
+						return media.product.Find( selector ); 
+					},
+				};
 				
 				var elementDOMModifier = 
 				{
@@ -248,7 +576,7 @@ function Factory()
 					{
 						var nodeType = parseInt( el.nodeType );
 
-						if( el.enable && nodeType === 1 ) 
+						if( el.el5 && nodeType === 1 ) 
 						{
 							this.appendChild( el );
 						}
@@ -258,7 +586,7 @@ function Factory()
 					{
 						var nodeType = parseInt( el.nodeType ); 
 
-						if( ( el.enable || el.tagName === 'BODY') && nodeType === 1 ) 
+						if( ( el.el5 || el.tagName === 'BODY') && nodeType === 1 ) 
 						{
 							el.appendChild( this );
 						}
@@ -289,169 +617,6 @@ function Factory()
 				elementAnimationModifier.Animation = elementAnimationModifier.EffectedBy;
 				elementAnimationModifier.Run = elementAnimationModifier.EffectedBy;
 				elementAnimationModifier.Play = elementAnimationModifier.EffectedBy;
-				
-				var cert = function( el ) 
-				{
-					element5.Extend( el, elementDOMModifier ); 
-					element5.Extend( el, elementStyleModifier ); 
-					element5.Extend( el, elementAnimationModifier ); 
-					element5.Extend( el, elementDOMLoader ); 
-					
-					var extLen = elementExtCollection.length; 
-					elementExtCollection.forEach( function( item, index ) { element5.Extend( el, item ) });
-					
-					el.enable = true; 
-					
-					if( el.tagName != 'BODY' && el.createdBy ) 
-					{
-						el.EquipedBy( document.body ); 
-					}
-					
-					// Add Class Css Self
-					if( el.CssSelf != undefined ) 
-					{
-						var clsn = el.CssSelf.selectorText.slice( 1 ); 
-						el.ShiftClass( clsn ); 
-					}
-					
-					return el;
-				}; 
-				
-				var effect = function( el, css, self ) 
-				{
-					if( el.css == undefined && css != 0 ) 
-					{
-						el.Css = css;
-					}
-					if( self != undefined ) 
-					{
-						el.CssSelf = style5.Find( self ); 
-					}
-				};
-				
-				var element5 = function( target, limit ) 
-				{
-					try 
-					{
-						var elTag = 'div';
-						var len = 0; 
-						var css = 0;
-						
-						if( typeof target == 'string' ) 
-						{
-							css = style5.Find( target );
-							
-							var collect = document.querySelectorAll( target ); 
-							
-							len = collect.length;
-							
-							var name = target.slice( 1 );
-							var queryType = target.slice( 0, 1 ); 
-
-							// Element had existed.
-							if ( len ) 
-							{
-								if( len == 1 ) 				// Single
-								{
-									var el = collect[ 0 ]; 
-									el.createdBy = false;
-									
-									effect( el, css );
-									
-									if( !el.enable ) 
-									{
-										return cert( el );
-									} 
-									else 
-									{
-										return el;
-									}
-								}
-								else 						// Multiple
-								{
-									var childs = []; 
-									for( var i = 0; i < len; i++ ) 
-									{
-										var el = collect[ i ]; 
-										el.createdBy = false;
-										if( el.enable ) 
-											continue;
-										
-										if( el.CssSelf == undefined ) 
-										{
-											effect( el, css, '.el5_' + element5.Deep() );	
-										}
-										
-										childs[ i ] = cert( el ); 
-									} 
-									return childs; 
-								}
-							} 
-							else if( queryType == '#' )		// Single
-							{
-								// target.attributes.length
-								var el = document.createElement( elTag ); 
-								el.createdBy = true;
-								el.id = name; 
-								
-								effect( el, css );
-								
-								cert( el );
-								
-								return el;
-							} 
-							else if( queryType == '.' )		// Multiple
-							{
-								limit = limit || 10;
-								var childs = [];
-								
-								for( var i = 0; i < limit; i++ ) 
-								{
-									var el = document.createElement( elTag ); 
-									el.createdBy = true;
-									el.setAttribute( 'class', target.slice( 1 ) ); 
-									
-									effect( el, css, '.el5_' + element5.Deep() ); 
-									
-									childs[ i ] = cert( el ); 
-								} 								
-								return childs;
-							}
-						} 
-						else if( typeof target == 'object' ) 
-						{
-							if( target.nodeType != undefined && parseInt( target.nodeType ) === 1 ) 
-							{
-								if( !target.enable )
-									return cert( target ); 
-								else 
-									return target;
-							} 
-							else if( target.length ) 
-							{
-								var limit = target.length; 
-								for( var i = 0;  i < limit; i++ ) 
-								{
-									if( target[ i ].enable == undefined && ( parseInt( target[ i ].nodeType ) === 1 ) ) 
-									{
-										element5( target[ i ] );
-									} 
-								} 
-								return target;
-							}
-							return;
-						} 
-						
-					} 
-					catch ( err ) 
-					{
-						if( console.error ) 
-							console.error( err );
-						else 
-							console.log( err ); 
-						return;
-					}
-				}; 
 				
 				element5.fps = 60;
 				element5.GetWindow = function() 
@@ -488,8 +653,7 @@ function Factory()
 									clearInterval( timer );
 							}, anime.t );
 						}
-						BODY.el5 = true;
-						return BODY; 
+						return element5( BODY ); 
 					}
 				}; 
 				
@@ -504,17 +668,17 @@ function Factory()
 					return comObj;
 				};
 				
-				element5.Deep = function( numLen ) 
+				element5.ComDeep = function( numLen ) 
 				{
 					numLen = numLen || 4;
 					
-					if( element5.Deep.deepIndex == undefined )
+					if( element5.ComDeep.deepIndex == undefined )
 					{
-						element5.Deep.deepIndex = 0;
+						element5.ComDeep.deepIndex = 0;
 					} 
 					
-					var deep = element5.Deep.deepIndex.toString(); 
-					element5.Deep.deepIndex++; 
+					var deep = element5.ComDeep.deepIndex.toString(); 
+					element5.ComDeep.deepIndex++; 
 					
 					var dateTime = new Date(); 
 					var time = ( dateTime.getTime() ).toString();
@@ -531,14 +695,15 @@ function Factory()
 					var pat = ( /^[a-zA-Z0-9]+$/ ) . exec ( tagName );
 					if( pat ) 
 					{
-						var clsName = '.el5_' + element5.Deep();
-						
-						var css = style5.Find( clsName ); 
-						
 						var el = document.createElement( pat.input ); 
 						
-						// make the private class style for element.
-						el.CssSelf = css; 
+						// Creation certification.
+						el.createdBy = true;
+						
+						// Make the private class style for element.
+						var clsn = '.el5_' + element5.ComDeep(); 
+						
+						effect( el, 0, clsn );
 						
 						cert( el );
 					}
@@ -608,6 +773,8 @@ function Factory()
 				var element5 = __webpack_require__( 1 ); 
 				
 				var Style = document.createElement( 'style' ); 
+				Style.title = 'element5 free style Mode.5'; 
+				Style.type = 'text/css';
 				document.head.appendChild( Style ); 
 				Style.sheet.attach = Style.sheet.insertRule || Style.sheet.addRule; 
 				Style.sheet.detach = Style.sheet.deleteRule || Style.sheet.removeRule; 
@@ -647,7 +814,7 @@ function Factory()
 					
 					for( var i = 0; i < len; i++ ) 
 					{
-						content.push( keyframes[ i ].timek + '% { }' );
+						content.push( keyframes[ i ].time + '% { }' );
 					}
 					
 					Style.sheet.attach( '@keyframes ' + timeline.name + ' { ' + content.join( ' ' ) + ' } ' , index );
@@ -685,6 +852,22 @@ function Factory()
 					
 					return timeline;
 				}; 
+				
+				Style.AddMedia = function( device, features ) 
+				{
+					var index = Style.sheet.cssRules.length; 
+					var media = (function( d, f ) 
+					{
+						var and = ( d != '' && f != '' ) ? ' and ' : '';
+						return ( d + and + f ).trim();
+					})( device, features );
+					
+					Style.sheet.attach( '@media ' + media + ' {}' , index ); 
+					
+					media = Style.sheet.cssRules[ index ];
+					
+					return element5.Extend( media, Style.mediaModifer ); 
+				};
 				
 				Style.Find = function( selector, autoplus ) 
 				{
@@ -731,6 +914,36 @@ function Factory()
 					{
 						return -1;
 					}
+				}; 
+				
+				Style.mediaModifer = 
+				{
+					Find: function( selector ) 
+					{
+						if( this.cssRules.length ) 
+						{
+							this.cssRules.forEach( function( item, index ) 
+							{
+								if( item.selectorText == selector ) 
+								{
+									return item;
+								}
+							});
+						} 
+						return this.AddLine( selector ); 
+					},
+					AddLine: function( selector ) 
+					{
+						var index = this.cssRules.length; 
+						this.attach = this.insertRule || this.addRule;
+						this.detach = this.deleteRule || this.removeRule; 
+						this.attach( selector + ' {}', index ); 
+						return element5.Extend( this.cssRules[ index ], Style.ruleModifier );
+					}, 
+					GetDescription: function() 
+					{
+						return this.media[ 0 ];
+					},
 				};
 				
 				Style.ruleModifier = 
@@ -768,7 +981,14 @@ function Factory()
 				
 				module.exports = Timeline;
 			}, 
-			function( module, __webpack_require__ )  		// pack require ( 4 ) 
+			function( module, __webpack_require__ ) 		// pack require ( 5 )
+			{
+				var Media = 
+				{
+					
+				}
+			},
+			function( module, __webpack_require__ )  		// pack require ( 5 ) 
 			{
 				var Request = 
 				{
@@ -784,7 +1004,7 @@ function Factory()
 				
 				module.exports = Request;
 			}, 
-			function( module, __webpack_require__ ) 		// pack require ( 5 ) 
+			function( module, __webpack_require__ ) 		// pack require ( 6 ) 
 			{
 				var Solution = {};
 				
@@ -823,7 +1043,10 @@ function Factory()
 											target : item.removedNodes[0], 
 											srcElement : item.removedNodes[0], 
 											observe : observer, 
-										};
+										}; 
+										
+										// Meet observer.disconnect();
+										
 										removeDomHandle( customEvent );
 									}
 								}); 
