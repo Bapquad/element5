@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="http://bapquadgames.com/element5/element5.js" type="text/javascript"></script> 
 <style type='text/css'>
-
+a, a:visited, a:active 
+{
+	color: white!important;
+}
 </style>
 </head>
 <body> 
@@ -42,12 +45,15 @@ element5.body.SetStyle( 'background', '#070117' );
 element5.body.SetStyle( 'margin', '0' ); 
 element5.body.SetStyle( 'color', 'white' ); 
 element5.body.SetStyle( 'font-family', 'Arial' );
+element5.body.SetStyle( 'font-size', '90%' );
 
 // Create the head logo.
 var appNameTxt = element5.Create( 'h1' ); 
 appNameTxt.onMedia( mobile ).SetStyle( 'padding-left', '8px' ); 
 appNameTxt.SetStyle( 'font-size', '18px' ).SetStyle( 'background', '#222' ).SetStyle( 'color', 'white' ); 
 appNameTxt.SetStyle( 'padding', '5px 0 5px 10px' );
+appNameTxt.SetStyle( 'position', 'fixed' );
+appNameTxt.SetStyle( 'width', '100%' ); 
 appNameTxt.innerText = document.title; 
 appNameTxt.menuBtn = appNameTxt.Equip( element5( '#menu-button' ) );
 appNameTxt.menuBtn.SetStyles({
@@ -56,7 +62,7 @@ appNameTxt.menuBtn.SetStyles({
 	'float': 'right', 
 	'width': '18px', 
 	'height': '18px', 
-	'background-image': 'url( https://moodi.org/social-cause/images/mobilemenu.png )', 
+	//'background-image': 'url( https://moodi.org/social-cause/images/mobilemenu.png )', 
 	'background-size': '24px 18px', 
 	'background-repeat': 'no-repeat', 
 	'background-position': '-3px 0', 
@@ -66,6 +72,7 @@ appNameTxt.menuBtn.AddEvent( 'click', function() { });
 // Create the main of page.
 var mainPage = element5( '#main-page' ); 
 mainPage.SetStyle( 'border-top', '1px solid #000' );
+mainPage.SetStyle( 'padding-top', '31px' );
 
 mainPage.Logo = mainPage.Equip( element5.Create( 'img' ) ); 
 mainPage.Logo.src = 'http://bapquadgames.com/element5/logo/element5-light-logo.png'; 
@@ -77,17 +84,30 @@ mainPage.introSection.SetStyle( 'border-top', '1px solid #333' ).SetStyle( 'padd
 mainPage.introSection.head3_01 = mainPage.introSection.Equip( element5.Create( 'h3' ) );
 mainPage.introSection.introTxt = element5( '#intro-txt' );
 mainPage.introSection.introTxt.EquipedBy( mainPage.introSection );
-mainPage.introSection.introTxt.innerText = "element5 is a javascript library, which allows developer scripting for an application on web flatform.";
+mainPage.introSection.introTxt.innerText = "element5 is a javascript library, which allows developer scripting for an application on web flatform with HTML5, CSS3 and Javascript.";
 
+var text = mainPage.Equip( element5.Create( 'h4' ) );
+text.innerText = 'element5 include follow object:';
+text.css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
 
+style5.AddCss( 'li' ).css( { 'margin': '10px 0', 'font-size':'90%'} );
+var list = mainPage.Equip( element5.Create( 'ul' ) ).css( 'padding-left', '10px' );
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">element5</a> - This is an object primary using with our dom elements.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">style5</a> - This is an object using in adjusting the css.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">timeline5</a> - This is an object using to creating the animation.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">media5</a> - This is an object used with camera, microphone or other device.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">request5</a> - This is an object using to load or post the another data.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">bom5</a> - This is an object helping for navigator object of browser.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">solution5</a> - This is an ulitily object.';
 
 // Create the footer of page.
 var footPage = element5.Create( 'footer' ); 
-footPage.SetStyle( 'position', 'fixed' );
+//footPage.SetStyle( 'position', 'fixed' );
 footPage.SetStyle( 'bottom', '10px' );
 footPage.SetStyle( 'text-align', 'center' ); 
 footPage.SetStyle( 'width', '100%' ); 
 footPage.SetStyle( 'font-size', '11px' ); 
+footPage.SetStyle( 'margin', '51px 0' ); 
 footPage.innerText = 'Copyright ' + "(c)" + ' 2017. All Rights Reserved.';
 
 </script>
