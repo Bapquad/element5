@@ -5,38 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="http://bapquadgames.com/element5/element5.js" type="text/javascript"></script> 
 <style type='text/css'>
-@media screen and ( max-width: 500px ) 
-{
-	
-    .gridmenu {
-        width:100%;
-    }
-
-    .gridmain {
-        width:100%;
-    }
-
-    .gridright {
-        width:100%;
-    }
-} 
-
-@media only all and (min-width: 200px) 
-{
-	
-    .gridmenu {
-        width:100%;
-    }
-
-    .gridmain {
-        width:100%;
-    }
-
-    .gridright {
-        width:100%;
-    }
-} 
-
 
 </style>
 </head>
@@ -47,9 +15,13 @@
 document.title = 'element5 API Referrence';
 
 element5.Extension( {
-	// Some extends method
+	CallMe: function() 
+	{
+		console.log( 'Hello! I\'m an extension.' );
+	},
 }); 
 
+// Create the model of mobile.
 var mobile = 
 {
 	deviceOption: '', 
@@ -57,44 +29,65 @@ var mobile =
 	features: [ 'max-width:320px' ], 
 	producted: false,
 };
+
 // Reset the padding, margin.
 style5
 	.AddLine( '*' )
-	.AddProperty( 'padding', '0' )
-	.AddProperty( 'margin', '0' ); 
+	.SetStyle( 'padding', '0' )
+	.SetStyle( 'margin', '0' ); 
 	
 // Access body element.
 element5.body = element5.GetBody(); 
-element5.body.AddProperty( 'background', 'rgb(53, 50, 64)' );
-element5.body.AddProperty( 'margin', '0' ); 
-element5.body.AddProperty( 'color', 'white' ); 
-element5.body.AddProperty( 'font-family', 'Arial' );
+element5.body.SetStyle( 'background', '#070117' );
+element5.body.SetStyle( 'margin', '0' ); 
+element5.body.SetStyle( 'color', 'white' ); 
+element5.body.SetStyle( 'font-family', 'Arial' );
 
 // Create the head logo.
-var headLogo = element5.Create( 'h1' ); 
-
-headLogo.onMedia( mobile ).AddProperty( 'color', '#f00' ); 
-headLogo.AddProperty( 'font-size', '18px' ); 
-headLogo.AddProperty( 'text-align', 'center' ); 
-headLogo.AddProperty( 'padding', '10px 0' );
-headLogo.innerText = document.title; 
-
-//console.log( mobile.producted );
-//console.log( mobile.features );
+var appNameTxt = element5.Create( 'h1' ); 
+appNameTxt.onMedia( mobile ).SetStyle( 'padding-left', '8px' ); 
+appNameTxt.SetStyle( 'font-size', '18px' ).SetStyle( 'background', '#222' ).SetStyle( 'color', 'white' ); 
+appNameTxt.SetStyle( 'padding', '5px 0 5px 10px' );
+appNameTxt.innerText = document.title; 
+appNameTxt.menuBtn = appNameTxt.Equip( element5( '#menu-button' ) );
+appNameTxt.menuBtn.SetStyles({
+	'margin-right': '5px', 
+	'margin-top': '2px', 
+	'float': 'right', 
+	'width': '18px', 
+	'height': '18px', 
+	'background-image': 'url( https://moodi.org/social-cause/images/mobilemenu.png )', 
+	'background-size': '24px 18px', 
+	'background-repeat': 'no-repeat', 
+	'background-position': '-3px 0', 
+}); 
+appNameTxt.menuBtn.AddEvent( 'click', function() { }); 
 
 // Create the main of page.
 var mainPage = element5( '#main-page' ); 
-mainPage.AddProperty( 'border-top', '1px solid #aaa' );
-mainPage.AddProperty( 'padding', '10px' );
-mainPage.innerText = 'Content Go to Here!'; 
+mainPage.SetStyle( 'border-top', '1px solid #000' );
+
+mainPage.Logo = mainPage.Equip( element5.Create( 'img' ) ); 
+mainPage.Logo.src = 'http://bapquadgames.com/element5/logo/element5-light-logo.png'; 
+mainPage.Logo.onMedia( mobile ).SetStyle( 'width', '80%' );
+mainPage.Logo.SetStyle( 'margin', '0 auto' ).SetStyle( 'display', 'block' );
+
+mainPage.introSection = mainPage.Equip( element5( '#intro-section' ) );
+mainPage.introSection.SetStyle( 'border-top', '1px solid #333' ).SetStyle( 'padding', '10px' );
+mainPage.introSection.head3_01 = mainPage.introSection.Equip( element5.Create( 'h3' ) );
+mainPage.introSection.introTxt = element5( '#intro-txt' );
+mainPage.introSection.introTxt.EquipedBy( mainPage.introSection );
+mainPage.introSection.introTxt.innerText = "element5 is a javascript library, which allows developer scripting for an application on web flatform.";
+
+
 
 // Create the footer of page.
 var footPage = element5.Create( 'footer' ); 
-footPage.AddProperty( 'position', 'fixed' );
-footPage.AddProperty( 'bottom', '10px' );
-footPage.AddProperty( 'text-align', 'center' ); 
-footPage.AddProperty( 'width', '100%' ); 
-footPage.AddProperty( 'font-size', '11px' ); 
+footPage.SetStyle( 'position', 'fixed' );
+footPage.SetStyle( 'bottom', '10px' );
+footPage.SetStyle( 'text-align', 'center' ); 
+footPage.SetStyle( 'width', '100%' ); 
+footPage.SetStyle( 'font-size', '11px' ); 
 footPage.innerText = 'Copyright ' + "(c)" + ' 2017. All Rights Reserved.';
 
 </script>

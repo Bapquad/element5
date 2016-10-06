@@ -89,12 +89,13 @@ function Factory()
 				var cert = function( el ) 
 				{
 					// Registry the element5 extension el with modifier, loader, ...
-					element5.Extend( el, DOMMod ); 
-					element5.Extend( el, StyleMod ); 
-					element5.Extend( el, AniMod ); 
+					element5.Extend( el, DOMModifier ); 
+					element5.Extend( el, StyleModifier ); 
+					element5.Extend( el, AniModifier ); 
 					element5.Extend( el, DOMLoader ); 
-					element5.Extend( el, MediaMod ); 
-					element5.Extend( el, ClimbMod ); 
+					element5.Extend( el, MediaModifier ); 
+					element5.Extend( el, ClimbModifier ); 
+					element5.Extend( el, JSONModifier );
 					
 					// Execute the giving extension.
 					elementExtCollection.forEach( function( item, index ) 
@@ -278,7 +279,7 @@ function Factory()
 					}
 				}; 
 				
-				var ClimbMod = 
+				var ClimbModifier = 
 				{
 					Find: function( selector ) 
 					{
@@ -319,7 +320,7 @@ function Factory()
 						} 
 						else 
 						{
-							return ClimbMod.Parent( selector, true, el );
+							return ClimbModifier.Parent( selector, true, el );
 						}
 					},
 					Parent: function( selector, s, target ) 
@@ -344,7 +345,7 @@ function Factory()
 								} 
 								else 
 								{
-									var parentEl = ClimbMod.ParentUntil( selector, s, el );
+									var parentEl = ClimbModifier.ParentUntil( selector, s, el );
 								}
 							}
 						}
@@ -385,7 +386,7 @@ function Factory()
 							}
 							else 
 							{
-								correct = ClimbMod.typing( selector, el );
+								correct = ClimbModifier.typing( selector, el );
 							}
 							
 							if( correct ) 
@@ -418,7 +419,7 @@ function Factory()
 						return el;
 					}
 				};
-				ClimbMod.typing = function( selector, target ) 
+				ClimbModifier.typing = function( selector, target ) 
 				{
 					var el = target || this;
 					
@@ -432,7 +433,7 @@ function Factory()
 						} 
 						else 
 						{
-							return DOMMod.HasId( selector[ 2 ], el );
+							return DOMModifier.HasId( selector[ 2 ], el );
 						}
 					} 
 					else if( selectType === '.') 
@@ -443,7 +444,7 @@ function Factory()
 						} 
 						else 
 						{
-							return DOMMod.HasClass( selector[ 2 ], el );
+							return DOMModifier.HasClass( selector[ 2 ], el );
 						}
 					} 
 					else if( selectType === '[' ) 
@@ -471,7 +472,7 @@ function Factory()
 					}
 				};
 				
-				var StyleMod = 
+				var StyleModifier = 
 				{
 					Style: function( styles ) 
 					{
@@ -482,12 +483,23 @@ function Factory()
 						return this;
 					}, 
 					
-					AddProperty: function( name, value ) 
+					AddStyle: function( name, value ) 
 					{
 						if( this.CssSelf ) 
-							this.CssSelf.AddProperty( name, value ); 
+							this.CssSelf.SetStyle( name, value ); 
 						else if( this.Css )
-							this.Css.AddProperty( name, value ); 
+							this.Css.SetStyle( name, value ); 
+						else 
+							this.style[ name ] = value;
+						return this;
+					}, 
+					
+					SetStyle: function( name, value ) 
+					{
+						if( this.CssSelf ) 
+							this.CssSelf.SetStyle( name, value ); 
+						else if( this.Css )
+							this.Css.SetStyle( name, value ); 
 						else 
 							this.style[ name ] = value;
 						return this;
@@ -504,13 +516,13 @@ function Factory()
 					
 					SetWidth: function( v ) 
 					{
-						this.AddProperty( 'width', v + 'px' );
+						this.SetStyle( 'width', v + 'px' );
 						return this;
 					}, 
 					
 					SetHeight: function( v ) 
 					{
-						this.AddProperty( 'height', v + 'px' ); 
+						this.SetStyle( 'height', v + 'px' ); 
 						return this;
 					}, 
 					
@@ -553,9 +565,9 @@ function Factory()
 					}
 				};
 				// Alias Section for Element Style Modifier.
-				StyleMod.SetProperty = StyleMod.SetStyles; 
+				StyleModifier.SetCss = StyleModifier.SetStyles; 
 				
-				var MediaMod = 
+				var MediaModifier = 
 				{
 					onMedia : function( media ) 
 					{
@@ -567,7 +579,8 @@ function Factory()
 						 *	producted: false,
 						 *}
 						 */
-						// Check exporting device
+						// Check exporting device 
+						
 						if( media.producted == false ) 
 						{
 							var feature = 0;
@@ -675,7 +688,6 @@ function Factory()
 						} 
 						
 						var selector = 0;
-							
 						if( this.CssSelf != undefined ) 
 						{
 							selector = this.CssSelf.selectorText;
@@ -689,7 +701,7 @@ function Factory()
 					},
 				};
 				
-				var DOMMod = 
+				var DOMModifier = 
 				{
 					AddClass: function( clsn ) 
 					{
@@ -780,7 +792,8 @@ function Factory()
 						if( el.el5 && nodeType === 1 ) 
 						{
 							this.appendChild( el );
-						}
+						} 
+						return el;
 					}, 
 					
 					EquipedBy: function( el ) 
@@ -790,34 +803,447 @@ function Factory()
 						if( ( el.el5 || el.tagName === 'BODY') && nodeType === 1 ) 
 						{
 							el.appendChild( this );
-						}
+						} 
+						return this;
 					}, 
 					
 					EquipEvent: function( addHandle, removeHandle ) 
 					{
-						solution5.SetMutationEvent( this, addHandle, removeHandle );
+						solution5.SetMutationEvent( this, addHandle, removeHandle ); 
+						return this;
 					},
 				}; 
 				// Alias Section for Element DOM Modifier.
-				DOMMod.PushClass = DOMMod.AddClass; 
+				DOMModifier.PushClass = DOMModifier.AddClass; 
 				
 				var DOMLoader = 
 				{
 					includeHTML: function() 
 					{
-						element5.includeHtml( this );
+						element5.includeHtml( this ); 
+						return this;
 					},
 				};
 				
-				var AniMod = {
+				var AniModifier = {
 					EffectedBy: function( timeline, duration, delay, timing ) 
 					{
-						timeline.Effect( this, duration, delay, timing );
+						timeline.Effect( this, duration, delay, timing ); 
+						return this;
 					}, 
 				};
-				AniMod.Animation = AniMod.EffectedBy;
-				AniMod.Run = AniMod.EffectedBy;
-				AniMod.Play = AniMod.EffectedBy;
+				AniModifier.Animation = AniModifier.EffectedBy;
+				AniModifier.Run = AniModifier.EffectedBy;
+				AniModifier.Play = AniModifier.EffectedBy; 
+				
+				var JSONModifier = 
+				{
+					JSonString: function( value ) 
+					{
+						return JSON.stringify( value );
+					}, 
+					
+					ParseJSON: function( json ) 
+					{
+						return JSON.parse( json );
+					}, 
+					
+					AddData: function( name, value ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							if( value == undefined ) throw "The value is undefined."; 
+							
+							var el = this;
+							
+							if( el.BackData == undefined ) 
+							{
+								el.BackData = new Array();
+							} 
+
+							el.BackData.push( '{"' + name + '":' + el.JSonString( value ) + '}' ); 
+							
+							return el;
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err ); 
+							else 
+								console.log( err ); 
+							return this;
+						}
+						
+					}, 
+					
+					SetData: function( name, value ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							if( value == undefined ) throw "The value is undefined."; 
+							
+							var el = this;
+							
+							if( el.BackData == undefined ) 
+							{
+								return el.AddData( name, value );
+							}
+							
+							var searchResult = el.BackData.find( function( item, index, currValue ) 
+							{
+								if( item != undefined ) 
+								{
+									if( item.indexOf( name ) === 2 ) 
+									{
+										el.BackData[ index ] = ( '{"' + name + '":' + el.JSonString( value ) + '}' ); 
+										return true;
+									}
+								}
+							}); 
+						
+							if( searchResult == undefined ) 
+							{
+								return el.AddData( name, value );
+							} 
+							
+							return el;
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					GetData: function( name ) 
+					{
+						var el = this;
+						if( name == undefined && el.BackData != undefined ) 
+						{
+							return el.BackData; 
+						} 
+						else 
+						{
+							var pos;
+							var searchResult = el.BackData.find( function( item, index, currValue ) 
+							{
+								if( item != undefined ) 
+								{
+									if( item.indexOf( name ) === 2 ) 
+									{
+										pos = index;
+										return true;
+									}
+								}
+							}); 
+							
+							if( pos >= 0 ) 
+							{
+								return el.ParseJSON( el.BackData[ pos ] )[ name ]; 
+							}
+							else 
+							{
+								return -1;
+							}
+						}
+					}, 
+					
+					DeleteData: function( name ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "Delete the data need the name specify.";
+							var el = this;
+							var result;
+							
+							var searchResult = el.BackData.find( function( item, index, currValue ) 
+							{
+								if( item != undefined ) 
+								{
+									if( item.indexOf( name ) === 2 ) 
+									{
+										result = delete el.BackData[ index ];
+										return true;
+									} 
+								}
+							}); 
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					SetBackData: function( name, value ) 
+					{
+						try 
+						{
+							if( typeof name != 'string' ) throw "The name must be string value.";
+							if( typeof value != 'string' ) throw "The value must be string value."; 
+							
+							if( /^[a-zA-Z0-9\-]{0,32}$/.exec( name ) && value.length <= 256 ) 
+							{
+								var el = this;
+								el.setAttribute( 'data-' + name, value );
+							}
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					GetBackData: function( name ) 
+					{
+						var el = this;
+						var len = el.attributes.length; 
+						var result;
+						if( name == undefined ) 
+						{
+							result = new Array(); 
+						}
+						
+						for( var i = 0; i < len; i++ ) 
+						{
+							if( el.attributes[ i ].name.indexOf( 'data-' ) >= 0 ) 
+							{
+								if( name == undefined )
+									result.push( { name: el.attributes[ i ].name, value: el.attributes[ i ].value } ); 
+								else
+									if( ( 'data-' + name ) === ( el.attributes[ i ].name ) ) 
+										return el.attributes[ i ].value;
+							}
+						} 
+						
+						return result;
+					},
+					
+					SetProperty: function( name, value ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							if( value == undefined ) throw "The value is undefined."; 
+
+							var el = this;
+							if( !el.hasOwnProperty( name ) ) 
+							{
+								return el.ModifyProperty( name, value );
+							} 
+							return el;
+						} 
+						catch ( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					AddProperty: function( name, value ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							if( value == undefined ) throw "The value is undefined."; 
+							
+							var el = this;
+							if( el [ name ] != undefined ) 
+							{
+								if( this.ModifyProperty[ name ] != 'RestoreValue' ) 
+								{
+									this.ModifyProperty[ name ] = el [ name ]; 
+								}
+							}
+							return this.ModifyProperty( name, value );
+						} 
+						catch( err ) 
+						{
+							if( console.error )
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					HasProperty: function( name ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							
+							return this.hasOwnProperty( name );
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					ModifyProperty: function( name, value ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							if( value == undefined ) throw "The value is undefined."; 
+							
+							var el = this;
+							el [ name ] = value; 
+							return el;
+						}
+						catch( err )
+						{
+							if( console.error ) 
+								console.error( err ); 
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					GetRestorePropertyValue: function( name ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							
+							var el = this;
+							el.RestorePropertyValue( name );
+							return el.ModifyProperty.RestoreValue;
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err ); 
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					RestorePropertyValue: function( name ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							
+							var el = this;
+							var restoreValue = el.ModifyProperty[ name ]; 
+							
+							if( restoreValue != undefined ) 
+							{
+								el.ModifyProperty.RestoreValue = restoreValue; 
+							}
+							
+							return this;
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return this;
+						}
+					}, 
+					
+					RemoveProperty: function( name ) 
+					{
+						try 
+						{
+							if( name == undefined ) throw "The name is undefined."; 
+							var el = this;
+							if( el[ name ] != undefined ) 
+							{
+								delete el[ name ]; 
+							} 
+							if( el.RestorePropertyValue[ name ] != undefined ) 
+							{
+								delete el [el.RestorePropertyValue[ name ] != undefined];
+							}
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err ); 
+							else 
+								console.log( err );
+								return this;
+						}
+					}, 
+					
+					AddMethod: function() 
+					{
+						var el = this;
+						var len = arguments.length;
+						if( len ) 
+						{
+							len = len - 1;
+							var name = arguments[ 0 ]; 
+							var body = arguments[ len ]; 
+							
+							var params = [];
+							
+							for( var i = 1; i < len; i++ ) 
+							{
+								params.push( arguments[ i ] );
+							} 
+							
+							el[ name ] = eval( 'new Function( ' + params.join() + ', "' + body + '" )' );
+						} 
+						return el;
+					}, 
+					
+					AddFunction: function() 
+					{
+						var el = this;
+						var len = arguments.length;
+						if( len ) 
+						{
+							len = len - 1; 
+							var name = arguments[ 0 ]; 
+							var body = arguments[ len ]; 
+						
+							var params = [];
+								
+							for( var i = 1; i < len; i++ ) 
+							{
+								params.push( '"' + arguments[ i ] + '"' );
+							} 
+							
+							el[ name ] = eval( 'new Function( ' + params.join() + ', "' + body + '" )' );
+						} 
+						return el;
+					}, 
+					
+					AddEvent: function( eventType, eventHandle, trace ) 
+					{
+						trace = trace || false;
+						var el = this;
+						el.addEventListener( eventType, eventHandle, trace );
+					},
+				}; 
+				JSONModifier.DeleteProperty = JSONModifier.RemoveProperty;
 				
 				element5.fps = 60;
 				element5.GetWindow = function() 
@@ -1036,14 +1462,14 @@ function Factory()
 						duration = ( ( duration / 1000 ) || 1 ) + 's'; 
 						timing = timing || 'linear';
 						
-						el.AddProperty( 'animation-delay', delay ); 
-						el.AddProperty( 'animation-duration', duration ); 
-						el.AddProperty( 'animation-timing-function', timing ); 
+						el.SetStyle( 'animation-delay', delay ); 
+						el.SetStyle( 'animation-duration', duration ); 
+						el.SetStyle( 'animation-timing-function', timing ); 
 						
-						el.AddProperty( 'animation-name', '' );
+						el.SetStyle( 'animation-name', '' );
 						var timer = setTimeout( function() 
 						{
-							el.AddProperty( 'animation-name', timeline.name ); 
+							el.SetStyle( 'animation-name', timeline.name ); 
 							clearTimeout( timer );
 						}, 30); 
 					};
@@ -1121,25 +1547,29 @@ function Factory()
 				{
 					Find: function( selector ) 
 					{
-						if( this.cssRules.length ) 
+						var media = this;
+						var len = media.cssRules.length;
+						if( len ) 
 						{
-							this.cssRules.forEach( function( item, index ) 
+							for( var i = 0; i < len; i++ ) 
 							{
+								var item = media.cssRules[ i ]; 
 								if( item.selectorText == selector ) 
 								{
 									return item;
 								}
-							});
+							}
 						} 
-						return this.AddLine( selector ); 
+						return media.AddLine( selector ); 
 					},
 					AddLine: function( selector ) 
 					{
-						var index = this.cssRules.length; 
-						this.attach = this.insertRule || this.addRule;
-						this.detach = this.deleteRule || this.removeRule; 
-						this.attach( selector + ' {}', index ); 
-						return element5.Extend( this.cssRules[ index ], Style.ruleModifier );
+						var media = this;
+						var index = media.cssRules.length; 
+						media.attach = media.insertRule || media.addRule;
+						media.detach = media.deleteRule || media.removeRule; 
+						media.attach( selector + ' {}', index ); 
+						return element5.Extend( media.cssRules[ index ], Style.ruleModifier );
 					}, 
 					GetDescription: function() 
 					{
@@ -1149,7 +1579,13 @@ function Factory()
 				
 				Style.ruleModifier = 
 				{
-					AddProperty: function( name, value ) 
+					SetStyle: function( name, value ) 
+					{
+						this.style[name] = value;
+						return this;
+					}, 
+					
+					AddStyle: function( name, value ) 
 					{
 						this.style[name] = value;
 						return this;
@@ -1159,7 +1595,7 @@ function Factory()
 					{
 						for( x in styles) 
 						{
-							this.AddProperty( x, styles[x] );
+							this.SetStyle( x, styles[x] );
 						} 
 						return this;
 					}, 
