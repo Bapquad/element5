@@ -72,8 +72,9 @@ function Factory()
 				module.exports.timeline5 = __webpack_require__( 3 ); 
 				module.exports.media5 = __webpack_require__( 4 );
 				module.exports.request5 = __webpack_require__( 5 ); 
-				module.exports.bom5 = __webpack_require__( 6 );
-				module.exports.solution5 = __webpack_require__( 7 ); 
+				module.exports.bom5 = __webpack_require__( 6 ); 
+				module.exports.store5 = __webpack_require__( 7 );
+				module.exports.solution5 = __webpack_require__( 8 ); 
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -171,7 +172,6 @@ function Factory()
 							var collect = document.querySelectorAll( target ); 
 							
 							len = collect.length;
-							
 							
 							var name = target.slice( 1 );
 							var queryType = target.slice( 0, 1 ); 
@@ -1875,6 +1875,172 @@ function Factory()
 				module.exports = Bom;
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 7 ) 
+			{
+				var PromiseImplement = 
+				{
+					id: '', 
+					err: '', 
+					
+					Catch: function( callback ) 
+					{
+						if( callback ) 
+						{
+							callback( err );
+						}
+					}, 
+					
+					Then: function( callback ) 
+					{
+						if( callback ) 
+						{
+							callback( this.id ); 
+						}
+					},
+				}; 
+				
+				var IdentityImplement = 
+				{
+					entityName: '', 
+					subEntList: '', 
+					
+					SetName: function() 
+					{
+						
+					}, 
+					
+					GetName: function() 
+					{
+						
+					}, 
+					
+					Rename: function() 
+					{
+						
+					}, 
+				};
+				
+				var DatabaseImplement = 
+				{
+					
+				};
+
+				var TableImplement = 
+				{
+					insert: function(  ) 
+					{
+						
+					}, 
+					update: function(  ) 
+					{
+						
+					}, 
+					select: function(  ) 
+					{
+						
+					}, 
+					delete: function( ) 
+					{
+						
+					}, 
+					alter: function(  ) 
+					{
+						
+					}, 
+					count: function(  ) 
+					{
+						
+					}, 
+				};
+				
+				var storageTypes = 
+				[
+					['expireds', 'ExpDS', 'ExpireDataSim'], 		// Cookie DataStorage Simulator.
+					['cacheds', 'CacDS', 'CacheDataSim'], 			// CachesStoge DataStorage Simulator.
+					['localds', 'LocDS', 'LocalDataSim'], 			// LocalStorage DataStorage Simulator.
+					['sessionds', 'SesDS', 'SessionDataSim'], 		// SessionStorage DataStorage Simulator.
+					['appds', 'AppDS', 'ApplicationDataSim'],		// ApplicationStorage DataStorage Simulator.
+					['clientdb', 'ClientDB', 'ClientDatabase'] 		// Web Database Technology.
+				]; 
+				
+				var fieldType = [ ':number', ':string', ':boolean', ':object', ':prototype' ];
+				fieldType.buffNumber = function( fieldName ) 
+				{
+					console.log( 'field name: ' + fieldName ); 
+					console.log( this );
+				}
+				
+				var Store = {
+					open: function( storageType ) 
+					{
+						try 
+						{
+							if( arguments.length <= 0 ) throw "storageType is undefined."; 
+							
+							var len = storageTypes.length; 
+							
+							for( var i = 0; i < len; i++ ) 
+							{
+								for( var j = 0; j < 3; j++ ) 
+								{
+									if( storageTypes[ i ][ j ].indexOf( storageType ) >= 0) 
+									{
+										len = i;
+										break;
+									}
+								}
+							}								
+							
+							if( len == storageTypes.length ) 
+							{
+								return false;
+							} 
+							
+							// Open new a database.
+							Store[ 'ClientDB' ] = new Array(); 
+							
+							var database = new Array(); 
+							
+							database.cdb5_name = 'test'; 
+							database.cdb5_chemmaset = 
+							[ 
+								'schools', 
+								'students' 
+							]; 
+							
+							var schoolTable = new Array(); 
+							schoolTable.cdb5_name = 'school';
+							schoolTable.cdb5_chemmaset = 
+							[ 
+								'id:number:16', 
+								'name:string:11', 
+								'address:string:127',
+							]; 
+							
+							schoolTable . insert = function ( ) 
+							{
+								console.log( this );
+							};
+							
+							database[ 'cdb5_table_schools' ] = schoolTable;
+							
+							Store[ 'ClientDB' ].push( database ); 
+							
+							return Store[ 'ClientDB' ];
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err ); 
+							else 
+								console.log( err ); 
+							return; 
+						} 
+					}
+				}; 
+				
+				module.exports = Store;
+			}, 
+			function( module, __webpack_require__ ) 		// pack require ( 8 ) 
 			{
 				var Solution = {};
 				

@@ -7,12 +7,16 @@
 <style type='text/css'>
 a, a:visited, a:active 
 {
-	color: white!important;
+	color: #6a4586 !important; 
+	text-decoration: none;
 }
 </style>
 </head>
 <body> 
 <script type="text/javascript">
+
+// Open connect database 
+var promise = store5.open( 'clientdb' ); 
 
 // Set title document.
 document.title = 'element5 API Referrence';
@@ -47,22 +51,27 @@ element5.body.SetStyle( 'color', 'white' );
 element5.body.SetStyle( 'font-family', 'Arial' );
 element5.body.SetStyle( 'font-size', '90%' );
 
-// Create the head logo.
+// Create the top of page.
 var appNameTxt = element5.Create( 'h1' ); 
-appNameTxt.onMedia( mobile ).SetStyle( 'padding-left', '8px' ); 
-appNameTxt.SetStyle( 'font-size', '18px' ).SetStyle( 'background', '#222' ).SetStyle( 'color', 'white' ); 
-appNameTxt.SetStyle( 'padding', '5px 0 5px 10px' );
-appNameTxt.SetStyle( 'position', 'fixed' );
-appNameTxt.SetStyle( 'width', '100%' ); 
-appNameTxt.innerText = document.title; 
+appNameTxt.SetStyle( 'font-size', '18px' )
+	.SetStyle( 'background', '#28262d' )
+	.SetStyle( 'color', 'white' )
+	.SetStyle( 'padding', '5px 0 5px 0' )
+	.SetStyle( 'position', 'fixed' )
+	.SetStyle( 'width', '100%' ); 
+	
+appNameTxt.text = appNameTxt.Equip( element5.Create( 'span' ) ); 
+appNameTxt.text.SetStyle( 'padding-left', '8px' ); 
+appNameTxt.text.innerText = document.title; 
+
 appNameTxt.menuBtn = appNameTxt.Equip( element5( '#menu-button' ) );
 appNameTxt.menuBtn.SetStyles({
-	'margin-right': '5px', 
+	'margin-right': '8px', 
 	'margin-top': '2px', 
 	'float': 'right', 
 	'width': '18px', 
 	'height': '18px', 
-	//'background-image': 'url( https://moodi.org/social-cause/images/mobilemenu.png )', 
+	'background-image': 'url( http://bapquadgames.com/element5/img/mobilemenu.png )', 
 	'background-size': '24px 18px', 
 	'background-repeat': 'no-repeat', 
 	'background-position': '-3px 0', 
@@ -77,7 +86,9 @@ mainPage.SetStyle( 'padding-top', '31px' );
 mainPage.Logo = mainPage.Equip( element5.Create( 'img' ) ); 
 mainPage.Logo.src = 'http://bapquadgames.com/element5/logo/element5-light-logo.png'; 
 mainPage.Logo.onMedia( mobile ).SetStyle( 'width', '80%' );
-mainPage.Logo.SetStyle( 'margin', '0 auto' ).SetStyle( 'display', 'block' );
+mainPage.Logo.SetStyle( 'margin', '0 auto' )
+	.SetStyle( 'display', 'block' )
+	.SetStyle( 'padding', '20px 0' ); 
 
 mainPage.introSection = mainPage.Equip( element5( '#intro-section' ) );
 mainPage.introSection.SetStyle( 'border-top', '1px solid #333' ).SetStyle( 'padding', '10px' );
@@ -98,17 +109,18 @@ list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">timeline5</a> - T
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">media5</a> - This is an object used with camera, microphone or other device.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">request5</a> - This is an object using to load or post the another data.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">bom5</a> - This is an object helping for navigator object of browser.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">store5</a> - This is an object helping for data storage.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">solution5</a> - This is an ulitily object.';
 
 // Create the footer of page.
-var footPage = element5.Create( 'footer' ); 
+var footPage = element5.Create( 'footer' );
 //footPage.SetStyle( 'position', 'fixed' );
-footPage.SetStyle( 'bottom', '10px' );
+footPage.SetStyle( 'bottom', '10px' ); 
 footPage.SetStyle( 'text-align', 'center' ); 
 footPage.SetStyle( 'width', '100%' ); 
 footPage.SetStyle( 'font-size', '11px' ); 
-footPage.SetStyle( 'margin', '51px 0' ); 
-footPage.innerText = 'Copyright ' + "(c)" + ' 2017. All Rights Reserved.';
+footPage.SetStyle( 'margin', '50px 0 20px' ); 
+footPage.innerText = 'Copyright ' + "(c)" + ' 2017. All Rights Reserved.'; 
 
 </script>
 </body> 
