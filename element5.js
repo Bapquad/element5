@@ -2040,7 +2040,7 @@ function Factory()
 				
 				module.exports = Store;
 			}, 
-			function( module, __webpack_require__ ) 		// pack require ( 8 ) 
+			function( module, __webpack_require__ ) 		// pack require ( 9 ) 
 			{
 				var Solution = {};
 				
