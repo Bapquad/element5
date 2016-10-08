@@ -1709,6 +1709,7 @@ function Factory()
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 4 )
 			{
+				// TODO
 				var Media = 
 				{
 					CreateVideo: function() 
@@ -1876,6 +1877,7 @@ function Factory()
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 7 ) 
 			{
+				// TODO: 
 				var PromiseImplement = 
 				{
 					id: '', 
@@ -1954,12 +1956,13 @@ function Factory()
 				
 				var storageTypes = 
 				[
-					['expireds', 'ExpDS', 'ExpireDataSim'], 		// Cookie DataStorage Simulator.
-					['cacheds', 'CacDS', 'CacheDataSim'], 			// CachesStoge DataStorage Simulator.
-					['localds', 'LocDS', 'LocalDataSim'], 			// LocalStorage DataStorage Simulator.
-					['sessionds', 'SesDS', 'SessionDataSim'], 		// SessionStorage DataStorage Simulator.
-					['appds', 'AppDS', 'ApplicationDataSim'],		// ApplicationStorage DataStorage Simulator.
-					['clientdb', 'ClientDB', 'ClientDatabase'] 		// Web Database Technology.
+					[	'expireds', 	'ExpDS', 		'ExpireDataSim'		], 		// Cookie DataStorage Simulator.
+					[	'cacheds', 		'CacDS', 		'CacheDataSim'		], 		// CachesStoge DataStorage Simulator.
+					[	'localds', 		'LocDS', 		'LocalDataSim'		], 		// LocalStorage DataStorage Simulator.
+					[	'sessionds', 	'SesDS', 		'SessionDataSim'	], 		// SessionStorage DataStorage Simulator.
+					[	'appds', 		'AppDS', 		'ApplicationDataSim'],		// ApplicationStorage DataStorage Simulator.
+					[	'indexeddb', 	'IndexedDB',	'ClientDatabase'	], 		// IndexedDB Database Technology.
+					[	'clientdb', 	'ClientDB', 	'ClientDatabase'	] 		// Web Database Technology.
 				]; 
 				
 				var fieldType = [ ':number', ':string', ':boolean', ':object', ':prototype' ];
@@ -2042,61 +2045,68 @@ function Factory()
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 9 ) 
 			{
-				var Solution = {};
-				
-				Solution.SetMutationEvent = (function()
+				var Solution = 
 				{
-					var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
-						eventListenerSupported = window.addEventListener;
-					
-					return function(obj, addDomHandle, removeDomHandle)
+					SetMutationEvent: (function()
 					{
-						if(MutationObserver)
+						var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+							eventListenerSupported = window.addEventListener;
+						
+						return function(obj, addDomHandle, removeDomHandle)
 						{
-							// define a new observer
-							var obs = new MutationObserver( function( mutations, observer ) 
+							if(MutationObserver)
 							{
-								mutations.forEach( function( item, index ) 
+								// define a new observer
+								var obs = new MutationObserver( function( mutations, observer ) 
 								{
-									if( item.addedNodes.length 
-									&&  item.addedNodes[0] . nodeType == 1 
-									&& 	addDomHandle != undefined ) 
+									mutations.forEach( function( item, index ) 
 									{
-										var customEvent = 
+										if( item.addedNodes.length 
+										&&  item.addedNodes[0] . nodeType == 1 
+										&& 	addDomHandle != undefined ) 
 										{
-											target : item.addedNodes[0], 
-											srcElement : item.addedNodes[0], 
-											observe : observer, 
-										};
-										addDomHandle( customEvent );
-									} 
-									else if ( item.removedNodes.length 
-									&&	item.removedNodes[0] . nodeType == 1 
-									&& 	removeDomHandle != undefined ) 
-									{
-										var customEvent = 
+											var customEvent = 
+											{
+												target : item.addedNodes[0], 
+												srcElement : item.addedNodes[0], 
+												observe : observer, 
+											};
+											addDomHandle( customEvent );
+										} 
+										else if ( item.removedNodes.length 
+										&&	item.removedNodes[0] . nodeType == 1 
+										&& 	removeDomHandle != undefined ) 
 										{
-											target : item.removedNodes[0], 
-											srcElement : item.removedNodes[0], 
-											observe : observer, 
-										}; 
-										
-										// Meet observer.disconnect();
-										
-										removeDomHandle( customEvent );
-									}
-								}); 
-							});
-							// have the observer observe foo for changes in children
-							obs.observe( obj, { childList:true, subtree:true });
+											var customEvent = 
+											{
+												target : item.removedNodes[0], 
+												srcElement : item.removedNodes[0], 
+												observe : observer, 
+											}; 
+											
+											// Meet observer.disconnect();
+											
+											removeDomHandle( customEvent );
+										}
+									}); 
+								});
+								// have the observer observe foo for changes in children
+								obs.observe( obj, { childList:true, subtree:true });
+							}
+							else if(eventListenerSupported)
+							{
+								obj.addEventListener('DOMNodeInserted', addDomHandle, false);
+								obj.addEventListener('DOMNodeRemoved', removeDomHandle, false);
+							}
 						}
-						else if(eventListenerSupported)
-						{
-							obj.addEventListener('DOMNodeInserted', addDomHandle, false);
-							obj.addEventListener('DOMNodeRemoved', removeDomHandle, false);
-						}
+					})(), 
+					
+					// TODO:
+					RequestWorker: function () 
+					{
+						return;
 					}
-				})(); 
+				};
 				
 				module.exports = Solution;
 			}

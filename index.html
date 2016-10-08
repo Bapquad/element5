@@ -102,7 +102,7 @@ text.innerText = 'element5 include follow object:';
 text.css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
 
 style5.AddCss( 'li' ).css( { 'margin': '10px 0', 'font-size':'90%'} );
-var list = mainPage.Equip( element5.Create( 'ul' ) ).css( 'padding-left', '10px' );
+var list = mainPage.Equip( element5.Create( 'ul' ) ).css( 'padding-left', '10px' ).css( 'list-style', 'none' );
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">element5</a> - This is an object primary using with our dom elements.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">style5</a> - This is an object using in adjusting the css.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">timeline5</a> - This is an object using to creating the animation.';
