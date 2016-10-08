@@ -823,7 +823,13 @@ function Factory()
 					{
 						var el = target || this;
 						return ( el.id === idstr );
-					},
+					}, 
+					
+					Remove: function() 
+					{
+						var el = this;
+						el.parentElement.removeChild( el );
+					}, 
 					
 					Equip: function( el ) 
 					{
@@ -851,6 +857,53 @@ function Factory()
 					{
 						solution5.SetMutationEvent( this, addHandle, removeHandle ); 
 						return this;
+					}, 
+					
+					EnterFullscreen: ( function() 
+					{
+						Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
+						Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
+						// Element.prototype.onfullscreenerror = Element.prototype.onmozfullscreenerror || Element.prototype.onmsfullscreenerror || Element.prototype.onfullscreenerror;
+						// Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
+						document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
+						// document.onfullscreenerror = document.onwebkitfullscreenerror || document.onmozfullscreenerror || document.onmsfullscreenerror || document.onfullscreenerror;
+						// document.onfullscreenchange = document.onwebkitfullscreenchange || document.onmozfullscreenchange || document.onmsfullscreenchange || document.onfullscreenchange;
+						
+						return function( targetElement ) 
+						{
+							var el = targetElement || this; 
+							if( !el.fullscreenElement ) 
+							{
+								el.requestFullscreen(); 
+								el.fullscreenElement = true;
+							}
+						}; 
+					})(), 
+					
+					EscapeFullscreen: function( targetElement ) 
+					{
+						var el = targetElement || this; 
+						if( el.fullscreenElement ) 
+						{
+							document.exitFullscreen(); 
+							el.fullscreenElement = false;
+						}
+					}, 
+					
+					ToggleFullscreen: function( targetElement ) 
+					{
+						var el = targetElement || this;
+						if( !el.fullscreenElement ) 
+						{
+							el.requestFullscreen(); 
+							el.fullscreenElement = true;
+						} 
+						else 
+						{
+							document.exitFullscreen(); 
+							el.fullscreenElement = false;
+						}
+						return el;
 					},
 				}; 
 				// Alias Section for Element DOM Modifier.
@@ -1265,6 +1318,68 @@ function Factory()
 						el.addEventListener( eventType, eventHandle, trace );
 					}, 
 					
+					FireEvent: function( eventType ) 
+					{
+						// Make sure we use the ownerDocument from the provided el to avoid cross-window problems
+						var doc, el = this;
+						if ( el.ownerDocument ) 
+						{
+							doc = el.ownerDocument;
+						} 
+						else if ( el.nodeType == 9 )
+						{
+							// the el may be the document itself, nodeType 9 = DOCUMENT_NODE
+							doc = el;
+						} 
+						else 
+						{
+							throw new Error("Invalid el passed to fireEvent: " + el.id);
+						}
+
+						if ( el.dispatchEvent ) 
+						{
+							// Gecko-style approach (now the standard) takes more work
+							var eventClass = "";
+
+							// Different events have different event classes.
+							// If this switch statement can't map an eventType to an eventClass,
+							// the event firing is going to fail.
+							switch ( eventType ) 
+							{
+								case "click": // Dispatching of 'click' appears to not work correctly in Safari. Use 'mousedown' or 'mouseup' instead.
+								case "mousedown":
+								case "mouseup":
+									eventClass = "MouseEvents";
+									break;
+
+								case "focus":
+								case "change":
+								case "blur":
+								case "select":
+									eventClass = "HTMLEvents";
+									break;
+
+								default:
+									throw "fireEvent: Couldn't find an event class for event '" + eventType + "'.";
+									break;
+							}
+							var event = doc.createEvent( eventClass );
+
+							var bubbles = eventType == "change" ? false : true;
+							event.initEvent( eventType, bubbles, true ); // All events created as bubbling and cancelable.
+
+							event.synthetic = true; // allow detection of synthetic events
+							el.dispatchEvent( event, true );
+						}
+						else  if ( el.fireEvent ) 
+						{
+							// IE-old school style
+							var event = doc.createEventObject();
+							event.synthetic = true; // allow detection of synthetic events
+							el.fireEvent( "on" + eventType, event );
+						}
+					}, 
+					
 					// TODO OnDrag , OnDrop.
 					Dragable: function() 
 					{
@@ -1287,7 +1402,7 @@ function Factory()
 				element5.GetBody = function() 
 				{ 
 					var BODY = document.body;
-					if( BODY != undefined && BODY.tagName === 'BODY' && BODY.el5 == undefined ) 
+					if( BODY != undefined  && BODY.el5 == undefined ) 
 					{
 						BODY.scrollToY = function( position, duration ) 
 						{
@@ -1315,6 +1430,7 @@ function Factory()
 						}
 						return element5( BODY ); 
 					}
+					return BODY;
 				}; 
 				
 				element5.Math = {};
@@ -2285,6 +2401,53 @@ function Factory()
 					ServerMessage: function( scriptPath, onMessage ) 
 					{
 						return this.ServerSentEvent( scriptPath, onMessage );
+					}, 
+
+					Debug: function( mode ) 
+					{
+						if( mode === 'ON' ) 
+						{
+							/** This is show the size window. */
+							window.addEventListener( 'resize', function( e ) 
+							{
+								var size = element5( '#el5-csl-client-size' ); 
+								size.innerHTML = window.innerWidth + ' x ' + window.innerHeight + ' (px)'; 
+								size.css({ 
+									position: 'fixed', 
+									right: '10px', 
+									top: '50px', 
+									padding: '3px 5px', 
+									background: ' black', 
+									color: 'white' 
+								}); 
+								
+								clearTimeout( window.timeOutClientSizeCounter );
+								window.timeOutClientSizeCounter = setTimeout( function() 
+								{
+									clearTimeout( window.timeOutClientSizeCounter );
+									size.Remove();
+								}, 2000);
+							}, false );
+						}
+						return this;
+					}, 
+					
+					EnterFullscreen: function() 
+					{
+						element5.EnterFullscreen( document ); 
+						return this;
+					},
+					
+					EscapeFullscreen: function() 
+					{
+						element5.EscapeFullscreen( document ); 
+						return this;
+					}, 
+					
+					ToggleFullscreen: function() 
+					{
+						element5.GetBody().ToggleFullscreen(); 
+						return this;
 					}, 
 				}; 
 				
