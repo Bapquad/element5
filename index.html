@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> <!--manifest="test.appcache"-->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,13 +10,11 @@ a, a:visited, a:active
 	color: #6a4586 !important; 
 	text-decoration: none;
 }
-</style>
+</style> 
+<title>element5 API Referrence</title>
 </head>
 <body> 
 <script type="text/javascript">
-
-// Open connect database 
-var promise = store5.open( 'clientdb' ); 
 
 // Set title document.
 document.title = 'element5 API Referrence';
@@ -92,7 +90,6 @@ mainPage.Logo.SetStyle( 'margin', '0 auto' )
 
 mainPage.introSection = mainPage.Equip( element5( '#intro-section' ) );
 mainPage.introSection.SetStyle( 'border-top', '1px solid #333' ).SetStyle( 'padding', '10px' );
-mainPage.introSection.head3_01 = mainPage.introSection.Equip( element5.Create( 'h3' ) );
 mainPage.introSection.introTxt = element5( '#intro-txt' );
 mainPage.introSection.introTxt.EquipedBy( mainPage.introSection );
 mainPage.introSection.introTxt.innerText = "element5 is a javascript library, which allows developer scripting for an application on web flatform with HTML5, CSS3 and Javascript.";
@@ -101,23 +98,24 @@ var text = mainPage.Equip( element5.Create( 'h4' ) );
 text.innerText = 'element5 include follow object:';
 text.css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
 
-style5.AddCss( 'li' ).css( { 'margin': '10px 0', 'font-size':'90%'} );
-var list = mainPage.Equip( element5.Create( 'ul' ) ).css( 'padding-left', '10px' ).css( 'list-style', 'none' );
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">element5</a> - This is an object primary using with our dom elements.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">style5</a> - This is an object using in adjusting the css.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">timeline5</a> - This is an object using to creating the animation.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">media5</a> - This is an object used with camera, microphone or other device.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">request5</a> - This is an object using to load or post the another data.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">bom5</a> - This is an object helping for navigator object of browser.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">store5</a> - This is an object helping for data storage.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="#">solution5</a> - This is an ulitily object.';
+style5.AddCss( 'li' ).css( { 'margin': '10px 0', 'font-size':'90%' } );
+var list = mainPage.Equip( element5.Create( 'ul' ) ).css( 'padding-left', '10px' ).css( 'list-style', 'none' ).css( { 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0' } );
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="element5.html">element5</a> - This is an object primary using with our dom elements.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="style5.html">style5</a> - This is an object using in adjusting the css.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="timeline5.html">timeline5</a> - This is an object using to creating the animation.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="media5.html">media5</a> - This is an object used with camera, microphone or other device.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="request5.html">request5</a> - This is an object using to load or post the another data.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="bom5.html">bom5</a> - This is an object helping for navigator object of browser.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="store5.html">store5</a> - This is an object helping for data storage.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="geo5.html">geo5</a> - This is an object using to locates the device position.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="solution5.html">solution5</a> - This is an ulitily object.';
+
+mainPage.head3_01 = mainPage.Equip( element5.Create( 'h3' ) ).css( { 'padding':'10px' } ); 
+mainPage.head3_01.innerText = 'Tutorial, demo, source code.';
 
 // Create the footer of page.
 var footPage = element5.Create( 'footer' );
-//footPage.SetStyle( 'position', 'fixed' );
-footPage.SetStyle( 'bottom', '10px' ); 
 footPage.SetStyle( 'text-align', 'center' ); 
-footPage.SetStyle( 'width', '100%' ); 
 footPage.SetStyle( 'font-size', '11px' ); 
 footPage.SetStyle( 'margin', '50px 0 20px' ); 
 footPage.innerText = 'Copyright ' + "(c)" + ' 2017. All Rights Reserved.'; 

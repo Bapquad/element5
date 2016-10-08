@@ -1,0 +1,12 @@
+CACHE MANIFEST 
+# 2016-10-09 v1.0.0 
+/element5/test.appcache
+/element5/element5.js
+/element5/img/mobilemenu.png 
+/element5/logo/element5-light-logo.png
+
+NETWORK:
+element5/login.php
+
+FALLBACK:
+/offline.html

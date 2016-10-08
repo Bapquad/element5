@@ -74,7 +74,8 @@ function Factory()
 				module.exports.request5 = __webpack_require__( 5 ); 
 				module.exports.bom5 = __webpack_require__( 6 ); 
 				module.exports.store5 = __webpack_require__( 7 );
-				module.exports.solution5 = __webpack_require__( 8 ); 
+				module.exports.geo5 = __webpack_require__( 8 ); 
+				module.exports.solution5 = __webpack_require__( 9 ); 
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -1262,7 +1263,18 @@ function Factory()
 						trace = trace || false;
 						var el = this;
 						el.addEventListener( eventType, eventHandle, trace );
-					},
+					}, 
+					
+					// TODO OnDrag , OnDrop.
+					Dragable: function() 
+					{
+						
+					}, 
+					
+					Droppable: function() 
+					{
+						
+					}, 
 				}; 
 				JSONModifier.DeleteProperty = JSONModifier.RemoveProperty;
 				
@@ -2043,6 +2055,109 @@ function Factory()
 				
 				module.exports = Store;
 			}, 
+			function( module, __webpack_require__ ) 		// pack require ( 8 ) 
+			{
+				// TODO Check Review Code.
+				var Geo = (function( obj ) 
+				{
+					return new (function GeoClass () 
+					{
+						this.__proto__ = obj.__proto__; 
+						this.position = 0;
+						this.onDetectHandle = 0; 
+						
+						this.Settings = 
+						{
+							enableHighAccuracy: true,
+							timeout: 5000,
+							maximumAge: 0
+						};
+						
+						this.onDetect = function( detectionEventHandle ) 
+						{
+							this.onDetectHandle = detectionEventHandle; 
+							return this;
+						};
+						
+						this.onChange = function( changeEventHandle ) 
+						{
+							this.watchPosition( changeEventHandle ); 
+							return this;
+						}; 
+						
+						this.Reset = function() 
+						{
+							this.position = 0;
+							this.onDetectHandle = 0;
+							this.clearWatch();
+							return this;
+						}; 
+						
+						this.GetLocation = function() 
+						{
+							function success ( pos ) 
+							{
+								this.position = pos; 
+
+								if( this.onDetectHandle ) 
+								{
+									var callback = ( this.onDetectHandle )();
+								} 
+
+								return this;
+							} 
+							
+							function error ( err ) 
+							{
+								console.warn( 'ERROR(' + err.code + '): ' + err.message ); 
+							}
+							
+							var position = obj.getCurrentPosition( success, error ); 
+							
+							return this; 
+						}; 
+						
+						this.ScanWith = function( success, error, options ) 
+						{
+							// Init the new Settings.
+							var settings = {}; 
+							
+							var ssuccess = function( pos ) 
+							{
+								// Loop via the options of settings
+								for( var x in options ) 
+								{
+									this.Settings[ x ] = options[ x ];	// Re-Assign the values of settings.
+								} 
+								
+								if( success ) 
+								{
+									var callback = success;
+									callback( pos );
+								}
+							};
+							
+							this.getCurrentPosition( ssuccess, error, options ); 
+							return this;
+						}; 
+						
+						this.ShowMyPositionOnMap = function() 
+						{
+							var latlon = this.position.coords.latitude + "," + this.position.coords.longitude;
+							return img_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=14&size=400x300&sensor=false";
+						}; 
+						
+						this.onDetectPosition = this.onDetect;
+						this.onChangePosition = this.onChange;
+						this.GetPosition = this.GetLocation;
+						this.GetCurrentPosition = this.GetLocation;
+						this.GetCurrentLocation = this.GetLocation; 
+						this.Scan = this.GetLocation; 
+					})();
+				})( navigator.geolocation ); 
+				
+				module.exports = Geo;
+			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 9 ) 
 			{
 				var Solution = 
@@ -2102,13 +2217,78 @@ function Factory()
 					})(), 
 					
 					// TODO:
-					RequestWorker: function () 
+					RequestWorker: function ( scriptPath, onMessage ) 
 					{
-						return;
-					}
-				};
+						try 
+						{
+							if( typeof Worker !== 'undefined' ) 
+							{
+								throw 'Your browser have not support the Worker.';
+							}
+							
+							var worker = new Worker( scriptPath ); 
+							worker.onmessage = onMessage;
+							return worker;
+						} 
+						catch( err ) 
+						{
+							if( console.warn ) 
+							{
+								console.warn( err ); 
+							} 
+							else if( console.error )
+							{
+								console.error( err );
+							} 
+							else 
+							{
+								console.log( err );
+							}
+						}
+					}, 
+					
+					OutThread: function( scriptPath, onWait ) 
+					{
+						return this.RequestWorker( scriptPath, onWait );
+					}, 
+					
+					ServerSentEvent: function( serverScriptPath, onMessage ) 
+					{
+						try 
+						{
+							if( typeof EventSource == 'undefined' ) 
+							{
+								throw 'Your browser have not support the EventSource.';
+							}
+							
+							var source = new EventSource( serverScriptPath );
+							source.onmessage = onMessage;
+							return source;
+						} 
+						catch( err ) 
+						{
+							if( console.warn ) 
+							{
+								console.warn( err ); 
+							} 
+							else if( console.error )
+							{
+								console.error( err );
+							} 
+							else 
+							{
+								console.log( err );
+							}
+						}
+					}, 
+
+					ServerMessage: function( scriptPath, onMessage ) 
+					{
+						return this.ServerSentEvent( scriptPath, onMessage );
+					}, 
+				}; 
 				
-				module.exports = Solution;
+				module.exports = Solution; 
 			}
 		]
 	);
