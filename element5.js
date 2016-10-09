@@ -209,6 +209,7 @@ function Factory()
 										} 
 										childs[ i ] = cert( el ); 
 									} 
+									childs.each = childs.forEach;
 									return childs; 
 								}
 							} 
@@ -238,7 +239,8 @@ function Factory()
 										el.setAttribute( 'class', target.slice( 1 ) ); 
 										effect( el, css, '.el5_' + element5.ComDeep() ); 
 										childs[ i ] = cert( el ); 
-									} 								
+									} 
+									childs.each = childs.forEach;
 									return childs;
 								}
 							}
@@ -715,6 +717,7 @@ function Factory()
 							} 
 							
 							media.product = style5.AddMedia( device, feature ); 
+
 							media.producted = true;
 							
 							if( this.devices == undefined ) 
@@ -725,6 +728,11 @@ function Factory()
 							{
 								this.devices.push( media.product );
 							} 
+							
+							media.Effects = function( selector ) 
+							{
+								return this.product.Find( selector );
+							};
 						} 
 						
 						var selector = 0;
@@ -813,10 +821,7 @@ function Factory()
 						{
 							this.id = idstr; 
 						} 
-						else 
-						{
-							return this;
-						}
+						return this;
 					}, 
 					
 					HasId: function( idstr, target ) 
@@ -1428,7 +1433,7 @@ function Factory()
 									clearInterval( timer );
 							}, anime.t );
 						}
-						return element5( BODY ); 
+						return element5( BODY ).css( { webkitTouchCallout: 'none', webkitUserSelect: 'none', khtmlUserSelect: 'none', mozUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' } ); 
 					}
 					return BODY;
 				}; 
@@ -1529,7 +1534,10 @@ function Factory()
 					{
 						if( typeof hier[ x ] == 'function' || applier[ x ] == undefined ) 
 						{
-							applier[ x ] = hier[ x ];
+							if( Object.getOwnPropertyDescriptor( hier, x ) != undefined ) 
+							{
+								applier[ x ] = hier[ x ]; 
+							}
 						} 
 						else 
 						{
@@ -1581,9 +1589,14 @@ function Factory()
 				var element5 = __webpack_require__( 1 ); 
 				
 				var Style = document.createElement( 'style' ); 
-				Style.title = 'element5 free style Mode.5'; 
+				Style.id = 'element5 free style Mode.5'; 
 				Style.type = 'text/css';
 				document.head.appendChild( Style ); 
+				var Media = document.createElement( 'style' );
+				Media.id = 'element5 free media Mode.6';
+				Media.type = 'text/css'; 
+				document.head.appendChild( Media ); 
+				
 				Style.sheet.attach = Style.sheet.insertRule || Style.sheet.addRule; 
 				Style.sheet.detach = Style.sheet.deleteRule || Style.sheet.removeRule; 
 				Style.currentIndex = -1;
@@ -1604,7 +1617,12 @@ function Factory()
 				Style.AddCss = function( selector ) 
 				{
 					return Style.AddLine( selector );
-				};
+				}; 
+				
+				Style.AddRelateCss = function() 
+				{
+					return null;
+				},
 				
 				Style.AddTimeLine = function( timeline ) 
 				{
@@ -1663,21 +1681,24 @@ function Factory()
 					return timeline;
 				}; 
 				
-				Style.AddMedia = function( device, features ) 
+				Style.AddMedia = (function() 
 				{
-					var index = Style.sheet.cssRules.length; 
-					var media = (function( d, f ) 
+					Media.sheet.attach = Media.sheet.insertRule || Media.sheet.addRule;
+					Media.sheet.detach = Media.sheet.deleteRule || Media.sheet.removeRule; 
+					Style.Media = Style.style7 = Media;
+					return function( device, features ) 
 					{
-						var and = ( d != '' && f != '' ) ? ' and ' : '';
-						return ( d + and + f ).trim();
-					})( device, features );
-					
-					Style.sheet.attach( '@media ' + media + ' {}' , index ); 
-					
-					media = Style.sheet.cssRules[ index ];
-					
-					return element5.Extend( media, Style.mediaModifer ); 
-				};
+						var index = Media.sheet.cssRules.length; 
+						var media = (function( d, f ) 
+						{
+							var and = ( d != '' && f != '' ) ? ' and ' : '';
+							return ( d + and + f ).trim();
+						})( device, features );
+						Media.sheet.attach( '@media ' + media + ' {}' , index ); 
+						media = Media.sheet.cssRules[ index ];
+						return element5.Extend( media, Style.mediaModifer );
+					}; 
+				})(), 
 				
 				Style.Find = function( selector, autoplus ) 
 				{
@@ -1749,8 +1770,8 @@ function Factory()
 					{
 						var media = this;
 						var index = media.cssRules.length; 
-						media.attach = media.insertRule || media.addRule;
-						media.detach = media.deleteRule || media.removeRule; 
+						if( !media.attach ) media.attach = media.insertRule || media.addRule;
+						if( !media.detach ) media.detach = media.deleteRule || media.removeRule; 
 						media.attach( selector + ' {}', index ); 
 						return element5.Extend( media.cssRules[ index ], Style.ruleModifier );
 					}, 
@@ -1820,7 +1841,7 @@ function Factory()
 				
 				Style.AddLine( '.hidden' ).SetStyles( { position: 'fixed', bottom : '-100%', left : '-100%', top : 'auto', right : 'auto' } ); 
 				Style.AddLine( '.invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
-	
+				
 				module.exports = Style;
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 3 ) 
@@ -2410,6 +2431,8 @@ function Factory()
 							/** This is show the size window. */
 							window.addEventListener( 'resize', function( e ) 
 							{
+								clearTimeout( window.timeOutClientSizeCounter );
+								
 								var size = element5( '#el5-csl-client-size' ); 
 								size.innerHTML = window.innerWidth + ' x ' + window.innerHeight + ' (px)'; 
 								size.css({ 
@@ -2421,7 +2444,6 @@ function Factory()
 									color: 'white' 
 								}); 
 								
-								clearTimeout( window.timeOutClientSizeCounter );
 								window.timeOutClientSizeCounter = setTimeout( function() 
 								{
 									clearTimeout( window.timeOutClientSizeCounter );
