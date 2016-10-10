@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="user-scalable=no, width=device-width" />
+<script type="text/javascript" src="http://192.168.0.106/element5/element5.js"></script>
+<script type="text/javascript">
+
+style5.AddCss( 'body' ).css( { 'background': '#000', color: '#fff' } );
+
+// Initialize the host element.
+var host = element5( '#host' ); 
+host.css( { width: '320px', height: '80px', background: 'red' } ); 
+host.img = host.Equip( element5.Create( 'img' ) );
+host.img.src = "http://192.168.0.106/element5/logo/element5-light-logo.png";
+host.img.alt = "The Draggable Image";
+host.Draggable();
+
+var padd = element5( '#padd' );
+padd.css( { width: '320px', height: '80px', background: 'blue' } );
+
+window.addEventListener( 'DOMContentLoaded', function() 
+{
+	var body = element5.GetBody();
+	body.Equip( host );
+	body.Equip( padd ); 
+}, true );
+	
+</script>
+<head>
+
+<body>
+<h1>Draggable Demo</h1>
+
+<p id="event" >aaa</p>
+</body>
+</html>

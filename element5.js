@@ -106,12 +106,6 @@ function Factory()
 						element5.Extend( el, item ); 
 					});
 					
-					// Check the body.
-					if( el.tagName != 'BODY' && el.createdBy ) 
-					{
-						el.EquipedBy( document.body ); 
-					}
-					
 					// Add Class Css Self
 					if( el.CssSelf != undefined ) 
 					{
@@ -217,8 +211,7 @@ function Factory()
 							{
 								// Check pass
 								if( ( /^(.|#)[a-zA-Z0-9\-]+$/ ).exec( target ) == null ) 
-									return null;
-								
+									return;
 								if( queryType == '#' )							// Single
 								{
 									var el = document.createElement( elTag ); 
@@ -247,8 +240,12 @@ function Factory()
 						} 
 						else if( typeof target == 'object' ) 
 						{
-							if( target.nodeType != undefined && parseInt( target.nodeType ) === 1 ) 
+							
+							if( target.nodeType != undefined ) 
 							{
+								if( parseInt( target.nodeType ) !== 1 ) 
+									return;
+								
 								if( !target.el5 ) 
 								{
 									effect( target, 0, '.el5_' + element5.ComDeep() );
@@ -262,9 +259,12 @@ function Factory()
 								var limit = target.length; 
 								for( var i = 0;  i < limit; i++ ) 
 								{
-									if( target[ i ].el5 == undefined && ( parseInt( target[ i ].nodeType ) === 1 ) ) 
+									if( target[ i ].el5 == undefined ) 
 									{
-										element5( target[ i ] );
+										if( parseInt( target[ i ].nodeType ) !== 1 ) 
+										{
+											element5( target[ i ] ); 
+										}
 									} 
 								} 
 								return target;
@@ -864,6 +864,12 @@ function Factory()
 						return this;
 					}, 
 					
+					Clone: function( deep ) 
+					{
+						var el = this;
+						return el.cloneNode( deep ); 
+					},
+					
 					EnterFullscreen: ( function() 
 					{
 						Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
@@ -1386,9 +1392,71 @@ function Factory()
 					}, 
 					
 					// TODO OnDrag , OnDrop.
-					Dragable: function() 
+					Draggable: function( cloneMode ) 
 					{
+						var el = this;
+												
+						if( bom5.Device.IsMobile ) 
+						{
+							el.addEventListener("touchstart", function( e ) 
+							{
+								var layerX = e.touches[0].clientX - el.offsetLeft;
+								var layerY = e.touches[0].clientY - el.offsetTop; 
+								
+								el.layerX = layerX;
+								el.layerY = layerY;
+								el.draggable = true;
+								el.css( 'position', 'absolute' );
+							}, false);
+							el.addEventListener("touchend", function( e ) 
+							{
+								el.draggable = false;
+								console.log( el.offsetLeft, el.offsetTop );
+								console.log( el.CssComm.style.transform );
+							}, false);
+							// el.addEventListener("touchcancel", function( e ) {}, false);
+							// el.addEventListener("touchleave", function( e ) {}, false);
+							el.addEventListener("touchmove", function( e ) 
+							{
+								if( el.draggable ) 
+								{
+									var clientX = e.touches[0].clientX;
+									var clientY = e.touches[0].clientY;
+
+									e.preventDefault();
+									el.css( { transform: 'translateX(' + (clientX - el.layerX) + 'px) translateY(' + (clientY-el.layerY) + 'px)' } );
+								}
+							}, false);
+						} 
+						else 
+						{
+							el.addEventListener( 'mousedown', function( e ) 
+							{
+								var layerX = e.layerX;
+								var layerY = e.layerY;
+								
+								el.layerX = layerX;
+								el.layerY = layerY;
+								el.draggable = true;
+								el.css( 'position', 'absolute' );
+							}, false );
+							
+							el.addEventListener( 'dragover', function( e ) 
+							{
+								var clientX = e.clientX;
+								var clientY = e.clientY;
+
+								e.preventDefault();
+								el.css( { left: (clientX - el.layerX) + 'px', top: (clientY-el.layerY) + 'px' } );
+							}, true );
+							
+							el.addEventListener( 'dragend',function( e ) 
+							{
+								el.draggable = false;
+							}, false );
+						}
 						
+						return el;
 					}, 
 					
 					Droppable: function() 
@@ -2474,6 +2542,16 @@ function Factory()
 				}; 
 				
 				module.exports = Solution; 
+				
+				// document.addEventListener( 'mousemove', function( e ) 
+				// {
+					// if( this.onMoveEL5Handle ) 
+					// {
+						// element5.clientX = e.clientX;
+						// element5.clientY = e.clientY;
+						// this.onMoveEL5Handle( e );
+					// }
+				// }, false );
 			}
 		]
 	);
