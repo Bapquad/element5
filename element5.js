@@ -1395,24 +1395,28 @@ function Factory()
 					Draggable: function( cloneMode ) 
 					{
 						var el = this;
-												
+						
+						el.css( 'position', 'absolute' );
+						
 						if( bom5.Device.IsMobile ) 
 						{
 							el.addEventListener("touchstart", function( e ) 
 							{
-								var layerX = e.touches[0].clientX - el.offsetLeft;
-								var layerY = e.touches[0].clientY - el.offsetTop; 
+								var layerX = e.touches[0].clientX;
+								var layerY = e.touches[0].clientY; 
 								
 								el.layerX = layerX;
 								el.layerY = layerY;
 								el.draggable = true;
-								el.css( 'position', 'absolute' );
+								
 							}, false);
 							el.addEventListener("touchend", function( e ) 
 							{
 								el.draggable = false;
-								console.log( el.offsetLeft, el.offsetTop );
-								console.log( el.CssComm.style.transform );
+								var leftPos = el.offsetLeft + el.layerFinalX;
+								var topPos = el.offsetTop + el.layerFinalY;
+								el.css( { transform: 'translateX(0px) translateY(0px)' } );
+								el.css( { left: leftPos + 'px', top: topPos + 'px' } );
 							}, false);
 							// el.addEventListener("touchcancel", function( e ) {}, false);
 							// el.addEventListener("touchleave", function( e ) {}, false);
@@ -1422,9 +1426,11 @@ function Factory()
 								{
 									var clientX = e.touches[0].clientX;
 									var clientY = e.touches[0].clientY;
-
+									el.layerFinalX = clientX - el.layerX;
+									el.layerFinalY = clientY - el.layerY;
+									
 									e.preventDefault();
-									el.css( { transform: 'translateX(' + (clientX - el.layerX) + 'px) translateY(' + (clientY-el.layerY) + 'px)' } );
+									el.css( { transform: 'translateX(' + ( el.layerFinalX ) + 'px) translateY(' + (el.layerFinalY) + 'px)' } );
 								}
 							}, false);
 						} 
@@ -1438,7 +1444,7 @@ function Factory()
 								el.layerX = layerX;
 								el.layerY = layerY;
 								el.draggable = true;
-								el.css( 'position', 'absolute' );
+								
 							}, false );
 							
 							el.addEventListener( 'dragover', function( e ) 
