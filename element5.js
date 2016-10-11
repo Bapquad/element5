@@ -269,7 +269,7 @@ function Factory()
 								
 								if( !target.el5 ) 
 								{
-									if( target.id != undefined && target.id != '' ) 
+									if( target.id != undefined && target.id != '' && !target.clonedBy ) 
 									{
 										var css = style5.Find( '#' + target.id );
 										effect( target, css );
@@ -345,6 +345,26 @@ function Factory()
 							return len;
 						}
 					}, 
+					Next: function() 
+					{
+						var el = this.nextElementSibling; 
+						if( el ) 
+						{
+							if( !el.el5 ) element5( el );
+							return el; 
+						} 
+						return false;
+					}, 
+					Prev: function() 
+					{
+						var el = this.previousElementSibling;
+						if( el ) 
+						{
+							if( !el.el5 ) element5( el );
+							return el;
+						} 
+						return false;
+					},
 					Parents: function( selector ) 
 					{
 						var el = this;
@@ -808,10 +828,65 @@ function Factory()
 						return this;
 					}, 
 					
+					EquipBefore: function( el ) 
+					{
+						try 
+						{
+							if( el == undefined ) throw "The 'el' param is undefined.";
+							if( this.nodeType === 1 ) 
+							{
+								var node = el.parentNode;
+								node.insertBefore( this, el ); 
+							}
+							return this;
+						} 
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err );
+							return;
+						}
+					}, 
+					
+					EquipAfter: function( el ) 
+					{
+						try 
+						{
+							if( el == undefined ) throw "The 'el' param is undefined."; 
+							if( this.nodeType === 1 ) 
+							{
+								var node = el.nextElementSibling;
+								if( node != undefined ) 
+								{
+									node = node.parentNode;
+									node.insertBefore( this, el.el.nextElementSibling);
+								}
+								else 
+								{
+									node = el.parentNode;
+									node.appendChild( this );
+								}
+							}
+							return this;
+ 						}
+						catch( err ) 
+						{
+							if( console.error ) 
+								console.error( err );
+							else 
+								console.log( err ); 
+							return;
+						}
+					}, 
+					
 					Clone: function( deep ) 
 					{
 						var el = this;
-						return el.cloneNode( deep ); 
+						var elc = el.cloneNode( true ); 
+						elc.clonedBy = true;
+						return element5( elc );
 					},
 					
 					EnterFullscreen: ( function() 
@@ -1336,31 +1411,56 @@ function Factory()
 					}, 
 					
 					// TODO OnDrag , OnDrop.
-					Draggable: function( cloneMode ) 
+					Draggable: function( home ) 
 					{
-						var el = this;
-						
-						el.css( 'position', 'absolute' );
-						
+						if( element5.DragableElements == undefined ) 
+						{
+							element5.DragableElements = [];
+						}
+						var el = this; 
+						element5.DragableElements.push( el );
+						home = home || true;
 						if( bom5.Device.IsMobile ) 
 						{
 							el.addEventListener("touchstart", function( e ) 
 							{
 								var layerX = e.touches[0].clientX;
 								var layerY = e.touches[0].clientY; 
-								
+								if( home ) 
+								{
+									el.css( 'position', 'relative' ); 
+								} 
+								else 
+								{
+									el.css( 'position', 'absolute' ); 
+								}
 								el.layerX = layerX;
 								el.layerY = layerY;
 								el.draggable = true;
 								
+								
 							}, false);
 							el.addEventListener("touchend", function( e ) 
 							{
-								el.draggable = false;
+								// el.draggable = false;
 								var leftPos = el.offsetLeft + el.layerFinalX;
 								var topPos = el.offsetTop + el.layerFinalY;
-								el.css( { transform: 'translateX(0px) translateY(0px)' } );
-								el.css( { left: leftPos + 'px', top: topPos + 'px' } );
+								el.css( { transform: 'translateX(0px) translateY(0px)' } ); 
+								if( home ) 
+								{
+									el.css( 'position', 'static' );
+									el.css( { left: '0px', top: '0px' } );									
+								}
+								else 
+								{
+									el.css( { left: leftPos + 'px', top: topPos + 'px' } );									
+								} 
+								
+								var len = element5.DroppableElements.length;
+								for( var i = 0; i < len; i++ ) 
+								{
+									element5.DroppableElements[ i ].checkCoord( el );
+								}
 							}, false);
 							// el.addEventListener("touchcancel", function( e ) {}, false);
 							// el.addEventListener("touchleave", function( e ) {}, false);
@@ -1372,6 +1472,8 @@ function Factory()
 									var clientY = e.touches[0].clientY;
 									el.layerFinalX = clientX - el.layerX;
 									el.layerFinalY = clientY - el.layerY;
+									el.dragClientX = clientX;
+									el.dragClientY = clientY; 
 									
 									e.preventDefault();
 									el.css( { transform: 'translateX(' + ( el.layerFinalX ) + 'px) translateY(' + (el.layerFinalY) + 'px)' } );
@@ -1384,7 +1486,14 @@ function Factory()
 							{
 								var layerX = e.layerX;
 								var layerY = e.layerY;
-								
+								if( home ) 
+								{
+									el.css( 'position', 'relative' ); 
+								} 
+								else 
+								{
+									el.css( 'position', 'absolute' ); 
+								}
 								el.layerX = layerX;
 								el.layerY = layerY;
 								el.draggable = true;
@@ -1394,26 +1503,82 @@ function Factory()
 							el.addEventListener( 'dragover', function( e ) 
 							{
 								var clientX = e.clientX;
-								var clientY = e.clientY;
+								var clientY = e.clientY; 
+								el.dragClientX = clientX;
+								el.dragClientY = clientY; 
 
-								e.preventDefault();
+								e.preventDefault(); 
 								el.css( { left: (clientX - el.layerX) + 'px', top: (clientY-el.layerY) + 'px' } );
 							}, true );
 							
 							el.addEventListener( 'dragend',function( e ) 
 							{
-								el.draggable = false;
+								if( home ) 
+								{
+									el.css( 'position', 'static' );
+									el.css( { left: '0px', top: '0px' } );									
+								} 
+								
+								var len = element5.DroppableElements.length;
+								for( var i = 0; i < len; i++ ) 
+								{
+									element5.DroppableElements[ i ].checkCoord( el );
+								}
 							}, false );
 						}
 						
 						return el;
 					}, 
 					
-					Droppable: function() 
+					Droppable: function( ondrop ) 
 					{
+						if( element5.DroppableElements == undefined ) 
+						{
+							element5.DroppableElements = [];
+						}
+						var el = this;
 						
+						element5.DroppableElements.push( el );
+						
+						el.checkCoord = function( item ) 
+						{
+							item = item || null;
+							
+							var selfLeft = el.offsetLeft;
+							var selfTop = el.offsetTop;
+							var selfRight = selfLeft + el.offsetWidth;
+							var selfBottom = selfTop + el.offsetHeight;
+							
+							var x = item.dragClientX;
+							var y = item.dragClientY;
+							
+							if( !( x > selfLeft && x < selfRight && y > selfTop && y < selfBottom ) ) 
+							{
+								return;
+							}
+							
+							var currLeft = item.offsetLeft + item.layerFinalX;
+							var currTop = item.offsetTop + item.layerFinalY;
+							var currRight = currLeft + item.offsetWidth;
+							var currBottom = currTop + item.offsetHeight; 
+							
+							if( !( currRight < selfLeft || currLeft > selfRight || currBottom < selfTop || currTop > selfBottom ) ) 
+							{
+								if( ondrop != undefined ) 
+								{
+									var e = new Object();
+									e.clientX = x;
+									e.clientY = y;
+									e.target = el;
+									ondrop( e );
+								}
+							}
+						}; 
+						
+						return el;
 					}, 
 				}; 
+				JSONModifier.onDrop = JSONModifier.Droppable;
 				JSONModifier.DeleteProperty = JSONModifier.RemoveProperty;
 				
 				element5.fps = 60;
