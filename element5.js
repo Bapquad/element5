@@ -761,7 +761,11 @@ function Factory()
 					Remove: function() 
 					{
 						var el = this;
-						el.parentElement.removeChild( el );
+						if( el.parentElement ) 
+						{
+							el.parentElement.removeChild( el );
+						} 
+						return this;
 					}, 
 					
 					Equip: function( el ) 
