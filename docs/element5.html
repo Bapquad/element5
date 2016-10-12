@@ -10,21 +10,13 @@ a, a:visited, a:active
 	text-decoration: none;
 }
 </style>
-<script src="element5.js" type="text/javascript"></script> 
-<script src="docs/script.js" type="text/javascript"></script> 
-<script type="text/javascript">
-var links = list.Find( 'a' );
-links.each( function( item, index ) 
-{
-	var pat = ( /^(.*)(\/\w+.html)$/ ) . exec( item.href );
-	item.href = 'docs' + pat[ 2 ];
-});
-</script>
+<script src="../element5.js" type="text/javascript"></script> 
+<script src="script.js" type="text/javascript"></script> 
 <title>element5 API Referrence</title>
 </head>
 <body>
 <div id="doc-body">
-	<p>element5 is developed by Bapquad Games.</p>
+	<h2 id='doc-top'>element5 Object</h2>
 </div>
 </body> 
 </html>

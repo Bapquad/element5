@@ -150,7 +150,29 @@ function Factory()
 							el.CssSelf = style5.Find( self ); 
 						}
 					}
-				};
+				}; 
+				
+				var createElement = function( tagName, id ) 
+				{
+					var el = document.createElement( tagName ); 
+					
+					// Creation certification. 
+					el.createdBy = true; 
+					
+					if( id != undefined )
+					{
+						el.id = id;
+						var css = style5.Find( tagName + '#' + id ); 
+						effect( el, css ); 
+					}
+					else 
+					{
+						// Make the private class style for element.
+						var clsn = '.el5_' + element5.ComDeep(); 
+						effect( el, 0, clsn ); 
+					}
+					return cert( el ); 
+				}; 
 				
 				var element5 = function( target, limit ) 
 				{
@@ -195,13 +217,18 @@ function Factory()
 									{
 										var el = collect[ i ]; 
 										el.createdBy = false; 
-										if( el.el5 ) 
-											continue; 
-										if( el.CssSelf == undefined ) 
+										if( !el.el5 ) 
 										{
-											effect( el, css, '.el5_' + element5.ComDeep() );	
+											if( el.CssSelf == undefined ) 
+											{
+												effect( el, css, '.el5_' + element5.ComDeep() );	
+											} 
+											childs[ i ] = cert( el ); 
 										} 
-										childs[ i ] = cert( el ); 
+										else 
+										{
+											childs[ i ] = el; 
+										}
 									} 
 									childs.each = childs.forEach;
 									return childs; 
@@ -214,12 +241,7 @@ function Factory()
 									return;
 								if( queryType == '#' )							// Single
 								{
-									var el = document.createElement( elTag ); 
-									el.createdBy = true; 
-									el.id = name; 
-									effect( el, css ); 
-									cert( el ); 
-									return el;
+									return createElement( elTag, name );;
 								} 
 								else if( queryType == '.' )						// Multiple
 								{
@@ -240,7 +262,6 @@ function Factory()
 						} 
 						else if( typeof target == 'object' ) 
 						{
-							
 							if( target.nodeType != undefined ) 
 							{
 								if( parseInt( target.nodeType ) !== 1 ) 
@@ -248,7 +269,15 @@ function Factory()
 								
 								if( !target.el5 ) 
 								{
-									effect( target, 0, '.el5_' + element5.ComDeep() );
+									if( target.id != undefined && target.id != '' ) 
+									{
+										var css = style5.Find( '#' + target.id );
+										effect( target, css );
+									} 
+									else 
+									{
+										effect( target, 0, '.el5_' + element5.ComDeep() ); 
+									}
 									return cert( target ); 
 								}
 								else 
@@ -308,6 +337,7 @@ function Factory()
 								var el = domNodes[ i ];
 								childs.push( ( !el.el5 ) ? element5( el ) : el );
 							} 
+							childs.each = childs.forEach;
 							return childs;
 						} 
 						else 
@@ -838,12 +868,24 @@ function Factory()
 					
 					Equip: function( el ) 
 					{
-						var nodeType = parseInt( el.nodeType );
-
-						if( el.el5 && nodeType === 1 ) 
+						if( el.nodeType != undefined ) 
 						{
-							this.appendChild( el );
-						} 
+							var nodeType = parseInt( el.nodeType );
+
+							if( el.el5 && nodeType === 1 ) 
+							{
+								this.appendChild( el );
+							} 
+							return el;
+						}
+						else if( el.length )
+						{
+							var len = el.length;
+							for( var i = 0; i < len; i++ ) 
+							{
+								this.Equip( el[ i ] );
+							}
+						}  
 						return el;
 					}, 
 					
@@ -1575,27 +1617,72 @@ function Factory()
 					} 
 					
 					return root;
-				};
-				
-				element5.Create = function( tagName ) 
-				{
-					var pat = ( /^[a-zA-Z0-9]+$/ ) . exec ( tagName );
-					if( pat ) 
-					{
-						var el = document.createElement( pat.input ); 
-						
-						// Creation certification.
-						el.createdBy = true;
-						
-						// Make the private class style for element.
-						var clsn = '.el5_' + element5.ComDeep(); 
-						
-						effect( el, 0, clsn );
-						
-						cert( el );
-					}
-					return el;
 				}; 
+				
+				/**
+				 * Create element
+				 */
+				element5.Create = function( selector ) 
+				{
+					var pat = ( /^([a-zA-Z0-9]+)(\.|#)(.*)$/ ) .exec ( selector );
+					
+					if( pat == null ) 
+					{
+						pat = ( /^([a-zA-Z0-9]+)$/ ) . exec( selector ); 
+					} 
+					
+					if( pat == null ) 
+					{
+						pat = ( /^([a-zA-Z0-9]+)(.*)/ ) . exec( selector );
+					}
+					
+					if( pat == null ) 
+					{
+						return;
+					}
+						
+					if( pat.length === 2 ) 			// Create with only tag name
+					{
+						var tagName = pat[ 1 ];
+						return createElement( tagName ); 
+					} 
+					else if( pat.length === 3 ) 
+					{
+						function setAttrs( str, el ) 
+						{
+							var patt = /(\w+)=(\w+)/gi;
+							var attrs = {}; 
+							str.replace( patt , function( match, name, value ) 
+							{
+								el.setAttribute( name, value );
+							}); 
+							return element5( el );
+						} 
+						
+						var tagName = pat[ 1 ]; 
+						var attrStr = pat[ 2 ];
+						var el = document.createElement( tagName );
+						
+						return setAttrs( attrStr, el );
+					}
+					else if( pat.length === 4 ) 	// Create with with id or class
+					{
+						var el;
+						var tagName = pat[ 1 ];
+						var selectMark = pat[ 2 ];
+						var selectName = pat[ 3 ];
+						if( selectMark === '#' ) 
+						{
+							return createElement( tagName, selectName ); 
+						} 
+						else if( selectMark === '.' ) 
+						{
+							return createElement( tagName ).AddClass( selectName );
+						} 
+						return el;
+					} 
+					return;
+				};
 				
 				element5.Extension = function( ext ) 
 				{
@@ -1979,16 +2066,113 @@ function Factory()
 			},
 			function( module, __webpack_require__ )  		// pack require ( 5 ) 
 			{
+				var XHRModifier = 
+				{
+					onAbort: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'abort', handle, false ); 
+						return xhr;
+					}, 
+					onCancel: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'abort', handle, false ); 
+						return xhr;
+					}, 
+					onError: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'error', handle, false ); 
+						return xhr;
+					}, 
+					onFail: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'error', handle, false );
+						return xhr;
+					}, 
+					onStart: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'loadstart', handle, false ); 
+						return xhr;
+					}, 
+					onLoad: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'load', handle, false );
+						return this;
+					}, 
+					onFinish: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'loadend', handle, false ); 
+						return this;
+					}, 
+					onComplete: function( handle ) 
+					{
+						var xhr = this; 
+						xhr.addEventListener( 'load', handle, false ); 
+						return this;
+					}, 
+					onProgress: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'progress', handle, false );
+						return this;
+					}, 
+					onStateChange: function( handle ) 
+					{
+						var xhr = this; 
+						xhr.addEventListener( 'readystatechange', handle, false ); 
+						return this;
+					}, 
+					onTimeout: function( handle ) 
+					{
+						var xhr = this;
+						xhr.addEventListener( 'timeout', handle, false ); 
+						return this;
+					}, 
+					Connect: function( synchFlag ) 
+					{
+						synchFlag = synchFlag || true;
+						if( this.requestData ) 
+						{
+							this.open( 'post', this.requestUrl, synchFlag ); 
+						} 
+						else 
+						{
+							this.open( 'get', this.requestUrl, synchFlag );
+						} 
+						this.send( this.requestData ); 
+						return this;
+					}, 
+					Abort: function() 
+					{
+						this.abort();
+						return this;
+					}
+				}
+				
 				var Request = 
 				{
-					Create: function( url, data, onload ) 
+					Init : function( url, data ) 
 					{
-						var xhRequest = new XMLHttpRequest(); 
-						xhRequest.requestUrl = data || '';
-						xhRequest.requestData = data || null;
-						xhRequest.onload = onload;
-						return xhRequest;
-					},
+						var xhr = new XMLHttpRequest(); 
+						xhr.requestUrl = url || 0; 
+						xhr.requestData = data || 0;
+						return xhr;
+					}, 
+					
+					Connect: function( url, onload, data ) 
+					{
+						var origin = request5.Init( url, data );
+						var xhr = element5.Extend( origin, XHRModifier );
+						xhr.onLoad( onload ); 
+						xhr.Connect();
+						return;
+					}, 
 				} 
 				
 				module.exports = Request;
