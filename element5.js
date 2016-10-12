@@ -2407,7 +2407,6 @@ function Factory()
 									videoTracks[0].stop();
 									mediaStream = null;
 								}
-								element5.WriteAlert( currentCam );
 								
 								navigator.mediaDevices.getUserMedia({
 									video: {
