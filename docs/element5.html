@@ -16,7 +16,36 @@ a, a:visited, a:active
 </head>
 <body>
 <div id="doc-body">
-	<h2 id='doc-top'>element5 Object</h2>
+
+<h2 id='doc-top'>element5 Object</h2>
+
+<h3 class="ttl">element5( <span class="code param">target</span>, <span class="code param">limit</span> )</h3>
+<p class="txt">Find or create the elements with the description in <span class="code">target</span>.</p>
+<ul class="param-list">
+	<li><span class="param">target</span> - Selector string of searching.</li>
+	<li><span class="param">limit</span> - Creation limit. Default it is set to 10 value.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+</pre>
+
+<h3 class="htxt">Climb Modifier</h3>
+
+
+<h4 class="mdh code mt">Find ( <span class="param">selector</span> )</h4>
+<p class="txt">Find the elements which be inside. This method has one param.</p>
+<ul class="param-list">
+	<li><span class="param">selector</span> - selector string of searching.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+<span class="keyword">var</span> result = el.Find( <span class="string">'.search-item'</span> ); 
+<span class="keyword">console</span>.log( result );
+</pre>
+<h4 class="mdh code mt">Parents ( <span class="param">selector</span> )</h4>
+<p class="txt">Find the parent of the elements.</p>
 </div>
 </body> 
 </html>

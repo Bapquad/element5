@@ -641,7 +641,7 @@ function Factory()
 				
 				var MediaModifier = 
 				{
-					onMedia : function( media ) 
+					onDevice : function( device ) 
 					{
 						/**
 						 *{
@@ -653,116 +653,9 @@ function Factory()
 						 */
 						// Check exporting device 
 						
-						if( media.producted == false ) 
+						if( device.producted == false ) 
 						{
-							var feature = 0;
-							var device = 0;
-							var deviceOption = 0;
-							var deviceType = 0;
-							
-							if( media.deviceOption == undefined ) 
-							{
-								deviceOption = '';
-							} 
-							else 
-							{
-								deviceOption = media.deviceOption.trim(); 
-							}
-							
-							if( [ 'not', 'only', '' ].indexOf( deviceOption ) < 0 ) 
-							{
-								deviceOption = '';
-							}
-							
-							media.deviceOption = deviceOption;
-							
-							if( media.deviceType == undefined ) 
-							{
-								deviceType = '';
-							} 
-							else 
-							{
-								deviceType = media.deviceType.trim();
-							} 
-							
-							if( [ 'all', 'print', 'screen' ].indexOf( deviceType ) < 0 ) 
-							{
-								deviceType = '';
-							} 
-							
-							media.deviceType = deviceType; 
-							
-							if( deviceOption != '' ) 
-							{
-								if( deviceType != '' ) 
-								{
-									deviceOption = deviceOption + ' '; 
-								} 
-								else 
-								{
-									deviceOption = ''; 
-									media.deviceOption = deviceOption;
-								}
-							}
-							
-							device = deviceOption + deviceType; 
-							
-							if( typeof media.features != 'object' && media.features.length <= 0 ) 
-							{
-								feature = ''; 
-							} 
-							else 
-							{
-								var features = new Array(); 
-								var featureTypes = 
-								[ 
-									'aspect-ratio', 'color', 'color-index', 'device-aspect-ratio', 'device-height', 'device-width', 
-									'grid', 'height', 'max-aspect-ratio', 'max-color', 'max-color-index', 'max-device-aspect-ratio', 
-									'max-device-height', 'max-device-width', 'max-height', 'max-monochrome', 'max-resolution', 'max-width', 
-									'min-aspect-ratio', 'min-color', 'min-color-index', 'min-device-aspect-ratio', 'min-device-width', 'min-device-height', 
-									'min-height', 'min-monochrome', 'min-resolution', 'min-width', 'monochrome', 'orientation', 
-									'overflow-block', 'overflow-inline', 'resolution', 'scan', 'update-frequency', 'width',
-								]; 
-								
-								media.features.forEach( function( item, index ) 
-								{
-									var featureItem = item.split( ':' );
-									if( featureItem.length === 2 ) 
-									{
-										featureItem.name = featureItem[ 0 ].trim();
-										featureItem.value = featureItem[ 1 ].trim(); 
-										if( featureTypes.indexOf( featureItem.name ) >= 0 ) 
-										{
-											features.push( '( ' + featureItem.name + ': ' + featureItem.value + ' )' );
-										}
-									} 
-								});
-								
-								feature = features.join( ' and ' );
-							} 
-							
-							if( feature != '' ) 
-							{
-								feature = ' ' + feature;
-							} 
-							
-							media.product = style5.AddMedia( device, feature ); 
-
-							media.producted = true;
-							
-							if( this.devices == undefined ) 
-							{
-								this.devices = [ media.product ];
-							}
-							else 
-							{
-								this.devices.push( media.product );
-							} 
-							
-							media.Effects = function( selector ) 
-							{
-								return this.product.Find( selector );
-							};
+							device = style5.CreateDevice( device );
 						} 
 						
 						var selector = 0;
@@ -775,7 +668,12 @@ function Factory()
 							selector = this.CssComm.selectorText;
 						} 
 						
-						return media.product.Find( selector ); 
+						return device.product.Find( selector ); 
+					}, 
+					
+					onMedia: function( media ) 
+					{
+						return this.onDevice( media );
 					},
 				};
 				
@@ -1682,6 +1580,25 @@ function Factory()
 						return el;
 					} 
 					return;
+				}; 
+				
+				element5.MountDevice = function( device ) 
+				{
+					/**
+					 *{
+					 *	deviceOption: '(not|only)', 
+					 *	deviceType: '(all|print|screen|tv)', 
+					 *	features: [ 'max-width : 100px', 'min-width : 200px' ], 
+					 *	producted: false,
+					 *}
+					 */
+					// Check exporting device 
+					
+					if( device.producted == false ) 
+					{
+						device = style5.CreateDevice( device );
+					} 
+					return device;
 				};
 				
 				element5.Extension = function( ext ) 
@@ -1842,7 +1759,7 @@ function Factory()
 					return timeline;
 				}; 
 				
-				Style.AddMedia = (function() 
+				Style.AddDevice = (function() 
 				{
 					Media.sheet.attach = Media.sheet.insertRule || Media.sheet.addRule;
 					Media.sheet.detach = Media.sheet.deleteRule || Media.sheet.removeRule; 
@@ -1998,7 +1915,121 @@ function Factory()
 						} 
 						return this;
 					}, 
-				};
+				}; 
+				
+				Style.CreateDevice = function( media ) 
+				{
+					var feature = 0;
+					var device = 0;
+					var deviceOption = 0;
+					var deviceType = 0;
+					
+					if( media.deviceOption == undefined ) 
+					{
+						deviceOption = '';
+					} 
+					else 
+					{
+						deviceOption = media.deviceOption.trim(); 
+					}
+					
+					if( [ 'not', 'only', '' ].indexOf( deviceOption ) < 0 ) 
+					{
+						deviceOption = '';
+					}
+					
+					media.deviceOption = deviceOption;
+					
+					if( media.deviceType == undefined ) 
+					{
+						deviceType = '';
+					} 
+					else 
+					{
+						deviceType = media.deviceType.trim();
+					} 
+					
+					if( [ 'all', 'print', 'screen' ].indexOf( deviceType ) < 0 ) 
+					{
+						deviceType = '';
+					} 
+					
+					media.deviceType = deviceType; 
+					
+					if( deviceOption != '' ) 
+					{
+						if( deviceType != '' ) 
+						{
+							deviceOption = deviceOption + ' '; 
+						} 
+						else 
+						{
+							deviceOption = ''; 
+							media.deviceOption = deviceOption;
+						}
+					}
+					
+					device = deviceOption + deviceType; 
+					
+					if( typeof media.features != 'object' && media.features.length <= 0 ) 
+					{
+						feature = ''; 
+					} 
+					else 
+					{
+						var features = new Array(); 
+						var featureTypes = 
+						[ 
+							'aspect-ratio', 'color', 'color-index', 'device-aspect-ratio', 'device-height', 'device-width', 
+							'grid', 'height', 'max-aspect-ratio', 'max-color', 'max-color-index', 'max-device-aspect-ratio', 
+							'max-device-height', 'max-device-width', 'max-height', 'max-monochrome', 'max-resolution', 'max-width', 
+							'min-aspect-ratio', 'min-color', 'min-color-index', 'min-device-aspect-ratio', 'min-device-width', 'min-device-height', 
+							'min-height', 'min-monochrome', 'min-resolution', 'min-width', 'monochrome', 'orientation', 
+							'overflow-block', 'overflow-inline', 'resolution', 'scan', 'update-frequency', 'width',
+						]; 
+						
+						media.features.forEach( function( item, index ) 
+						{
+							var featureItem = item.split( ':' );
+							if( featureItem.length === 2 ) 
+							{
+								featureItem.name = featureItem[ 0 ].trim();
+								featureItem.value = featureItem[ 1 ].trim(); 
+								if( featureTypes.indexOf( featureItem.name ) >= 0 ) 
+								{
+									features.push( '( ' + featureItem.name + ': ' + featureItem.value + ' )' );
+								}
+							} 
+						});
+						
+						feature = features.join( ' and ' );
+					} 
+					
+					if( feature != '' ) 
+					{
+						feature = ' ' + feature;
+					} 
+					
+					media.product = style5.AddDevice( device, feature ); 
+
+					media.producted = true;
+					
+					if( this.devices == undefined ) 
+					{
+						this.devices = [ media.product ];
+					}
+					else 
+					{
+						this.devices.push( media.product );
+					} 
+					
+					media.Effects = function( selector ) 
+					{
+						return this.product.Find( selector );
+					}; 
+					
+					return media;
+				}
 				
 				Style.AddLine( '.hidden' ).SetStyles( { position: 'fixed', bottom : '-100%', left : '-100%', top : 'auto', right : 'auto' } ); 
 				Style.AddLine( '.invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 

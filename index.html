@@ -24,7 +24,21 @@ links.each( function( item, index )
 </head>
 <body>
 <div id="doc-body">
-	<p>element5 is developed by Bapquad Games.</p>
+	
+<h2 id='doc-top'>element5 Methods</h2>
+
+<h3 class="ttl">element5.Create( <span class="code param">target</span> )</h3>
+<p class="txt">Create the element with the description in <span class="code">target</span>.</p>
+<ul class="param-list">
+	<li><span class="param">target</span> - Description for creating.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el0 = element5.Create( <span class="string">'div#wrapper'</span> );
+<span class="keyword">var</span> el1 = element5.Create( <span class="string">'div.wrapper'</span> );
+<span class="keyword">var</span> el2 = element5.Create( <span class="string">'div[id=wrapper][class=docbody]'</span> );
+</pre>
+
 </div>
 </body> 
 </html>

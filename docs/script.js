@@ -7,6 +7,15 @@ element5.Extension( {
 	},
 });
 
+var mobile400 = 
+{
+	deviceOption: '', 
+	deviceType: 'screen', 
+	features: [ 'max-width:399px' ], 
+	producted: false,
+};
+element5.MountDevice( mobile400 );
+
 // Edit the title
 document.title = 'element5 API Referrence';
 var webdir = 'http://bapquadgames.com/';
@@ -15,6 +24,18 @@ var webdir = 'http://bapquadgames.com/';
 style5.AddCss( '*' ).css( { 'padding': '0', 'margin': '0' } );
 style5.AddCss( 'body' ).css( { 'background': '#070117', 'color': 'white', 'font-family': 'Arial', 'font-size': '90%' } );
 style5.AddCss( 'ul#list li' ).css( { 'margin': '10px 0', 'font-size':'90%' } );
+style5.AddCss( 'h2#doc-top' ).css( { 'margin-left': '10px', 'margin-bottom': '20px', 'color': '#09f' } );
+style5.AddCss( 'h3.ttl' ).css( { 'margin-left': '10px', 'font-family': 'monospace', 'font-size': '17px' } );
+style5.AddCss( '.code' ).css( { 'font-family': 'monospace' } ); 
+style5.AddCss( '.mt' ).css( { 'margin-top': '18px' } ); 
+style5.AddCss( '.keyword' ).css( { 'font-family': 'monospace', 'color': '#09f' } );
+style5.AddCss( '.param' ).css( { 'font-family': 'monospace', 'color': '#fa0' } );
+style5.AddCss( '.string' ).css( { 'font-family': 'monospace', 'color': '#da6c0b' } );
+style5.AddCss( '.htxt' ).css( { 'margin-left': '10px', 'margin-top': '20px' } ); 
+style5.AddCss( '.mdh' ).css( { 'margin-left' : '10px', 'font-size': '17px' } ); 
+style5.AddCss( '.txt' ).css( { 'margin-left' : '10px', 'font-size': '12px' } ); 
+style5.AddCss( '.param-list' ).css( { 'margin' : '6px 10px', 'list-style': 'none', 'font-size': '12px' } ); 
+style5.AddCss( 'pre' ).css( { 'margin' : '0px 10px', 'padding': '10px', 'background': '#222', 'border': '1px solid #aaa' } ); 
 
 // Create the top page
 var topPage = element5.Create( 'h1#top-page' ); 
