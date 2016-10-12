@@ -794,7 +794,7 @@ function Factory()
 						{
 							var nodeType = parseInt( el.nodeType );
 
-							if( el.el5 && nodeType === 1 ) 
+							if( ( el.el5 && ( nodeType === 1 ) ) || nodeType === 3 ) 
 							{
 								this.appendChild( el );
 							} 
@@ -2348,43 +2348,119 @@ function Factory()
 				// TODO
 				var Media = 
 				{
-					Camera: function() 
+					StartCamera: function( video, width, height ) 
 					{
-						// var video = element5.Create( 'video' );
-						// video.css( {'background': 'red'} );
-						// video.id = 'videoTag'; 
-
-						// navigator.mediaDevices.getUserMedia( { video: { facingMode: "user" } } )
-						// .then( function ( stream ) 
-						// {
-							// var video = document.getElementById('videoTag');
-							// video.srcObject = stream;
-						// }).catch( function ( error ) 
-						// {
-							// console.log(error.name + ": " + error.message);
-						// });
+						var mediaStream = 0;
+						var webcamList = 0;
+						var currentCam = 0;
+						var photoReady = false; 
+						
+						function enumDeviceErrorHandle ( e )
+						{
+							if( e.name.indexOf ( 'NotFoundError' ) >= 0 ) 
+							{
+								console.error( 'Have not a camera found.' );
+							} 
+							else 
+							{
+								console.error( 'The following error occurred: ' + e.name + '. Please check your camera and try again.' );
+							}
+						} 
+						
+						function deviceChanged( e ) 
+						{
+							navigator.mediaDevices.removeEventListener( 'devicechange', deviceChanged );
+							init();
+						} 
+						
+						function initializeVideoStream( stream ) 
+						{
+							mediaStream = stream; 
+							
+							video.srcObject = mediaStream; 
+							
+							if( video.paused ) 
+							{
+								video.play(); 
+							}
+						}
+						
+						function nextCamera() 
+						{
+							if( currentCam !== null ) 
+							{
+								currentCam++; 
+								if( currentCam >= webcamList.length ) 
+								{
+									currentCam = 0;
+								} 
+								
+								if( typeof video.srcObject !== undefined ) 
+								{
+									video.srcObject = null;
+								} 
+								video.src = null; 
+								
+								if( mediaStream ) 
+								{
+									var videoTracks = mediaStream.getVideoTracks(); 
+									videoTracks[0].stop();
+									mediaStream = null;
+								}
+								element5.WriteAlert( currentCam );
+								
+								navigator.mediaDevices.getUserMedia({
+									video: {
+										width: width, 
+										height: height, 
+										deviceId: { exact: webcamList[ currentCam ] }
+									}
+								}).then( initializeVideoStream ).catch( enumDeviceErrorHandle );
+							}
+						}
+						
+						function deviceEnumeratedHandle( devices ) 
+						{
+							webcamList = new Array(); 
+							var len = devices.length;
+							for( var i = 0; i < len; i++ ) 
+							{
+								if( devices[ i ].kind == 'videoinput' ) 
+								{
+									webcamList[ webcamList.length ] = devices[ i ].deviceId;
+								}
+							} 
+							
+							if( webcamList.length <= 0 ) 
+								return;
+							
+							nextCamera();
+							
+							// TODO Media devicechange Event. 
+							navigator.mediaDevices.addEventListener( 'devicechange' , deviceChanged );
+						}
+						
+						function init() 
+						{
+							if( navigator.getUserMedia ) 
+							{
+								// Enumerate devices
+								navigator.mediaDevices.enumerateDevices().then( deviceEnumeratedHandle ).catch( enumDeviceErrorHandle );
+							}
+						}
+						
+						if( !video.nextCamera ) 
+						{
+							video.nextCamera = nextCamera;
+						} 
+						
+						init(); 
+						
+						return video;
 					}, 
-					Microphone: function() 
+					StartMicrophone: function() 
 					{
-						var audioContext = new AudioContext();
-
-						navigator.mediaDevices.getUserMedia({
-
-							audio: true
-
-						}).then(function (stream) {
-
-							var sourceNode = audioContext.createMediaStreamSource(stream);
-
-							var gainNode = audioContext.createGain();
-
-							sourceNode.connect(gainNode);
-
-						}).catch( function (error) {
-
-							console.log(error.name + ": " + error.message);
-
-						});
+						
 					}
 				};
 				
@@ -3044,25 +3120,96 @@ function Factory()
 							/** This is show the size window. */
 							window.addEventListener( 'resize', function( e ) 
 							{
-								clearTimeout( window.timeOutClientSizeCounter );
+								if( window.timeOutClientSizeCounter ) 
+								{
+									clearTimeout( window.timeOutClientSizeCounter );
+								}
+								else 
+								{
+									clientsizetextshow = element5( '#el5-csl-client-size' ); 
+									clientsizetextshow.css({ 
+										position: 'fixed', 
+										right: '10px', 
+										top: '50px', 
+										padding: '3px 5px', 
+										background: ' black', 
+										color: 'white' 
+									}); 
+								}
 								
-								var size = element5( '#el5-csl-client-size' ); 
-								size.innerHTML = window.innerWidth + ' x ' + window.innerHeight + ' (px)'; 
-								size.css({ 
-									position: 'fixed', 
-									right: '10px', 
-									top: '50px', 
-									padding: '3px 5px', 
-									background: ' black', 
-									color: 'white' 
-								}); 
+								clientsizetextshow.innerHTML = window.innerWidth + ' x ' + window.innerHeight + ' (px)'; 
+								document.body.Equip( clientsizetextshow );
 								
 								window.timeOutClientSizeCounter = setTimeout( function() 
 								{
 									clearTimeout( window.timeOutClientSizeCounter );
-									size.Remove();
-								}, 2000);
-							}, false );
+									clientsizetextshow.Remove(); 
+								}, 2000 );
+							}, false ); 
+							
+							element5.WriteError = function( string ) 
+							{
+								if( window.timeOutErrorMessageCounter ) 
+								{
+									clearTimeout( window.timeOutErrorMessageCounter );
+								}
+								else 
+								{
+									errormessagetextshow = element5( '#error-message' ).css( { position: 'fixed', bottom: '0px', left: '0px', width: '100%', height: '20%', opacity: '0.8', padding: '10px', color: 'red', borderTop: '1px solid #999', overflow: 'scroll' } );
+									var textErr = element5( '#error-txt' );
+									if( textErr.createdBy ) 
+									{
+										errormessagetextshow.Equip( textErr );
+									};
+								}
+								
+								document.body.Equip( errormessagetextshow ); 
+								
+								var errStr = document.createTextNode( 'ERROR: ' + string );
+								var p = element5.Create( 'p.error-text' ).css( { margin: '2px 0' } );
+								p.Equip( errStr );
+								
+								errormessagetextshow.Equip( p ); 
+								
+								window.timeOutErrorMessageCounter = setTimeout( function() 
+								{
+									clearTimeout( window.timeOutErrorMessageCounter );
+									window.timeOutErrorMessageCounter = 0;
+									errormessagetextshow.Remove();
+								}, 2000 );
+							}; 
+							
+							element5.WriteAlert = function( string ) 
+							{
+								if( window.timeOutAlertMessageCounter ) 
+								{
+									clearTimeout( window.timeOutAlertMessageCounter );
+								}
+								else 
+								{
+									alertmessagetextshow = element5( '#alert-message' ).css( { position: 'fixed', bottom: '0px', left: '0px', width: '100%', height: '20%', opacity: '0.8', padding: '10px', color: 'white', borderTop: '1px solid #999', overflow: 'scroll' } );
+									var textErr = element5( '#alert-txt' );
+									if( textErr.createdBy ) 
+									{
+										alertmessagetextshow.Equip( textErr );
+									};
+								}
+								
+								document.body.Equip( alertmessagetextshow ); 
+								
+								var errStr = document.createTextNode( 'ALERT: ' + string );
+								var p = element5.Create( 'p.alert-text' ).css( { margin: '2px 0' } );
+								p.Equip( errStr );
+								
+								alertmessagetextshow.Equip( p ); 
+								
+								window.timeOutAlertMessageCounter = setTimeout( function() 
+								{
+									clearTimeout( window.timeOutAlertMessageCounter );
+									window.timeOutAlertMessageCounter = 0;
+									alertmessagetextshow.Remove();
+								}, 5000 );
+							}; 
 						}
 						return this;
 					}, 
@@ -3087,16 +3234,6 @@ function Factory()
 				}; 
 				
 				module.exports = Solution; 
-				
-				// document.addEventListener( 'mousemove', function( e ) 
-				// {
-					// if( this.onMoveEL5Handle ) 
-					// {
-						// element5.clientX = e.clientX;
-						// element5.clientY = e.clientY;
-						// this.onMoveEL5Handle( e );
-					// }
-				// }, false );
 			}
 		]
 	);

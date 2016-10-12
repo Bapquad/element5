@@ -62,7 +62,7 @@ mainPage.introSection.introTxt.EquipedBy( mainPage.introSection );
 mainPage.introSection.introTxt.innerText = "element5 is a javascript library, which allows developer scripting for an application on web flatform with HTML5, CSS3 and Javascript.";
 
 var text = mainPage.Equip( element5.Create( 'h4' ) ).css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
-text.innerText = 'element5 include follow object:';
+text.innerText = 'element5 includes follow objects:';
 
 var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( { 'padding-left': '10px', 'list-style': 'none', 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0', 'max-width': '550px' } );
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="element5.html">element5</a> - This is an object primary using with our dom elements.';
