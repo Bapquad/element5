@@ -35,7 +35,7 @@ style5.AddCss( '.htxt' ).css( { 'margin-left': '10px', 'margin-top': '20px' } );
 style5.AddCss( '.mdh' ).css( { 'margin-left' : '10px', 'font-size': '17px' } ); 
 style5.AddCss( '.txt' ).css( { 'margin-left' : '10px', 'font-size': '12px' } ); 
 style5.AddCss( '.param-list' ).css( { 'margin' : '6px 10px', 'list-style': 'none', 'font-size': '12px' } ); 
-style5.AddCss( 'pre' ).css( { 'margin' : '0px 10px', 'padding': '10px', 'background': '#222', 'border': '1px solid #aaa' } ); 
+style5.AddCss( 'pre' ).css( { 'margin' : '0px 10px', 'padding': '10px', 'background': '#222', 'border': '1px solid #aaa', 'overflow-x': 'scroll' } ); 
 
 // Create the top page
 var topPage = element5.Create( 'h1#top-page' ); 
@@ -64,7 +64,7 @@ mainPage.introSection.introTxt.innerText = "element5 is a javascript library, wh
 var text = mainPage.Equip( element5.Create( 'h4' ) ).css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
 text.innerText = 'element5 include follow object:';
 
-var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( 'padding-left', '10px' ).css( 'list-style', 'none' ).css( { 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0' } );
+var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( { 'padding-left': '10px', 'list-style': 'none', 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0', 'max-width': '550px' } );
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="element5.html">element5</a> - This is an object primary using with our dom elements.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="style5.html">style5</a> - This is an object using in adjusting the css.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="timeline5.html">timeline5</a> - This is an object using to creating the animation.';

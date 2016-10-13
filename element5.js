@@ -1410,125 +1410,246 @@ function Factory()
 						}
 					}, 
 					
-					// TODO OnDrag , OnDrop.
 					Draggable: function( home ) 
 					{
+						var el = this; 
+						
+						if( home == undefined ) 
+						{
+							home = true; 
+						} 
+						
+						if( home == false )
+						{
+							el.css( 'position', 'absolute' ); 
+						} 
+						
 						if( element5.DragableElements == undefined ) 
 						{
 							element5.DragableElements = [];
 						}
-						var el = this; 
+						
 						element5.DragableElements.push( el );
-						home = home || true;
-						if( bom5.Device.IsMobile ) 
+						
+						function defaultStart ( el, evt ) 
 						{
-							el.addEventListener("touchstart", function( e ) 
+							try 
 							{
-								var layerX = e.touches[0].clientX;
-								var layerY = e.touches[0].clientY; 
+								if( el == undefined ) throw "The 'el' param is undefined.";
+								
+								var layerX = 0;
+								var layerY = 0;
+								
+								if( evt.type == "mousedown" ) 
+								{
+									layerX = evt.layerX;
+									layerY = evt.layerY; 
+								} 
+								else if( evt.type == "touchstart" )
+								{
+									layerX = evt.touches[0].clientX;
+									layerY = evt.touches[0].clientY; 
+								}
+								
 								if( home ) 
 								{
 									el.css( 'position', 'relative' ); 
-								} 
-								else 
-								{
-									el.css( 'position', 'absolute' ); 
 								}
+								
 								el.layerX = layerX;
 								el.layerY = layerY;
-								el.draggable = true;
 								
+								el.draggable = true; 
 								
-							}, false);
-							el.addEventListener("touchend", function( e ) 
+								el.onDragStart( evt );
+								
+								return el;
+							} 
+							catch( err ) 
 							{
-								// el.draggable = false;
-								var leftPos = el.offsetLeft + el.layerFinalX;
-								var topPos = el.offsetTop + el.layerFinalY;
-								el.css( { transform: 'translateX(0px) translateY(0px)' } ); 
+								if( console.error ) 
+									console.error( err ); 
+								else 
+									console.log( err ); 
+								return;
+							}
+						} 
+						
+						function defaultEnd( el, evt ) 
+						{
+							try 
+							{
+								if( el == undefined ) throw "The 'el' is undefined."; 
+								
+								el.draggable = false; 
+								
 								if( home ) 
 								{
 									el.css( 'position', 'static' );
 									el.css( { left: '0px', top: '0px' } );									
-								}
-								else 
-								{
-									el.css( { left: leftPos + 'px', top: topPos + 'px' } );									
 								} 
+								
+								if( evt.type == 'touchend' ) 
+								{
+									el.css( { transform: 'translateX(0px) translateY(0px)' } ); 
+									var positionX = el.offsetLeft + el.layerFinalX;
+									var positionY = el.offsetTop + el.layerFinalY; 
+									if ( !home ) 
+									{
+										el.css( { left: positionX + 'px', top: positionY + 'px' } );									
+									} 
+								}
 								
 								var len = element5.DroppableElements.length;
 								for( var i = 0; i < len; i++ ) 
 								{
-									element5.DroppableElements[ i ].checkCoord( el );
+									var callback = element5.DroppableElements[ i ].checkIsHited;
+									
+									if( callback ) 
+									{
+										element5.DroppableElements[ i ].checkIsHited( el ); 
+									}
+								} 
+								
+								el.onDragEnd( evt );
+								
+								return el;
+							} 
+							catch( err ) 
+							{
+								if( console.error ) 
+									console.error( err ); 
+								else 
+									console.log( err );
+								return;
+							}
+						} 
+						
+						function defaultOver ( el, evt ) 
+						{
+							try 
+							{
+								if( el == undefined ) throw "The 'el' is undefined.";
+								
+								if( !el.draggable ) 
+								{
+									return el;
 								}
+								
+								var clientX = 0;
+								var clientY = 0;
+								var touching = ( evt.type == 'touchmove');
+								
+								if( touching ) 
+								{
+									clientX = evt.touches[0].clientX;
+									clientY = evt.touches[0].clientY;
+									el.layerFinalX = clientX - el.layerX;
+									el.layerFinalY = clientY - el.layerY;
+								} 
+								else 
+								{
+									clientX = evt.clientX;
+									clientY = evt.clientY; 
+								}
+								
+								el.dragClientX = clientX;
+								el.dragClientY = clientY; 
+
+								evt.preventDefault(); 
+								
+								if( touching ) 
+								{
+									el.css( { transform: 'translateX(' + ( el.layerFinalX ) + 'px) translateY(' + (el.layerFinalY) + 'px)' } );
+								} 
+								else 
+								{
+									el.css( { left: (clientX - el.layerX) + 'px', top: (clientY-el.layerY) + 'px' } ); 
+								}
+								
+								el.onDragOver( evt ); 
+								
+								return el;
+							} 
+							catch( err ) 
+							{
+								if( console.error ) 
+									console.error( err ); 
+								else 
+									console.log( err ); 
+								return;
+							} 
+						}
+						
+						if( bom5.Device.IsMobile ) 
+						{
+							el.addEventListener("touchstart", function( e ) 
+							{
+								defaultStart( el, e )
+							}, false);
+							el.addEventListener("touchend", function( e ) 
+							{
+								defaultEnd( el, e ); 
 							}, false);
 							// el.addEventListener("touchcancel", function( e ) {}, false);
 							// el.addEventListener("touchleave", function( e ) {}, false);
 							el.addEventListener("touchmove", function( e ) 
 							{
-								if( el.draggable ) 
-								{
-									var clientX = e.touches[0].clientX;
-									var clientY = e.touches[0].clientY;
-									el.layerFinalX = clientX - el.layerX;
-									el.layerFinalY = clientY - el.layerY;
-									el.dragClientX = clientX;
-									el.dragClientY = clientY; 
-									
-									e.preventDefault();
-									el.css( { transform: 'translateX(' + ( el.layerFinalX ) + 'px) translateY(' + (el.layerFinalY) + 'px)' } );
-								}
+								defaultOver( el, e );
 							}, false);
 						} 
 						else 
 						{
 							el.addEventListener( 'mousedown', function( e ) 
 							{
-								var layerX = e.layerX;
-								var layerY = e.layerY;
-								if( home ) 
-								{
-									el.css( 'position', 'relative' ); 
-								} 
-								else 
-								{
-									el.css( 'position', 'absolute' ); 
-								}
-								el.layerX = layerX;
-								el.layerY = layerY;
-								el.draggable = true;
-								
+								defaultStart( el, e );
 							}, false );
 							
 							el.addEventListener( 'dragover', function( e ) 
 							{
-								var clientX = e.clientX;
-								var clientY = e.clientY; 
-								el.dragClientX = clientX;
-								el.dragClientY = clientY; 
-
-								e.preventDefault(); 
-								el.css( { left: (clientX - el.layerX) + 'px', top: (clientY-el.layerY) + 'px' } );
+								defaultOver( el, e );
 							}, true );
 							
 							el.addEventListener( 'dragend',function( e ) 
 							{
-								if( home ) 
-								{
-									el.css( 'position', 'static' );
-									el.css( { left: '0px', top: '0px' } );									
-								} 
-								
-								var len = element5.DroppableElements.length;
-								for( var i = 0; i < len; i++ ) 
-								{
-									element5.DroppableElements[ i ].checkCoord( el );
-								}
+								defaultEnd( el, e ); 
 							}, false );
 						}
 						
 						return el;
 					}, 
+					
+					onDragStart: function( callback ) 
+					{
+						var el = this;
+						
+						if( typeof callback == 'function' ) 
+						{
+							el.onDragStart = callback;
+						} 
+						
+						return el;
+					}, 
+					
+					onDragOver: function( callback ) 
+					{
+						var el = this;
+						if( typeof callback == 'function' ) 
+						{
+							el.onDragOver = callback;
+						}
+						return el;
+					}, 
+					
+					onDragEnd: function( callback ) 
+					{
+						var el = this;
+						if( typeof callback == 'function' ) 
+						{
+							el.onDragEnd = callback;
+						}
+						return el;
+					},
 					
 					Droppable: function( ondrop ) 
 					{
@@ -1536,11 +1657,12 @@ function Factory()
 						{
 							element5.DroppableElements = [];
 						}
+						
 						var el = this;
 						
 						element5.DroppableElements.push( el );
 						
-						el.checkCoord = function( item ) 
+						el.checkIsHited = function( item ) 
 						{
 							item = item || null;
 							
@@ -1554,7 +1676,7 @@ function Factory()
 							
 							if( !( x > selfLeft && x < selfRight && y > selfTop && y < selfBottom ) ) 
 							{
-								return;
+								return false;
 							}
 							
 							var currLeft = item.offsetLeft + item.layerFinalX;
@@ -1564,15 +1686,19 @@ function Factory()
 							
 							if( !( currRight < selfLeft || currLeft > selfRight || currBottom < selfTop || currTop > selfBottom ) ) 
 							{
-								if( ondrop != undefined ) 
+								if( ondrop != undefined && typeof ondrop == 'function' ) 
 								{
+									var callback = ondrop;
 									var e = new Object();
 									e.clientX = x;
 									e.clientY = y;
 									e.target = el;
-									ondrop( e );
-								}
-							}
+									callback( e ); 
+								} 
+								return true; 
+							} 
+							
+							return false;
 						}; 
 						
 						return el;
@@ -1717,7 +1843,7 @@ function Factory()
 					{
 						function setAttrs( str, el ) 
 						{
-							var patt = /(\w+)=(\w+)/gi;
+							var patt = /([\w\-\_]+)=([\w\-\_]+)/gi;
 							var attrs = {}; 
 							str.replace( patt , function( match, name, value ) 
 							{
@@ -2222,7 +2348,7 @@ function Factory()
 				// TODO
 				var Media = 
 				{
-					CreateVideo: function() 
+					Camera: function() 
 					{
 						// var video = element5.Create( 'video' );
 						// video.css( {'background': 'red'} );
@@ -2238,7 +2364,7 @@ function Factory()
 							// console.log(error.name + ": " + error.message);
 						// });
 					}, 
-					CreateAudio: function() 
+					Microphone: function() 
 					{
 						var audioContext = new AudioContext();
 
@@ -2353,26 +2479,56 @@ function Factory()
 						this.abort();
 						return this;
 					}
-				}
+				};
+				
+				var dataModifier = 
+				{
+					readVariables( text ) 
+					{
+						text = text || this.responseText;
+						var pat = /([\w\_]+)=([\w\-\_]+)/gi;
+						var result = text.match( pat ); 
+						if( result ) 
+						{
+							var data = new Object;
+							result.forEach( function( item, index )
+							{
+								itemData = item.split( '=' );
+								data[ itemData[ 0 ] ] = itemData[ 1 ];
+							});
+							return data;
+						}
+						else 
+						{
+							return result;
+						}
+					}
+				};
 				
 				var Request = 
 				{
-					Init : function( url, data ) 
+					Initialize : function( url, data ) 
 					{
 						var xhr = new XMLHttpRequest(); 
 						xhr.requestUrl = url || 0; 
 						xhr.requestData = data || 0;
-						return xhr;
+						return element5.Extend( xhr, XHRModifier );
 					}, 
 					
 					Connect: function( url, onload, data ) 
 					{
-						var origin = request5.Init( url, data );
-						var xhr = element5.Extend( origin, XHRModifier );
-						xhr.onLoad( onload ); 
-						xhr.Connect();
-						return;
+						var origin = request5.Initialize( url, data );
+						origin.onLoad( onload ); 
+						origin.Connect();
+						return origin;
 					}, 
+					
+					LoadVariables: function( url, onload, data ) 
+					{
+						var xhr = request5.Connect( url, onload, data );
+						element5.Extend( xhr, dataModifier );
+						return xhr;
+					}
 				} 
 				
 				module.exports = Request;
@@ -2652,7 +2808,6 @@ function Factory()
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 8 ) 
 			{
-				// TODO Check Review Code.
 				var Geo = (function( obj ) 
 				{
 					return new (function GeoClass () 
@@ -2692,14 +2847,14 @@ function Factory()
 						{
 							function success ( pos ) 
 							{
-								this.position = pos; 
+								geo5.position = pos; 
 
-								if( this.onDetectHandle ) 
+								if( geo5.onDetectHandle ) 
 								{
-									var callback = ( this.onDetectHandle )();
+									var callback = ( geo5.onDetectHandle )( geo5 );
 								} 
 
-								return this;
+								return geo5;
 							} 
 							
 							function error ( err ) 
@@ -2722,7 +2877,7 @@ function Factory()
 								// Loop via the options of settings
 								for( var x in options ) 
 								{
-									this.Settings[ x ] = options[ x ];	// Re-Assign the values of settings.
+									geo5.Settings[ x ] = options[ x ];	// Re-Assign the values of settings.
 								} 
 								
 								if( success ) 
@@ -2739,7 +2894,7 @@ function Factory()
 						this.ShowMyPositionOnMap = function() 
 						{
 							var latlon = this.position.coords.latitude + "," + this.position.coords.longitude;
-							return img_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=14&size=400x300&sensor=false";
+							return "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=17&size=400x300&sensor=false";
 						}; 
 						
 						this.onDetectPosition = this.onDetect;
