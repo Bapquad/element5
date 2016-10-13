@@ -19,15 +19,21 @@ style5.AddCss( 'body' ).css(
 // Designs a title of page.
 var titlePage = element5.Create( 'h1#top-page' );
 titlePage.innerText = document.title; 
-var user = 
-{
-	'infos': 
-	{
-		'name':'Cuong H.Vu'
-	}
-};
 
 db = store5.open( 'cookie_ds' ); 
+
+if( !db.private( 'username' ) ) 
+{
+	var item = db.private( 'username', 'Vu Huy Cuong' ); 
+	var value = item.GetValue();
+	item.SetValue( 'Cuong H.Vu' );
+} 
+else 
+{
+	var item = db.private( 'username' );
+	var value = item.GetValue();
+	console.log( value );
+}
 
 // When window load DOM Content completely.
 window.addEventListener( 'DOMContentLoaded', function( e ) 

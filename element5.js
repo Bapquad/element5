@@ -3051,7 +3051,7 @@ function Factory()
 								var domain = window.location.hostname;
 								var db_name = domain;
 								var branch = window.location.pathname.slice( 0, location.pathname.length-1 );
-								var expires = getExpire( 1, yearUnit ); 
+								var expires = 0; 
 								var records = 0;
 								var flatform = window.location.flatform;
 								
@@ -3080,20 +3080,85 @@ function Factory()
 								
 								function loadDB() 
 								{
-									var records = document.cookie;
+									var records = document.cookie.split( '; ' );
+									
+									var len = records.length;
+									
+									for ( var i = 0; i < len; i++ ) 
+									{
+										var split = ( /^(.*)=(.*)$/ ) . exec ( records[ i ] );
+										
+										var key = split[ 1 ], 
+											value = split[ 2 ];
+											
+										if( ( /^[\{\[].*[\}\]]$/ ) . exec ( value ) ) 
+										{
+											value = JSON.parse( value );
+										}
+										
+										records[ i ] = 
+										{
+											key : split[ 1 ], 
+											value: value
+										};
+									} 
+									
 									return records;
 								}
 								
 								if( document.cookie === '' ) 
 								{
-									console.log( 'mat goai!' );
+									console.log( 'Initialize the Database!' );
 									initDB();
 								} 
 								else 
 								{
 									console.log( 'DS has exist. All Ready!!!' );
 									records = loadDB();
-								}
+								} 
+								
+								var recordModifier = 
+								{
+									GetValue: function() 
+									{
+										return this.value.data;
+									}, 
+									
+									Destroy: function() 
+									{
+										var record = this;
+										
+										var cookieString = 
+										[
+											record.key + '=-1', 
+											'expires=' + getExpire( -10 ), 
+											'path=' + record.value.meta.branch, 
+										].join( '; ' );
+																				
+										document.cookie = cookieString; 
+										
+										if( record.value.meta.branch == "/" )
+											delete coreDS.Public[ record.key ]; 
+										else 
+											delete coreDS.Private[ record.key ]; 
+									}, 
+									
+									SetValue: function( data )
+									{
+										var record = this; 
+										
+										record.value.data = data;
+										
+										var cookieString = 
+										[
+											record.key + '=' + JSON.stringify( record.value ), 
+											'expires=' + record.value.meta.expires, 
+											'path=' + record.value.meta.branch, 
+										].join( '; ' );
+																				
+										document.cookie = cookieString; 
+									}
+								};
 								
 								var coreDS = 
 								{
@@ -3176,37 +3241,153 @@ function Factory()
 										return branch;
 									}, 
 									
-									Insert: function( origin, branch ) 
-									{
-										var timestamp = new Date(); 
-										// console.log( timestamp );
-									}, 
+									Insert: function( queryString ) { return 'id, key, value, branch, expires, timestamp from here where id = 10 limit 10, 19'; }, 
+									Update: function( queryString ) { return '(key, value, expires, timestamp) values ( username, Huy Cuong, 3 days, current ) from here'; }, 
+									Select: function( queryString ) { return 'key = username, value = Huy Cuong from here where id = 10'; }, 
+									Delete: function( queryString ) { return 'from here where id = 10'; }, 
+									Empty: function( queryString ) { return 'from here'; }, 
+									Query: function( queryString ) { return 'select: * from here where id = 1 limit 10'; }, 
+									Custom: function( cookieString ) { return '01={}, path=/, expires=UTCString'; }, 
 									
-									Update: function( data, origin, branch, id ) 
+									Public: function() 
 									{
+										var key = arguments[ 0 ], 
+											value = arguments[ 1 ], 
+											expires = arguments[ 2 ];
+											
+										var myCore = this;
 										
-									}, 
-									
-									Select: function( origin, branch, id ) 
-									{
+										if( arguments.length == 1 ) 
+										{
+											if( myCore.Public[ key ] != undefined ) 
+											{
+												return myCore.Public[ key ];
+											}
+											
+											var len = records.length;
+											
+											for ( var i = 0; i < len; i++ ) 
+											{
+												var item = records[ i ];
+												if( item.key == key && item.value.meta.branch == "/" ) 
+												{
+													return myCore.Public[ key ] = element5.Extend( item, recordModifier ); 
+												}
+											}
+											return;
+										} 
+										else if( arguments.length == 0 ) 
+										{
+											return myCore;
+										}
 										
-									}, 
-									
-									Delete: function( origin, branch, id ) 
-									{
+										var data = 
+										{
+											'meta': { 'branch':'/', 'expires': ( function() 
+											{
+												if( expires != undefined ) 
+												{
+													return getExpire( expires );
+												} 
+												else 
+												{
+													return 'Session';
+												}
+											})(), 'timestamp' : ( function() 
+											{
+												var time = new Date();
+												return time.getTime();
+											})()},
+											'data' : value, 
+										}; 
 										
-									}, 
-									
-									Empty: function( origin, branch ) 
-									{
+										var record = { 'key': key, 'value': data };
 										
+										var cookieString = [
+											key + '=' + JSON.stringify( data ), 
+											'expires=' + data.meta.expires, 
+											'path=/', 
+										].join( '; ' );
+																				
+										document.cookie = cookieString; 
+										
+										return myCore.Public[ key ] = element5.Extend( record, recordModifier );;
 									}, 
 									
-									Query: function( queryString ) 
+									Private: function() 
 									{
-										document.cookie = queryString;
-									},
+										var key = arguments[ 0 ], 
+											value = arguments[ 1 ], 
+											expires = arguments[ 2 ]; 
+										
+										var myCore = this;
+										
+										if( arguments.length == 1 ) 
+										{
+											if( myCore.Private[ key ] != undefined ) 
+											{
+												return myCore.Private[ key ];
+											}
+											
+											var len = records.length;
+											
+											for ( var i = 0; i < len; i++ ) 
+											{
+												if( records[ i ].key == key && records[ i ].value.meta.branch == branch ) 
+												{
+													return myCore.Private[ key ] = element5.Extend( records[ i ], recordModifier );
+												}
+											}
+											return;
+										} 
+										else if( arguments.length == 0 ) 
+										{
+											return myCore;
+										} 
+										
+										var data = 
+										{
+											'meta': { 'branch':branch, 'expires': ( function() 
+											{
+												if( expires != undefined ) 
+												{
+													return getExpire( expires );
+												} 
+												else 
+												{
+													return 'Session';
+												}
+											})(), 'timestamp' : ( function() 
+											{
+												var time = new Date();
+												return time.getTime();
+											})()},
+											'data' : value, 
+										}; 
+										
+										var record = { 'key': key, 'value': data };
+										
+										var cookieString = [
+											key + '=' + JSON.stringify( data ), 
+											'expires=' + data.meta.expires, 
+											'path=' + branch, 
+										].join( '; ' );
+																				
+										document.cookie = cookieString;
+										
+										return myCore.Private[ key ] = element5.Extend( record, recordModifier );;
+									}, 
 								}; 
+								
+								coreDS.select = coreDS.Select;
+								coreDS.insert = coreDS.Insert;
+								coreDS.update = coreDS.Update;
+								coreDS.delete = coreDS.Delete;
+								coreDS.empty = coreDS.Empty;
+								coreDS.query = coreDS.Query;
+								coreDS.custom = coreDS.Custom;
+								coreDS.public = coreDS.Public;
+								coreDS.private = coreDS.Private;
 								
 								return coreDS;
 							}
