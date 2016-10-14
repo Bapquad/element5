@@ -1843,7 +1843,7 @@ function Factory()
 					{
 						function setAttrs( str, el ) 
 						{
-							var patt = /([\w\-\_]+)=([\w\-\_]+)/gi;
+							var patt = /([\w\-\_]+)=([\w\-\_\.]+)/gi;
 							var attrs = {}; 
 							str.replace( patt , function( match, name, value ) 
 							{
@@ -2352,8 +2352,7 @@ function Factory()
 					{
 						var mediaStream = 0;
 						var webcamList = 0;
-						var currentCam = 0;
-						var photoReady = false; 
+						var currentCam = null;
 						
 						function enumDeviceErrorHandle ( e )
 						{
@@ -2370,6 +2369,7 @@ function Factory()
 						function deviceChanged( e ) 
 						{
 							navigator.mediaDevices.removeEventListener( 'devicechange', deviceChanged );
+							currentCam = null;
 							init();
 						} 
 						
@@ -2405,7 +2405,7 @@ function Factory()
 								{
 									var videoTracks = mediaStream.getVideoTracks(); 
 									videoTracks[0].stop();
-									mediaStream = null;
+									mediaStream = 0;
 								}
 								
 								navigator.mediaDevices.getUserMedia({
@@ -2433,6 +2433,8 @@ function Factory()
 							if( webcamList.length <= 0 ) 
 								return;
 							
+							currentCam = 0;
+							
 							nextCamera();
 							
 							// TODO Media devicechange Event. 
@@ -2445,6 +2447,10 @@ function Factory()
 							{
 								// Enumerate devices
 								navigator.mediaDevices.enumerateDevices().then( deviceEnumeratedHandle ).catch( enumDeviceErrorHandle );
+							} 
+							else 
+							{
+								Media.IncludeWebRtc( init );
 							}
 						}
 						
@@ -2457,9 +2463,169 @@ function Factory()
 						
 						return video;
 					}, 
+					
+					IncludeWebRtc: function( callback ) 
+					{
+						if( !Media.include_webrtc_once ) 
+						{
+							var webrtc = document.createElement( 'script' );
+							webrtc.async = true;
+							webrtc.onload = function() 
+							{
+								if( callback != undefined ) 
+								{
+									callback();
+								} 
+								document.head.removeChild( webrtc );
+							};
+							webrtc.src = "/element5/webrtc/adapter.js";
+							document.head.appendChild( webrtc ); 
+							Media.include_webrtc_once = true;
+						} 
+					}, 
+					
 					StartMicrophone: function() 
 					{
+						var deviceList = 0;
+						var deviceCurrent = null; 
+						var mediaStream = 0;
+						var webRtcSource = null;
+						var audioContext = new ( window.AudioContext || window.webKitAudioContext )();
 						
+						function enumDeviceErrorHandle ( e )
+						{
+							if( e.name.indexOf ( 'NotFoundError' ) >= 0 ) 
+							{
+								console.error( 'Have not a microphone found.' );
+							} 
+							else 
+							{
+								console.error( 'The following error occurred: ' + e.name + '. Please check your camera and try again.' );
+							}
+						} 
+						
+						function deviceChanged( e ) 
+						{
+							navigator.mediaDevices.removeEventListener( 'devicechange', deviceChanged );
+							init();
+						} 
+						
+						function initializeAudioStream( stream ) 
+						{
+							mediaStream = stream; 
+							
+							webRtcSource = audioContext.createMediaStreamSource( stream ); 
+							webRtcSource.connect( audioContext.destination ); 
+						}
+						
+						function initSession() 
+						{
+							if( deviceCurrent !== null ) 
+							{
+								deviceCurrent++;
+								
+								if( deviceCurrent >= deviceList.length ) 
+								{
+									deviceCurrent = 0;
+								} 
+								
+								clearSession();
+								
+								navigator.mediaDevices.getUserMedia( 
+								{
+									audio: {
+										deviceId: { exact: deviceList[ deviceCurrent ] }
+									} 
+								}).then( initializeAudioStream ).catch( enumDeviceErrorHandle );
+							} 
+						}
+						
+						function clearSession() 
+						{
+							if( webRtcSource ) 
+							{
+								webRtcSource.disconnect();
+								webRtcSource = null;
+							} 
+							
+							if( mediaStream ) 
+							{
+								var audioTrack = mediaStream.getAudioTracks(); 
+								audioTrack[ 0 ].stop();
+								mediaStream = 0;
+							}
+						}
+						
+						function stopSession() 
+						{
+							clearSession();
+						}
+						
+						function deviceEnumeratedHandle( devices ) 
+						{
+							deviceList = new Array(); 
+							var len = devices.length;
+							for( var i = 0; i < len; i++ ) 
+							{
+								if( devices[ i ].kind == 'audioinput' ) 
+								{
+									var hasDeviceId = false;
+									
+									if( deviceList.length ) 
+									{
+										for( var j = 0; j < deviceList.length; j++ ) 
+										{
+											if( deviceList[ j ] === devices[ i ].deviceId ) 
+											{
+												hasDeviceId = true;
+												break;
+											}
+										}
+									}
+									
+									if( !hasDeviceId ) 
+									{
+										deviceList[ deviceList.length ] = devices[ i ].deviceId; 
+									}
+								}
+							} 
+							
+							if( deviceList.length <= 0 ) 
+							{
+								return; 
+							}
+							
+							deviceCurrent = 0;
+							
+							initSession();
+							
+							// TODO Media devicechange Event. 
+							navigator.mediaDevices.addEventListener( 'devicechange' , deviceChanged );
+						}
+						
+						function init() 
+						{
+							if( navigator.getUserMedia ) 
+							{
+								// Enumerate devices
+								navigator.mediaDevices.enumerateDevices().then( deviceEnumeratedHandle ).catch( enumDeviceErrorHandle );
+							} 
+							else 
+							{
+								Media.IncludeWebRtc( init );
+							}
+						}
+						
+						init(); 
+						
+						audioContext.stopSession = stopSession;
+						audioContext.nextDevice = initSession;
+						audioContext.numberDevice = function() 
+						{
+							return deviceList.length;
+						};
+						
+						return audioContext;
 					}
 				};
 				
