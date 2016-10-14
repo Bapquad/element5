@@ -2960,13 +2960,12 @@ function Factory()
 				
 				var storageTypes = 
 				[
-					[	'expireds', 	'ExpDS', 		'ExpireDataSim'		], 		// Cookie DataStorage Simulator.
-					[	'cacheds', 		'CacDS', 		'CacheDataSim'		], 		// CachesStoge DataStorage Simulator.
-					[	'localds', 		'LocDS', 		'LocalDataSim'		], 		// LocalStorage DataStorage Simulator.
-					[	'sessionds', 	'SesDS', 		'SessionDataSim'	], 		// SessionStorage DataStorage Simulator.
-					[	'appds', 		'AppDS', 		'ApplicationDataSim'],		// ApplicationStorage DataStorage Simulator.
-					[	'indexeddb', 	'IndexedDB',	'ClientDatabase'	], 		// IndexedDB Database Technology.
-					[	'clientdb', 	'ClientDB', 	'ClientDatabase'	] 		// Web Database Technology.
+					['expire_ds', 	'ExpDS', 		'ExpireDataSim', 	'strict_ds',  'cookie_ds'		], 		// Cookie DataStorage Simulator.
+					['local_ds', 	'LocDS', 		'LocalDataSim'		], 		// LocalStorage DataStorage Simulator.
+					['session_ds', 	'SesDS', 		'SessionDataSim'	], 		// SessionStorage DataStorage Simulator.
+					['app_ds', 		'AppDS', 		'ApplicationDataSim'],		// ApplicationStorage DataStorage Simulator.
+					['indexed_db', 	'IndexedDB',	'IndexedDatabase'	], 		// IndexedDB Database Technology.
+					['client_db', 	'ClientDB', 	'ClientDatabase'	] 		// Web Database Technology.
 				]; 
 				
 				var fieldType = [ ':number', ':string', ':boolean', ':object', ':prototype' ];
@@ -2987,7 +2986,8 @@ function Factory()
 							
 							for( var i = 0; i < len; i++ ) 
 							{
-								for( var j = 0; j < 3; j++ ) 
+								var lenj = storageTypes[ i ].length;
+								for( var j = 0; j < lenj; j++ ) 
 								{
 									if( storageTypes[ i ][ j ].indexOf( storageType ) >= 0) 
 									{
@@ -3003,7 +3003,253 @@ function Factory()
 							} 
 							
 							// Open new a database.
-							Store[ 'ClientDB' ] = new Array(); 
+							var storageType = storageTypes[ len ][ 2 ];
+							///////////////////////////////////
+							var secondUnit = 1000;
+							var minuteUnit = 60 * secondUnit;
+							var hourUnit = 60 * minuteUnit;
+							var dayUnit = 24 * hourUnit;
+							var yearUnit = 365 * dayUnit;
+							///////////////////////////////////
+
+							switch( storageType ) 
+							{
+								case 'ExpireDataSim': 	// Using Cookie store.
+									return suftByExpireDS(); 
+									break;
+									
+								case 'LocalDataSim': 	// Using local store.
+									suftByLocalDS(); 
+									break; 
+									
+								case 'SessionDataSim':	// Using session store.
+									suftBySessionDS(); 
+									break;
+								
+								case 'ApplicationDataSim': 
+									// TODO : Check cross-browser.
+									break; 
+									
+								case 'IndexedDatabase': // Apply the IndexedDB. crossed-browser.
+									suftByIndexedDB(); 
+									break; 
+									
+								case 'ClientDatabase': 	// Apply the clientDB.
+									suftByClientDB(); 
+									break;
+							} 
+							
+							function suftByExpireDS() 
+							{
+								if( storageType != 'ExpireDataSim' ) 
+								{
+									return;
+								} 
+								
+								var key = null;
+								var value = null;
+								var domain = window.location.hostname;
+								var db_name = domain;
+								var branch = window.location.pathname.slice( 0, location.pathname.length-1 );
+								var expires = getExpire( 1, yearUnit ); 
+								var records = 0;
+								var flatform = window.location.flatform;
+								
+								function getExpire( time, unit ) 
+								{
+									unit = unit || secondUnit;
+									
+									var expires;
+									var y = new Date(); 
+									y.setTime( y.getTime() + ( time ) * unit );
+									expires = y.toUTCString(); 
+									
+									return expires;
+								} 
+								
+								function initDB() 
+								{
+									var infosStr = [
+										'flatform=' + db_name, 
+										'domain=' + domain, 
+										'expires=' + getExpire( 1, yearUnit ), 	// seconds
+										'path=/', 			// Global store.
+									];
+									document.cookie = infosStr.join( '; ' ); 
+								} 
+								
+								function loadDB() 
+								{
+									var records = document.cookie;
+									return records;
+								}
+								
+								if( document.cookie === '' ) 
+								{
+									console.log( 'mat goai!' );
+									initDB();
+								} 
+								else 
+								{
+									console.log( 'DS has exist. All Ready!!!' );
+									records = loadDB();
+								}
+								
+								var coreDS = 
+								{
+									Key: function( name ) 
+									{
+										var myCore = this;
+										key = name.toString(); 
+										return myCore;
+									}, 
+									
+									SetKey: function( name ) 
+									{
+										var myCore = this;
+										return myCore.Key( name ); 
+									}, 
+									
+									GetKeyValue: function() 
+									{
+										if( key ) 
+										{
+											return key; 
+										} 
+										else 
+										{
+											return;
+										}
+									}, 
+									
+									Data: function( data ) 
+									{
+										var myCore = this;
+										value = data; 
+										return myCore;
+									},
+									
+									SetData: function( data ) 
+									{
+										var myCore = this;
+										return myCore.Value( data ); 
+									}, 
+									
+									GetDataValue: function() 
+									{
+										return value; 
+									}, 
+									
+									Expires: function( time ) 
+									{
+										var myCore = this;
+										expires = getExpire( time ); 
+										return myCore;
+									},
+									
+									SetExpires: function( time ) 
+									{
+										var myCore = this;
+										return myCore.Expires( time ); 
+									}, 
+									
+									GetExpiresValue: function( time ) 
+									{
+										return expires;
+									}, 
+									
+									Branch: function( scope ) 
+									{
+										var myCore = this; 
+										branch = scope;
+										return myCore;
+									}, 
+									
+									SetBranch: function( scope ) 
+									{
+										var myCore = this;
+										return myCore.Branch( scope );
+									}, 
+									
+									GetBranch: function() 
+									{
+										return branch;
+									}, 
+									
+									Insert: function( origin, branch ) 
+									{
+										var timestamp = new Date(); 
+										// console.log( timestamp );
+									}, 
+									
+									Update: function( data, origin, branch, id ) 
+									{
+										
+									}, 
+									
+									Select: function( origin, branch, id ) 
+									{
+										
+									}, 
+									
+									Delete: function( origin, branch, id ) 
+									{
+										
+									}, 
+									
+									Empty: function( origin, branch ) 
+									{
+										
+									}, 
+									
+									Query: function( queryString ) 
+									{
+										document.cookie = queryString;
+									},
+								}; 
+								
+								return coreDS;
+							}
+							
+							function suftByLocalDS() 
+							{
+								if( storageType != 'LocalDataSim' ) 
+								{
+									return;
+								} 
+								console.log( storageType );
+							}
+							
+							function suftBySessionDS() 
+							{
+								if( storageType != 'SessionDataSim' ) 
+								{
+									return;
+								} 
+								console.log( storageType );
+							}
+							
+							function suftByIndexedDB() 
+							{
+								if( storageType != 'IndexedDatabase' ) 
+								{
+									return;
+								} 
+								console.log( storageType );
+							}
+							
+							function suftByClientDB() 
+							{
+								if( storageType != 'ClientDatabase' ) 
+								{
+									return;
+								}
+								console.log( storageType );
+							}
+							
+							return;
+							
+							Store[ storageTypes[ len ][ 2 ] ] = new Array(); 
 							
 							var database = new Array(); 
 							
