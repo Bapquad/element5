@@ -22,24 +22,62 @@ titlePage.innerText = document.title;
 
 db = store5.open( 'cookie_ds' ); 
 
-if( !db.private( 'username' ) ) 
+var exist;
+// Design a text hint.
+var textHint = element5.Create( 'p[id=hint]' );
+var form = element5.Create( 'form[id=input-wrap]' );
+var textBox = form.Equip( element5.Create( 'input[id=username][name=username][placeholder=Username]' ).css( 'margin-right', '10px' ) );
+var submitBtn = form.Equip( element5.Create( 'input[value=Submit][type=submit]' ) );
+var errorHint = element5.Create( 'span#error-hint' ).css( 'color', 'red' );
+var data = db.private( 'username' );
+
+form.onsubmit = function( e ) 
 {
-	var item = db.private( 'username', 'Vu Huy Cuong' ); 
-	var value = item.GetValue();
-	item.SetValue( 'Cuong H.Vu' );
+	if( e.target.username.value != '' ) 
+	{
+		data = db.private( 'username' );
+		
+		if( !data ) 
+		{
+			// data = db.private( 'username', e.target.username.value, 4 ); 	// Working likes cookie.
+			data = db.private( 'username', e.target.username.value );			// Working likes session.
+		}
+		
+		form.Remove();
+		
+		textHint.innerText = "The username is: " + data.GetValue();
+	}
+	else 
+	{
+		errorHint.innerText = "Username couldn\'t to empty.";
+		document.body.Equip( errorHint );
+	}
+	return false;
+};
+
+if( !data ) 
+{
+	exist = false;
+	textHint.innerText = 'Let\'s input the username to below textbox.';
 } 
 else 
 {
-	var item = db.private( 'username' );
-	var value = item.GetValue();
-	console.log( value );
+	exist = true;
+	textHint.innerText = "The username is: " + data.GetValue();
 }
 
 // When window load DOM Content completely.
 window.addEventListener( 'DOMContentLoaded', function( e ) 
 {
 	document.body = element5.GetBody(  );
-	document.body.Equip( titlePage );
+	document.body.Equip( titlePage ); 
+	document.body.Equip( textHint );
+	
+	if( !exist ) 
+	{
+		document.body.Equip( form );
+	}
+	
 }, false );
 </script>
 </head>

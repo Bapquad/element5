@@ -3011,16 +3011,25 @@ function Factory()
 							var dayUnit = 24 * hourUnit;
 							var yearUnit = 365 * dayUnit;
 							///////////////////////////////////
-
+							function getExpire( time, unit ) 
+							{
+								unit = unit || secondUnit;
+								
+								var expires;
+								var y = new Date(); 
+								y.setTime( y.getTime() + ( time ) * unit );
+								expires = y.toUTCString(); 
+								
+								return expires;
+							} 
+							
 							switch( storageType ) 
 							{
 								case 'ExpireDataSim': 	// Using Cookie store.
 									return suftByExpireDS(); 
-									break;
 									
 								case 'LocalDataSim': 	// Using local store.
-									suftByLocalDS(); 
-									break; 
+									return suftByLocalDS(); 
 									
 								case 'SessionDataSim':	// Using session store.
 									suftBySessionDS(); 
@@ -3053,19 +3062,7 @@ function Factory()
 								var branch = window.location.pathname.slice( 0, location.pathname.length-1 );
 								var expires = 0; 
 								var records = 0;
-								var flatform = window.location.flatform;
-								
-								function getExpire( time, unit ) 
-								{
-									unit = unit || secondUnit;
-									
-									var expires;
-									var y = new Date(); 
-									y.setTime( y.getTime() + ( time ) * unit );
-									expires = y.toUTCString(); 
-									
-									return expires;
-								} 
+								var flatform = window.location.hostname;
 								
 								function initDB() 
 								{
@@ -3394,11 +3391,408 @@ function Factory()
 							
 							function suftByLocalDS() 
 							{
+								/*
+								 * Database with unsecuries commendation.
+								 */
 								if( storageType != 'LocalDataSim' ) 
 								{
 									return;
 								} 
-								console.log( storageType );
+								
+								var flatform = window.location.hostname;
+								var domain = window.location.hostname;
+								var branch = window.location.pathname.slice( 0, location.pathname.length-1 );
+								var records = 0;
+								
+								var DSDescription =
+								{
+									'lds_flatform': 'LDSim', 
+									'lds_prefix': 'lds_',
+									'lds_initBranch': branch, 
+									'lds_autoIncrement': 0, 
+									'lds_initTime': ( function() 
+									{
+										var dt = new Date();
+										return dt.getTime();
+									})(), 
+									
+									// 'lds_id 1 username': 
+									// JSON.stringify( 
+									// { 
+										// key: 'username', 
+										// value: 
+										// {
+											// meta: { branch: branch, timestamp: '154323442', expires: '1315123' }, 
+											// data: 'Cuong H.Vu'
+										// } 
+									// })
+								}; 
+								
+								function getFlatform() 
+								{
+									return localStorage.getItem( 'lds_flatform' );
+								} 
+								
+								function setFlatform( value ) 
+								{
+									if( localStorage.getItem( 'lds_flatform' ) )
+										localStorage.setItem( 'lds_flatform', value ); 
+								} 
+								
+								function getAutoIncrement() 
+								{
+									var autoIncrement = localStorage.getItem( 'lds_autoIncrement' );
+									if( autoIncrement != undefined ) 
+									{
+										return parseInt( autoIncrement );
+									} 
+								} 
+								
+								function getTime() 
+								{
+									var time = localStorage.getItem( 'lds_initTime' ); 
+									if( time != undefined ) 
+									{
+										return parseInt( time );
+									}
+								} 
+								
+								function getBranch() 
+								{
+									return localStorage.getItem( 'lds_initBranch' ); 
+								} 
+								
+								function getPrefix() 
+								{
+									return localStorage.getItem( 'lds_prefix' ); 
+								}
+
+								var format = [
+									getFlatform(), 
+									getAutoIncrement(), 
+									getTime(), 
+									getBranch(), 
+									getPrefix() 
+								];					
+								
+								function checkFormat() 
+								{
+									for( var i = 0; i < format.length; i++ ) 
+									{
+										if( format[ i ] === undefined ) 
+										{
+											return false;
+										}
+									} 
+									return true;
+								}
+								
+								function autoIncrement() 
+								{
+									var autoIncrement = getAutoIncrement(); 
+									if( autoIncrement != undefined ) 
+									{
+										autoIncrement += 1;
+										localStorage.setItem( 'lds_autoIncrement',  autoIncrement );
+										return autoIncrement;
+									} 
+									return 0; 
+								} 
+								
+								var variableModifier = 
+								{
+									Remove: function() 
+									{
+										var item = this;
+										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+										localStorage.removeItem( keyInput );
+									}, 
+									GetValue: function() 
+									{
+										var item = this;
+										return item.value.value.data;
+									}, 
+									SetValue: function( data ) 
+									{
+										var item = this;
+										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+										item.value.value.data = data; 
+										localStorage.setItem( keyInput, JSON.stringify( item.value ) );
+										return item;
+									}
+								}
+								
+								var coreDS = 
+								{
+									Public: function() 
+									{
+										var key = arguments[ 0 ], 
+											value = arguments[ 1 ], 
+											expires = arguments[ 2 ];
+										
+										if( expires ) 
+										{
+											expires = parseInt( expires );
+										} 
+										else 
+										{
+											expires = 'imexpire';
+										}
+										
+										var myCore = this;
+										
+										if( arguments.length == 0 ) 
+										{
+											return myCore; 
+										} 
+										
+										var item;
+										var len = records.length; 
+										var dataInput = 0;
+										var keyId = 0;
+										var keyInput = 0;
+										
+										if( myCore.Public[ key ] != undefined )  
+										{
+											if( arguments.length == 1 ) 
+											{
+												return myCore.Public[ key ];
+											}
+											else 
+											{
+												item = myCore.Public[ key ];
+												keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+												dataInput = item.value;
+											} 
+										} 
+										
+										for( var i = 0; i < len; i++ ) 
+										{
+											if( records[ i ] == undefined ) 
+											{
+												continue;
+											} 
+											
+											item = records[ i ]; 
+											var scope = item.value.value.meta.branch;
+											
+											if( item.key == key && scope == '/' ) 
+											{
+												if( arguments.length == 1 ) 
+												{
+													return myCore.Public[ key ] = element5.Extend( item, variableModifier );
+												}
+												else 
+												{
+													keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+													dataInput = item.value;
+													break;
+												}
+											}
+										}
+										
+										if( !keyInput && !dataInput ) 
+										{
+											keyId = autoIncrement();
+											keyInput = 'lds_id ' + keyId + ' ' + key;
+											dataInput =  
+											{ 
+												key: key, 
+												value: 
+												{
+													meta: 
+													{ 
+														branch: '/', 
+														timestamp: ( function() 
+														{
+															var d = new Date();
+															return d.getTime();
+														})(), 
+														expires: expires,
+													}, 
+													data: value
+												} 
+											}; 
+											
+											item = 
+											{
+												id: keyId, 
+												key: key, 
+												value: dataInput
+											}; 
+										} 
+										else 
+										{
+											dataInput.value.data = value;
+										}
+										
+										localStorage.setItem( keyInput, JSON.stringify( dataInput ) ); 
+										
+										return myCore.Public[ key ] = element5.Extend( item, variableModifier ); 
+									}, 
+									
+									Private: function() 
+									{
+										var key = arguments[ 0 ], 
+											value = arguments[ 1 ] || '', 
+											expires = arguments[ 2 ];
+										
+										if( expires ) 
+										{
+											expires = parseInt( expires );
+										} 
+										else 
+										{
+											expires = 'imexpire';
+										}
+										
+										var myCore = this;
+										
+										if( arguments.length == 0 ) 
+										{
+											return myCore; 
+										} 
+										
+										var len = records.length; 
+										var dataInput = 0;
+										var keyId = 0;
+										var keyInput = 0;
+										var item;
+										if( myCore.Private[ key ] != undefined )  
+										{
+											if( arguments.length == 1 ) 
+											{
+												return myCore.Private[ key ];
+											}
+											else 
+											{
+												item = myCore.Private[ key ];
+												keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+												dataInput = item.value;
+											} 
+										} 
+										
+										for( var i = 0; i < len; i++ ) 
+										{
+											if( records[ i ] == undefined ) 
+											{
+												continue;
+											} 
+											
+											item = records[ i ]; 
+											var scope = item.value.value.meta.branch;
+											
+											if( item.key == key && scope == branch ) 
+											{
+												if( arguments.length == 1 ) 
+												{
+													return myCore.Private[ key ] = element5.Extend( item, variableModifier );
+												}
+												else 
+												{
+													keyInput = 'lds_id ' + item.id + ' ' + item.key; 
+													dataInput = item.value; 
+													break;
+												}
+											}
+										} 
+										
+										if( arguments.length == 1 ) return;
+										
+										if( !keyInput && !dataInput ) 
+										{
+											keyId = autoIncrement();
+											keyInput = 'lds_id ' + keyId + ' ' + key;
+											dataInput =  
+											{ 
+												key: key, 
+												value: 
+												{
+													meta: 
+													{ 
+														branch: branch, 
+														timestamp: ( function() 
+														{
+															var d = new Date();
+															return d.getTime();
+														})(), 
+														expires: expires,
+													}, 
+													data: value
+												} 
+											}; 
+											
+											item = 
+											{
+												id: keyId, 
+												key: key, 
+												value: dataInput
+											};
+										} 
+										else 
+										{
+											dataInput.value.data = value;
+										}
+										
+										localStorage.setItem( keyInput, JSON.stringify( dataInput ) ); 
+										
+										return myCore.Private[ key ] = element5.Extend( item, variableModifier ); 
+									}, 
+								};
+								
+								coreDS.public = coreDS.Public; 
+								coreDS.private = coreDS.Private; 
+								
+								function initDB() 
+								{
+									element5.Extend( localStorage, DSDescription ); 
+									return loadDB();
+								} 
+								
+								function loadDB() 
+								{
+									var records = new Array();
+									
+									var len = localStorage.length;  
+									
+									for( var i = 0; i < len; i++ ) 
+									{
+										var id, item;
+										var key = localStorage.key( i );
+										var value = localStorage.getItem( key ); 
+										var pat = ( /^lds_id (\d+) (.*)/ ) . exec ( key );
+										if( pat != null ) 
+										{
+											id = parseInt( pat[ 1 ] );
+											key = pat[ 2 ]; 
+											item = 
+											{
+												id : parseInt( pat[ 1 ] ), 
+												key: pat[ 2 ], 
+												value: JSON.parse( value ), 
+											};
+											
+											records.push( item );
+											var scope = item.value.value.meta.branch;
+											if( scope == '/' || scope == branch ) 
+											{ 
+												coreDS.Public[ key ] = element5.Extend( item, variableModifier );
+											}
+										}
+									}
+									return records;
+								} 
+								
+								if( checkFormat() ) 
+								{
+									records = loadDB();
+								} 
+								else 
+								{
+									records = initDB();
+								} 
+								
+								return element5.Extend( DSDescription, coreDS );
 							}
 							
 							function suftBySessionDS() 

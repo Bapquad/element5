@@ -20,12 +20,14 @@ style5.AddCss( 'body' ).css(
 var titlePage = element5.Create( 'h1#top-page' );
 titlePage.innerText = document.title; 
 
-store5.open( 'expire_ds' ); 
+var locdb = store5.open( 'local_ds' ); 
+var username = locdb.public( 'username' );
+console.log( username );
 
 // When window load DOM Content completely.
 window.addEventListener( 'DOMContentLoaded', function( e ) 
 {
-	document.body = element5.GetBody(  );
+	document.body = element5.GetBody();
 	document.body.Equip( titlePage );
 }, false );
 </script>
