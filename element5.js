@@ -70,12 +70,13 @@ function Factory()
 				module.exports.element5 = __webpack_require__( 1 ); 
 				module.exports.style5 = __webpack_require__( 2 ); 
 				module.exports.timeline5 = __webpack_require__( 3 ); 
-				module.exports.media5 = __webpack_require__( 4 );
-				module.exports.request5 = __webpack_require__( 5 ); 
-				module.exports.bom5 = __webpack_require__( 6 ); 
-				module.exports.store5 = __webpack_require__( 7 );
-				module.exports.geo5 = __webpack_require__( 8 ); 
-				module.exports.solution5 = __webpack_require__( 9 ); 
+				module.exports.motion5 = __webpack_require__( 4 ); 
+				module.exports.media5 = __webpack_require__( 5 );
+				module.exports.request5 = __webpack_require__( 6 ); 
+				module.exports.bom5 = __webpack_require__( 7 ); 
+				module.exports.store5 = __webpack_require__( 8 );
+				module.exports.geo5 = __webpack_require__( 9 ); 
+				module.exports.solution5 = __webpack_require__( 10 ); 
 			},
 			function( module ) 								// pack require ( 1 ) 
 			{
@@ -2343,7 +2344,73 @@ function Factory()
 				
 				module.exports = Timeline;
 			}, 
-			function( module, __webpack_require__ ) 		// pack require ( 4 )
+			function( module, __webpack_require__ ) 		// pack require ( 4 ) 
+			{
+				var spriteModifier = 
+				{
+					
+				}; 
+				
+				var scrollModifier = 
+				{
+					
+				};
+				
+				var Motion = 
+				{
+					Sprite: function( width, height, imageURL ) 
+					{
+						var obj = 
+						{
+							width: width, 
+							height: height, 
+							imageURL: imageURL, 
+							
+							Effect: function( el ) 
+							{
+								el.MotionSprite = 
+								{
+									width: width + 'px', 
+									height: height + 'px', 
+									backgroundImage: imageURL, 
+								};
+								el.css( el.MotionSprite ); 
+								element5.Extend( el.MotionSprite, spriteModifier ); 
+								return el;
+							}
+						};
+						
+						return element5.Extend( obj, spriteModifier ); 
+					}, 
+					Scroll: function( width, height, imageURL, orientation ) 
+					{
+						var obj = 
+						{
+							width: width, 
+							height: height, 
+							imageURL: imageURL, 
+							
+							Effect: function( el ) 
+							{
+								el.MotionScroll = 
+								{
+									width: width + 'px', 
+									height: height + 'px', 
+									backgroundImage: imageURL, 
+								};
+								el.css( el.MotionScroll ); 
+								element5.Extend( el.MotionScroll, scrollModifier ); 
+								return el;
+							}
+						};
+						
+						return element5.Extend( obj, scrollModifier ); 
+					}
+				};
+				
+				module.exports = Motion;
+			},
+			function( module, __webpack_require__ ) 		// pack require ( 5 )
 			{
 				// TODO
 				var Media = 
@@ -2967,43 +3034,77 @@ function Factory()
 					['indexed_db', 	'IndexedDB',	'IndexedDatabase'	], 		// IndexedDB Database Technology.
 					['client_db', 	'ClientDB', 	'ClientDatabase'	] 		// Web Database Technology.
 				]; 
-				
+				var numberOfType = storageTypes.length;
+				var current;
 				var fieldType = [ ':number', ':string', ':boolean', ':object', ':prototype' ];
 				fieldType.buffNumber = function( fieldName ) 
 				{
 					console.log( 'field name: ' + fieldName ); 
 					console.log( this );
+				} 
+				
+				function GetTypeRequest( storageType ) 
+				{
+					for( var i = 0; i < numberOfType; i++ ) 
+					{
+						var lenj = storageTypes[ i ].length;
+						for( var j = 0; j < lenj; j++ ) 
+						{
+							if( storageTypes[ i ][ j ].indexOf( storageType ) >= 0) 
+							{
+								current = i;
+								break;
+							}
+						}
+					}								
+					
+					return ( current == numberOfType ); 
 				}
 				
-				var Store = {
+				var Store = 
+				{
+					interface: function( storageType ) 
+					{
+						if( GetTypeRequest( storageType ) ) 
+						{
+							return false;
+						} 
+						
+						var storageType = storageTypes[ current ][ 2 ]; 
+						
+						switch( storageType ) 
+						{								
+							case 'IndexedDatabase':
+								window.URL = window.URL || window.webkitURL
+								window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+								var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
+								IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
+								return indexedDB;
+							
+							case 'LocalDataSim': 
+								return localStorage;
+								
+							case 'SessionDataSim':
+								return sessionStorage;
+							
+							default:
+								return null;
+						}
+					}, 
 					open: function( storageType ) 
 					{
 						try 
 						{
 							if( arguments.length <= 0 ) throw "storageType is undefined."; 
 							
-							var len = storageTypes.length; 
-							
-							for( var i = 0; i < len; i++ ) 
-							{
-								var lenj = storageTypes[ i ].length;
-								for( var j = 0; j < lenj; j++ ) 
-								{
-									if( storageTypes[ i ][ j ].indexOf( storageType ) >= 0) 
-									{
-										len = i;
-										break;
-									}
-								}
-							}								
-							
-							if( len == storageTypes.length ) 
+							if( GetTypeRequest( storageType ) ) 
 							{
 								return false;
 							} 
 							
 							// Open new a database.
-							var storageType = storageTypes[ len ][ 2 ];
+							var storageType = storageTypes[ current ][ 2 ]; 
+							var dbName, dbVersion = parseInt( arguments[ 2 ] ) || 1;
 							///////////////////////////////////
 							var secondUnit = 1000;
 							var minuteUnit = 60 * secondUnit;
@@ -3011,16 +3112,23 @@ function Factory()
 							var dayUnit = 24 * hourUnit;
 							var yearUnit = 365 * dayUnit;
 							///////////////////////////////////
-							function getExpire( time, unit ) 
+							function getExpireString( time, unit ) 
 							{
 								unit = unit || secondUnit;
-								
 								var expires;
 								var y = new Date(); 
 								y.setTime( y.getTime() + ( time ) * unit );
 								expires = y.toUTCString(); 
-								
 								return expires;
+							} 
+							
+							function getExpireDate( time, unit ) 
+							{
+								unit = unit || secondUnit;
+								var expires;
+								var d = new Date(); 
+								d.setTime( d.getTime() + ( time ) * unit );
+								return d;
 							} 
 							
 							switch( storageType ) 
@@ -3032,20 +3140,24 @@ function Factory()
 									return suftByLocalDS(); 
 									
 								case 'SessionDataSim':	// Using session store.
-									suftBySessionDS(); 
+									return suftBySessionDS(); 
 									break;
 								
 								case 'ApplicationDataSim': 
 									// TODO : Check cross-browser.
 									break; 
 									
-								case 'IndexedDatabase': // Apply the IndexedDB. crossed-browser.
-									suftByIndexedDB(); 
-									break; 
+								case 'IndexedDatabase': // Apply the IndexedDB. crossed-browser. 
+									if( arguments.length < 2 ) 
+									{
+										throw "dbName is undefined."; 
+									}
+									dbName = arguments[ 1 ]; 
+									dbVersion = arguments[ 2 ]; 
+									return suftByIndexedDB(); 
 									
 								case 'ClientDatabase': 	// Apply the clientDB.
-									suftByClientDB(); 
-									break;
+									return suftByClientDB(); 
 							} 
 							
 							function suftByExpireDS() 
@@ -3069,7 +3181,7 @@ function Factory()
 									var infosStr = [
 										'flatform=' + db_name, 
 										'domain=' + domain, 
-										'expires=' + getExpire( 1, yearUnit ), 	// seconds
+										'expires=' + getExpireString( 1, yearUnit ), 	// seconds
 										'path=/', 			// Global store.
 									];
 									document.cookie = infosStr.join( '; ' ); 
@@ -3128,7 +3240,7 @@ function Factory()
 										var cookieString = 
 										[
 											record.key + '=-1', 
-											'expires=' + getExpire( -10 ), 
+											'expires=' + getExpireString( -10 ), 
 											'path=' + record.value.meta.branch, 
 										].join( '; ' );
 																				
@@ -3205,7 +3317,7 @@ function Factory()
 									Expires: function( time ) 
 									{
 										var myCore = this;
-										expires = getExpire( time ); 
+										expires = getExpireString( time ); 
 										return myCore;
 									},
 									
@@ -3284,7 +3396,7 @@ function Factory()
 											{
 												if( expires != undefined ) 
 												{
-													return getExpire( expires );
+													return getExpireString( expires );
 												} 
 												else 
 												{
@@ -3348,7 +3460,7 @@ function Factory()
 											{
 												if( expires != undefined ) 
 												{
-													return getExpire( expires );
+													return getExpireString( expires );
 												} 
 												else 
 												{
@@ -3394,10 +3506,14 @@ function Factory()
 								/*
 								 * Database with unsecuries commendation.
 								 */
-								if( storageType != 'LocalDataSim' ) 
+								if( storageType != 'LocalDataSim' && storageType != 'SessionDataSim' ) 
 								{
 									return;
 								} 
+								else 
+								{
+									var storageAdapter = ( storageType != 'LocalDataSim' ) ? sessionStorage : localStorage;
+								}
 								
 								var flatform = window.location.hostname;
 								var domain = window.location.hostname;
@@ -3406,7 +3522,7 @@ function Factory()
 								
 								var DSDescription =
 								{
-									'lds_flatform': 'LDSim', 
+									'lds_flatform': ( storageAdapter == localStorage ) ? 'LDSim' : 'SDSim', 
 									'lds_prefix': 'lds_',
 									'lds_initBranch': branch, 
 									'lds_autoIncrement': 0, 
@@ -3415,33 +3531,22 @@ function Factory()
 										var dt = new Date();
 										return dt.getTime();
 									})(), 
-									
-									// 'lds_id 1 username': 
-									// JSON.stringify( 
-									// { 
-										// key: 'username', 
-										// value: 
-										// {
-											// meta: { branch: branch, timestamp: '154323442', expires: '1315123' }, 
-											// data: 'Cuong H.Vu'
-										// } 
-									// })
 								}; 
 								
 								function getFlatform() 
 								{
-									return localStorage.getItem( 'lds_flatform' );
+									return storageAdapter.getItem( 'lds_flatform' );
 								} 
 								
 								function setFlatform( value ) 
 								{
-									if( localStorage.getItem( 'lds_flatform' ) )
-										localStorage.setItem( 'lds_flatform', value ); 
+									if( storageAdapter.getItem( 'lds_flatform' ) )
+										storageAdapter.setItem( 'lds_flatform', value ); 
 								} 
 								
 								function getAutoIncrement() 
 								{
-									var autoIncrement = localStorage.getItem( 'lds_autoIncrement' );
+									var autoIncrement = storageAdapter.getItem( 'lds_autoIncrement' );
 									if( autoIncrement != undefined ) 
 									{
 										return parseInt( autoIncrement );
@@ -3450,7 +3555,7 @@ function Factory()
 								
 								function getTime() 
 								{
-									var time = localStorage.getItem( 'lds_initTime' ); 
+									var time = storageAdapter.getItem( 'lds_initTime' ); 
 									if( time != undefined ) 
 									{
 										return parseInt( time );
@@ -3459,12 +3564,12 @@ function Factory()
 								
 								function getBranch() 
 								{
-									return localStorage.getItem( 'lds_initBranch' ); 
+									return storageAdapter.getItem( 'lds_initBranch' ); 
 								} 
 								
 								function getPrefix() 
 								{
-									return localStorage.getItem( 'lds_prefix' ); 
+									return storageAdapter.getItem( 'lds_prefix' ); 
 								}
 
 								var format = [
@@ -3493,7 +3598,7 @@ function Factory()
 									if( autoIncrement != undefined ) 
 									{
 										autoIncrement += 1;
-										localStorage.setItem( 'lds_autoIncrement',  autoIncrement );
+										storageAdapter.setItem( 'lds_autoIncrement',  autoIncrement );
 										return autoIncrement;
 									} 
 									return 0; 
@@ -3505,7 +3610,7 @@ function Factory()
 									{
 										var item = this;
 										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
-										localStorage.removeItem( keyInput );
+										storageAdapter.removeItem( keyInput );
 									}, 
 									GetValue: function() 
 									{
@@ -3517,7 +3622,7 @@ function Factory()
 										var item = this;
 										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
 										item.value.value.data = data; 
-										localStorage.setItem( keyInput, JSON.stringify( item.value ) );
+										storageAdapter.setItem( keyInput, JSON.stringify( item.value ) );
 										return item;
 									}
 								}
@@ -3591,6 +3696,12 @@ function Factory()
 											}
 										}
 										
+										if( arguments.length == 1 ) return;
+										if( value == undefined ) 
+										{
+											return;
+										}
+										
 										if( !keyInput && !dataInput ) 
 										{
 											keyId = autoIncrement();
@@ -3624,9 +3735,10 @@ function Factory()
 										else 
 										{
 											dataInput.value.data = value;
-										}
+										} 
+
 										
-										localStorage.setItem( keyInput, JSON.stringify( dataInput ) ); 
+										storageAdapter.setItem( keyInput, JSON.stringify( dataInput ) ); 
 										
 										return myCore.Public[ key ] = element5.Extend( item, variableModifier ); 
 									}, 
@@ -3698,7 +3810,11 @@ function Factory()
 										} 
 										
 										if( arguments.length == 1 ) return;
-										
+										if( value == undefined ) 
+										{
+											return;
+										}
+
 										if( !keyInput && !dataInput ) 
 										{
 											keyId = autoIncrement();
@@ -3734,10 +3850,15 @@ function Factory()
 											dataInput.value.data = value;
 										}
 										
-										localStorage.setItem( keyInput, JSON.stringify( dataInput ) ); 
+										storageAdapter.setItem( keyInput, JSON.stringify( dataInput ) ); 
 										
 										return myCore.Private[ key ] = element5.Extend( item, variableModifier ); 
 									}, 
+									
+									Empty: function() 
+									{
+										storageAdapter
+									}
 								};
 								
 								coreDS.public = coreDS.Public; 
@@ -3745,7 +3866,7 @@ function Factory()
 								
 								function initDB() 
 								{
-									element5.Extend( localStorage, DSDescription ); 
+									element5.Extend( storageAdapter, DSDescription ); 
 									return loadDB();
 								} 
 								
@@ -3753,13 +3874,13 @@ function Factory()
 								{
 									var records = new Array();
 									
-									var len = localStorage.length;  
+									var len = storageAdapter.length;  
 									
 									for( var i = 0; i < len; i++ ) 
 									{
 										var id, item;
-										var key = localStorage.key( i );
-										var value = localStorage.getItem( key ); 
+										var key = storageAdapter.key( i );
+										var value = storageAdapter.getItem( key ); 
 										var pat = ( /^lds_id (\d+) (.*)/ ) . exec ( key );
 										if( pat != null ) 
 										{
@@ -3801,7 +3922,7 @@ function Factory()
 								{
 									return;
 								} 
-								console.log( storageType );
+								suftByLocalDS( storageType );
 							}
 							
 							function suftByIndexedDB() 
@@ -3810,7 +3931,128 @@ function Factory()
 								{
 									return;
 								} 
-								console.log( storageType );
+								else if( indexedDB == undefined )
+								{
+									indexedDB = store5.interface();
+								} 
+								
+								var db;
+								var request = indexedDB.open( dbName, dbVersion ); 
+								
+								var databaseModifier = 
+								{
+									GetTable: function() 
+									{
+										var tableName = arguments[ 0 ]; 
+										if( this.objectStoreNames.contains (tableName) )
+										{
+											var transaction = this.transaction( tableName, 'readwrite' );
+											return transaction.objectStore( tableName ); 
+										} 
+										return 0;								
+									}, 
+									From: function() 
+									{
+										return this.GetTable.apply( this, arguments );
+									}, 
+									from: function() 
+									{
+										return this.GetTable.apply( this, arguments );
+									},
+								}
+								
+								var CoreDB = 
+								{
+									close: function() 
+									{
+										var myCore = this;
+										db.close(); 
+										return myCore;
+									}, 
+									init: function() 
+									{
+										var myCore = this; 
+										request.tables = arguments;
+										return myCore;
+									}, 
+									drop: function() 
+									{
+										var myCore = this;
+										indexedDB.deleteDatabase( dbName ); 
+										return myCore;
+									}, 
+									upgrade: function() 
+									{
+										var myCore = this; 
+										
+										db.close(); 
+										
+										var connect = request.connect;
+										
+										var args = Array.from(arguments); 
+										var upgradeVersion = args.splice( 0, 1 );
+										
+										request = store5.open( 'indexed_db', 'program', upgradeVersion ); 
+										
+										myCore.init.apply( request, args.splice( 0 ) );
+										if( connect ) 
+										{
+											request.connect = connect;
+										}
+										
+										return request;
+									}
+								};
+								
+								request.addEventListener( 'upgradeneeded', function( e ) 
+								{
+									if( request.tables != undefined ) 
+									{
+										db = e.target.result;
+										var len = request.tables.length;
+										for( var i = 0; i < len; i++ ) 
+										{
+											var item = request.tables[ i ]; 
+											
+											if( db.objectStoreNames.contains( item.name ) )
+											{
+												db.deleteObjectStore( item.name );
+											} 
+											
+											var objectStore = db.createObjectStore( item.name, { keyPath: item.key } ); 
+											
+											var lenj = item.structure.length;
+											for( var j = 0; j < lenj; j++ ) 
+											{
+												var index = item.structure[ j ];
+												objectStore.createIndex( index.name, index.key, index.types );
+											} 
+										} 
+										delete request.tables;
+									}
+									
+								}, false );
+
+								request.addEventListener( 'success', function( e ) 
+								{
+									db = e.target.result; 
+									
+									if( request.connect ) 
+									{
+										var callback = request.connect;
+										
+										if( typeof callback != 'function' ) throw "The connect must be a function.";
+										
+										callback.call( element5.Extend( db, databaseModifier ) );
+									}
+								}, false ); 
+								
+								CoreDB.Init = CoreDB.init;
+								CoreDB.Close = CoreDB.close;
+								CoreDB.Drop = CoreDB.drop;
+								CoreDB.Upgrade = CoreDB.upgrade;
+								
+								return element5.Extend( request, CoreDB );
 							}
 							
 							function suftByClientDB() 

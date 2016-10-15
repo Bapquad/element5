@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="user-scalable=no, width=device-width" />
+<script type="text/javascript" src="../../element5.js"></script>
+<script type="text/javascript">
+// Sets up the title of document.
+document.title = "Demo Store Open IndexedDB."; 
+
+// Style lines.
+style5.AddCss( 'body' ).css( 
+{
+	'background': '#000', 
+	'color': '#fff', 
+	'font-family': 'Arial'
+});
+
+// Designs a title of page.
+var titlePage = element5.Create( 'h1#top-page' );
+titlePage.innerText = document.title; 
+var store;
+var db;
+var link = store5.open( 'indexed_db', 'program' );
+link.connect = function() 
+{
+	db = this;
+}; 
+
+function Upgrade() 
+{
+	link.upgrade( 2, 
+		{ name: 'misson_one', key: 'id', 
+			structure: 
+			[ 
+				{ name: 'player_name', key: ['playerName', 'playerBirth'], types: { unique: true } },
+			] 
+		}
+	);
+	
+	return; 
+	
+	link.upgrade( 3, 
+		{ name: 'misson_two', key: 'id', 
+			structure: 
+			[ 
+				{ name: 'player_name', key: 'playerName', types: { unique: false } }, 
+				{ name: 'player_birth', key: 'playerBirth', types: { unique: false } } 
+			] 
+		}, 
+		{ name: 'misson_final', key: 'id', 
+			structure: 
+			[ 
+				{ name: 'player_name', key: 'playerName', types: { unique: false } }, 
+				{ name: 'player_birth', key: 'playerBirth', types: { unique: false } } 
+			] 
+		}
+	);
+	
+	link.upgrade( 4, 
+		{ name: 'misson_four', key: 'id', 
+			structure: 
+			[ 
+				{ name: 'player_name', key: 'playerName', types: { unique: true } }, 
+				{ name: 'player_birth', key: 'playerBirth', types: { unique: false } }, 
+				{ name: 'player_quest', key: 'playerQuest', types: { unique: false } } 
+			] 
+		}
+	);
+}
+
+function AddData( username, brithday ) 
+{
+	store = db.From( 'misson_one' ); 
+	if( store )
+		store.add( { id: '00-04', playerName: username, playerBirth: brithday } );
+} 
+
+function GetData( id ) 
+{
+	
+}
+
+// When window load DOM Content completely.
+window.addEventListener( 'DOMContentLoaded', function( e ) 
+{
+	document.body = element5.GetBody();
+	document.body.Equip( titlePage );
+}, false );
+</script>
+</head>
+
+<body></body>
+</html>
