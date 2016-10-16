@@ -68,7 +68,7 @@ var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( { 'padding-left':
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="element5.html">element5</a> - This is an object primary using with our dom elements.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="style5.html">style5</a> - This is an object using in adjusting the css.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="timeline5.html">timeline5</a> - This is an object using to creating the animation.';
-list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="motion5.html">Motion5</a> - This is an object using to creating the motion like as ani-sprite or ani-scroll.';
+list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="motion5.html">motion5</a> - This is an object using to creating the motion like as ani-sprite or ani-scroll.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="media5.html">media5</a> - This is an object used with camera, microphone or other device.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="request5.html">request5</a> - This is an object using to load or post the another data.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="bom5.html">bom5</a> - This is an object helping for navigator object of browser.';

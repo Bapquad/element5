@@ -607,18 +607,6 @@ function Factory()
 						return this;
 					}, 
 					
-					SetWidth: function( v ) 
-					{
-						this.SetStyle( 'width', v + 'px' );
-						return this;
-					}, 
-					
-					SetHeight: function( v ) 
-					{
-						this.SetStyle( 'height', v + 'px' ); 
-						return this;
-					}, 
-					
 					Show: function() 
 					{
 						if( this.HasClass( 'hidden' ) )
@@ -2348,12 +2336,156 @@ function Factory()
 			{
 				var spriteModifier = 
 				{
+					Run: function( fps )
+					{
+						var motion = this;
+						
+						if( motion.clip == undefined ) 
+						{
+							motion.clip = 0;
+						}
+						
+						if( fps == undefined ) 
+						{
+							fps = 1000;
+						}
+						else 
+						{
+							fps = fps/1000;
+						} 
+						
+						var offset = parseInt( motion.width ); 
+						
+						if( motion.topIndex == undefined ) 
+						{
+							motion.Action( 0 );
+						}
+						
+						motion.MotionTimer = setInterval( function() 
+						{
+							motion.clip -= offset;
+							motion.hoster.css( 'background-position-x', motion.clip + 'px' );
+						}, fps );
+						
+						return motion;
+					}, 
 					
+					Stop: function() 
+					{
+						var motion = this; 
+						motion.MotionTimer = clearInterval( motion.MotionTimer ); 
+						motion.hoster.css( 'background-position-x', '0px' );
+						delete motion.clip; 
+						return motion;
+					}, 
+					
+					Pause: function() 
+					{
+						var motion = this;
+						motion.MotionTimer = clearInterval( motion.MotionTimer );
+						return motion;
+					}, 
+					
+					Action: function( topIndex ) 
+					{
+						var motion = this;
+						motion.topIndex = topIndex; 
+						
+						var topOffset = ( topIndex * parseInt( motion.height ) );
+						motion.hoster.css( 'background-position-y', topOffset + 'px' );
+						
+						return motion;
+					}
 				}; 
 				
 				var scrollModifier = 
 				{
+					AddVelocity: function( x, y ) 
+					{
+						var motion = this;
+						motion.velocityX += x;
+						motion.velocityY += y;
+						return motion;
+					}, 
 					
+					AddVelocityX: function( value ) 
+					{
+						var motion = this;
+						motion.velocityX += value;
+						return motion;
+					}, 
+					
+					AddVelocityY: function( value ) 
+					{
+						var motion = this;
+						motion.velocityY += value;
+						return motion;
+					}, 
+					
+					Run: function( fps )
+					{
+						if( fps == undefined ) 
+						{
+							fps = 1000;
+						}
+						else 
+						{
+							fps = fps/1000;
+						} 
+						
+						var motion = this; 
+						
+						if( motion.velocityX == undefined ) 
+						{
+							motion.velocityX = 0.1;
+						} 
+						
+						if( motion.velocityY == undefined ) 
+						{
+							motion.velocityY = 0;
+						} 
+						
+						if( motion.clipX == undefined ) 
+						{
+							motion.clipX = 0;
+						} 
+						
+						if( motion.clipY == undefined ) 
+						{
+							motion.clipY = 0;
+						}
+						
+						motion.MotionTimer = setInterval( function() 
+						{
+							motion.clipX -= motion.velocityX;
+							motion.clipY -= motion.velocityY;
+							motion.hoster.css({
+								'background-position-x': motion.clipX + 'px', 
+								'background-position-y': motion.clipY + 'px' 
+							});
+						}, fps );
+						
+						return motion;
+					}, 
+					
+					Stop: function() 
+					{
+						var motion = this;
+						motion.MotionTimer = clearInterval( motion.MotionTimer );
+						
+						motion.hoster.css({ 'background-position': '0px 0px' });
+						motion.clipX = 0;
+						motion.clipY = 0;
+						
+						return motion;
+					}, 
+					
+					Pause: function() 
+					{
+						var motion = this;
+						motion.MotionTimer = clearInterval( motion.MotionTimer );
+						return motion;
+					} 
 				};
 				
 				var Motion = 
@@ -2370,9 +2502,13 @@ function Factory()
 							{
 								el.MotionSprite = 
 								{
+									topIndex: 0, 
 									width: width + 'px', 
 									height: height + 'px', 
-									backgroundImage: imageURL, 
+									backgroundImage: 'url(' + imageURL + ')', 
+									backgroundRepeat: 'repeat', 
+									backgroundPosition: 'left top', 
+									hoster: el, 
 								};
 								el.css( el.MotionSprite ); 
 								element5.Extend( el.MotionSprite, spriteModifier ); 
@@ -2382,7 +2518,7 @@ function Factory()
 						
 						return element5.Extend( obj, spriteModifier ); 
 					}, 
-					Scroll: function( width, height, imageURL, orientation ) 
+					Scroll: function( width, height, imageURL ) 
 					{
 						var obj = 
 						{
@@ -2396,7 +2532,10 @@ function Factory()
 								{
 									width: width + 'px', 
 									height: height + 'px', 
-									backgroundImage: imageURL, 
+									backgroundImage: 'url(' + imageURL + ')', 
+									backgroundRepeat: 'repeat', 
+									backgroundPosition: 'left top', 
+									hoster: el, 
 								};
 								el.css( el.MotionScroll ); 
 								element5.Extend( el.MotionScroll, scrollModifier ); 
@@ -3946,7 +4085,7 @@ function Factory()
 										var tableName = arguments[ 0 ]; 
 										if( this.objectStoreNames.contains (tableName) )
 										{
-											var transaction = this.transaction( tableName, 'readwrite' );
+											var transaction = this.transaction( tableName, IDBTransaction.READ_WRITE );
 											return transaction.objectStore( tableName ); 
 										} 
 										return 0;								
