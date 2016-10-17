@@ -32,7 +32,8 @@ a, a:visited, a:active
 
 <h3 class="htxt">Climb Modifier</h3>
 
-<h4 class="mdh code mt">Find ( <span class="param">selector</span> )</h4>
+<!-- element5.Find( selector ) -->
+<h4 class="ttl mt0">Find( <span class="param">selector</span> )</h4>
 <p class="txt">Find the elements which be inside. This method has one param.</p>
 <ul class="param-list">
 	<li><span class="param">selector</span> - selector string of searching.</li>
@@ -43,8 +44,665 @@ a, a:visited, a:active
 <span class="keyword">var</span> result = el.Find( <span class="string">'.search-item'</span> ); 
 <span class="keyword">console</span>.log( result );
 </pre>
-<h4 class="mdh code mt">Parents ( <span class="param">selector</span> )</h4>
-<p class="txt">Find the parent of the elements.</p>
+
+<!-- element5.Next() -->
+<h4 class="ttl">Next()</h4>
+<p class="txt">Find the element which be next of.</p>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+<span class="keyword">var</span> result = el.Next(); 
+<span class="keyword">console</span>.log( result );
+</pre> 
+
+<!-- element5.Prev() -->
+<h4 class="ttl">Prev()</h4>
+<p class="txt">Find the elements which be previous of.</p>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+<span class="keyword">var</span> result = el.Prev(); 
+<span class="keyword">console</span>.log( result );
+</pre>
+
+<!-- element5.Parent() -->
+<h4 class="ttl">Parent()</h4>
+<p class="txt">Find the element which contains it.</p>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+<span class="keyword">var</span> result = el.Parent(); 
+<span class="keyword">console</span>.log( result );
+</pre>
+
+<!-- element5.Parents( selector ) -->
+<h4 class="ttl">Parents( <span class="param">selector</span> )</h4>
+<p class="txt">Find the parent like as <span class="code">selector</span>. This method as one param.</p>
+<ul class="param-list">
+	<li><span class="param">selector</span> - Selector for parent node which wants to select.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+<span class="keyword">var</span> result = el.Parents( <span class="string">'#wrapper'</span> ); 
+<span class="keyword">console</span>.log( result );
+</pre>
+
+<h3 class="htxt">Style Modifier</h3>
+
+<!-- element5.css() --> 
+<h4 class="ttl mt0">css( <span class="param">styles</span> )</h4>
+<h4 class="ttl mt0">css( <span class="param">propertyName</span>, <span class="param">propertyValue</span> )</h4>
+<p class="txt">Set the css style for element. This method has one param.</p>
+<ul class="param-list">
+	<li><span class="param">styles</span> - The object contains the css styles.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+el.css( {
+    <span class="string">'color'</span>: <span class="string">'#000'</span>, 
+    background: <span class="string">'#fff'</span>
+}); 
+</pre>
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+el.css( <span class="string">'color'</span>, <span class="string">'#000'</span> ); 
+el.css( <span class="string">'background'</span>, <span class="string">'#fff'</span> ); 
+</pre>
+
+<!-- element5.Css() --> 
+<h4 class="ttl">Css( <span class="param">styles</span> )</h4>
+<h4 class="ttl mt0">Css( <span class="param">propertyName</span>, <span class="param">propertyValue</span> )</h4>
+<p class="txt">Set the style for company (common class). This method has one param.</p>
+<ul class="param-list">
+	<li><span class="param">styles</span> - The object contains the css styles.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+el.Css( {
+    <span class="string">'color'</span>: <span class="string">'#000'</span>, 
+    background: <span class="string">'#fff'</span>
+}); 
+</pre>
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+el.Css( <span class="string">'color'</span>, <span class="string">'#000'</span> ); 
+el.Css( <span class="string">'background'</span>, <span class="string">'#fff'</span> ); 
+</pre>
+
+<!-- element5.Show() --> 
+<h4 class="ttl">Show()</h4> 
+<p class="txt">Shows the element.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.hidden'</span> );
+el.Show(); 
+</pre> 
+
+<!-- element5.IsShow() --> 
+<h4 class="ttl">IsShow()</h4> 
+<p class="txt">Checks the element whether show or not.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.hidden'</span> );
+<span class="keyword">console</span>.log( el.IsShow() ); 
+</pre> 
+
+<!-- element5.Hide() --> 
+<h4 class="ttl">Hide()</h4> 
+<p class="txt">Hides the element.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.layout'</span> );
+el.Hide(); 
+</pre> 
+
+<!-- element5.IsHide() --> 
+<h4 class="ttl">IsHide()</h4> 
+<p class="txt">Checks the element whether show or hidden.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper.hidden'</span> );
+<span class="keyword">console</span>.log( el.IsHide() ); 
+</pre> 
+
+<!-- element5.Toggle() --> 
+<h4 class="ttl">Toggle()</h4> 
+<p class="txt">Toggle the element show and hidden.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.Toggle(); 
+</pre> 
+
+<h3 class="htxt">Midia Modifier</h3> 
+
+<!-- element5.onDevice( device ) --> 
+<h4 class="ttl mt0">onDevice( <span class="param">device</span> )</h4> 
+<h4 class="ttl mt0">onMedia( <span class="param">device</span> )</h4> 
+<p class="txt">Mounts the element's style to device. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">device</span> - The device which wants to mount the css styles.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.onDevice( mobile320 ).css( { ... } ); 
+</pre> 
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.onMedia( mobile320 ).css( { ... } ); 
+</pre> 
+
+<h3 class="htxt">DOM Modifier</h3> 
+
+<!-- element5.AddClass( className ) --> 
+<h4 class="ttl mt0">AddClass( <span class="param">className</span> )</h4> 
+<h4 class="ttl mt0">PushClass( <span class="param">className</span> )</h4> 
+<p class="txt">Add to element a class name. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">className</span> - The class name which wants to add to dom element.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.AddClass( <span class="string">'layout'</span> ); 
+</pre> 
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.PushClass( <span class="string">'layout'</span> ); 
+</pre> 
+
+<!-- element5.HasClass( className ) --> 
+<h4 class="ttl">HasClass( <span class="param">className</span> )</h4> 
+<p class="txt">Checks the element has whether or not a class name. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">className</span> - The class name which wants to check.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+<span class="keyword">console</span>.log( el.HasClass( <span class="string">'layout'</span> ) ); 
+</pre> 
+
+<!-- element5.RemoveClass( className ) --> 
+<h4 class="ttl">RemoveClass( <span class="param">className</span> )</h4> 
+<p class="txt">Remove from element a class name. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">className</span> - The class name which wants to remove.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.RemoveClass( <span class="string">'layout'</span> ); 
+</pre> 
+
+<!-- element5.ShiftClass( className ) --> 
+<h4 class="ttl">ShiftClass( <span class="param">className</span> )</h4> 
+<p class="txt">Shift to element a class name. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">className</span> - The class name which wants to remove.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wraper'</span> );
+el.ShiftClass( <span class="string">'layout'</span> ); 
+</pre> 
+
+<!-- element5.SetId( id ) --> 
+<h4 class="ttl">SetId( <span class="param">id</span> )</h4> 
+<p class="txt">Set the id for DOM element. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">id</span> - The id string which wants to setting.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'.layout'</span> );
+el[ <span class="param">0</span> ].SetId( <span class="string">'wrapper'</span> ); 
+</pre> 
+
+<!-- element5.HasId( id ) --> 
+<h4 class="ttl">HasId( <span class="param">id</span> )</h4> 
+<p class="txt">Checks the element has whether or not the id. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">id</span> - The id string which wants to check.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'.layout'</span> );
+<span class="keyword">console</span>.log( el[ <span class="param">0</span> ].HasId( <span class="string">'wrapper'</span> ) ); 
+</pre> 
+
+<!-- element5.Remove() --> 
+<h4 class="ttl">Remove()</h4> 
+<p class="txt">Removes the element.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'.search-item'</span> );
+el[ <span class="param">0</span> ].Remove(); 
+</pre> 
+
+<!-- element5.Equip( element ) --> 
+<h4 class="ttl">Equip( <span class="param">element</span> )</h4> 
+<p class="txt">Equips the element. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">element</span> - The element which wants to equip into.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> top = element5.Create( <span class="string">'h2[id=top]'</span> );
+<span class="keyword">var</span> head = element5( <span class="string">'#header'</span> );
+head.Equip( top ); 
+</pre> 
+
+<!-- element5.EquipedBy( element ) --> 
+<h4 class="ttl">EquipedBy( <span class="param">element</span> )</h4> 
+<p class="txt">Equips the element by self. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">element</span> - The element which wants be equiped by.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> top = element5.Create( <span class="string">'h2[id=top]'</span> );
+<span class="keyword">var</span> head = element5( <span class="string">'#header'</span> );
+top.EquipedBy( head ); 
+</pre> 
+
+<!-- element5.EquipEvent( element ) --> 
+<h4 class="ttl">EquipEvent( <span class="param">addHandle</span>, <span class="param">removeHandle</span> )</h4> 
+<p class="txt">Fire when element added or remove another DOM element. This method has two params.</p> 
+<ul class="param-list">
+	<li><span class="param">addHandle</span> - The handle which fires when the another node element added to this element.</li>
+	<li><span class="param">removeHandle</span> - The handle which fires when the another node element removed from this element.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> top = element5.Create( <span class="string">'h2[id=top]'</span> );
+<span class="keyword">var</span> head = element5( <span class="string">'#header'</span> );
+head.EquipEvent( <span class="keyword">function</span>( e ) { <span class="keyword">console</span>.log( <span class="string">'Node Added!'</span> ) }, <span class="keyword">function</span>( e ) { <span class="keyword">console</span>.log( <span class="string">'Node Removed'</span> ) } );
+top.EquipedBy( head ); 
+</pre> 
+
+<!-- element5.EquipBefore( element ) --> 
+<h4 class="ttl">EquipBefore( <span class="param">element</span> )</h4> 
+<p class="txt">Equips this element before the element which specify in param. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">element</span> - The element which wants to equips before with.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> top = element5.Create( <span class="string">'h2[id=top]'</span> );
+<span class="keyword">var</span> option = element5( <span class="string">'#header #option'</span> );
+top.EquipBefore( option ); 
+</pre> 
+
+<!-- element5.EquipAfter( element ) --> 
+<h4 class="ttl">EquipAfter( <span class="param">element</span> )</h4> 
+<p class="txt">Equips this element after the element which specify in param. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">element</span> - The element which wants to equips after with.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> top = element5.Create( <span class="string">'h2[id=top]'</span> );
+<span class="keyword">var</span> option = element5( <span class="string">'#header #option'</span> );
+top.EquipAfter( option ); 
+</pre> 
+
+<!-- element5.Clone( deep ) --> 
+<h4 class="ttl">Clone( <span class="param">deep</span> )</h4> 
+<p class="txt">Clone this element. This method has one param.</p> 
+<ul class="param-list">
+	<li><span class="param">deep</span><span class="code">:boolean</span> - The flag specify deep clone. If true, clone element's attributes and desecondaries</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> option = element5( <span class="string">'#header #option'</span> );
+option.Clone( <span class="keyword">false</span> ); 
+</pre> 
+
+<!-- element5.EnterFullscreen() --> 
+<h4 class="ttl">EnterFullscreen()</h4> 
+<p class="txt">Set the element enters fullscreen mode.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+el.EnterFullscreen(); 
+</pre> 
+
+<!-- element5.EscapeFullscreen() --> 
+<h4 class="ttl">EscapeFullscreen( ...[<span class="param">targetElement</span>] )</h4> 
+<p class="txt">Set the element escapes from fullscreen mode.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+el.EnterFullscreen(); 
+<span class="keyword">document</span>.body.EscapeFullscreen( el );
+</pre> 
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+el.EnterFullscreen(); 
+el.EscapeFullscreen();
+</pre> 
+
+<!-- element5.ToggleFullscreen() --> 
+<h4 class="ttl">ToggleFullscreen( ...[<span class="param">targetElement</span>] )</h4> 
+<p class="txt">Set the element toggles fullscreen mode.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+<span class="keyword">document</span>.body.ToggleFullscreen( el );
+</pre> 
+<p class="txt">How to use alt-method:</p>
+<pre>
+<span class="keyword">var</span> el = element5( <span class="string">'#wrapper'</span> );
+el.ToggleFullscreen();
+</pre> 
+
+<h3 class="htxt">DOM Loader</h3> 
+
+<!-- element5.includeHTML() --> 
+<h4 class="ttl mt0">includeHTML()</h4> 
+<p class="txt">Include html to page.</p> 
+<p class="txt">How to use:</p>
+<p class="txt">In .html file.</p>
+<pre>
+...
+<span class="keyword">&lt;nav</span> id=<span class="string">"nav"</span> w3-include-html=<span class="string">"nav.html"</span><span class="keyword">&gt;&lt;/nav&gt;</span>
+...
+</pre>
+<p class="txt">In .js file.</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.includeHTML(); 
+</pre> 
+
+<h3 class="htxt">Animation Modifier</h3> 
+
+<!-- element5.EffectedBy() --> 
+<h4 class="ttl mt0">EffectedBy( <span class="param">timeline</span>, <span class="param">duration</span>, <span class="param">delay</span>, <span class="param">timing</span> )</h4> 
+<h4 class="ttl mt0">Animation( <span class="param">timeline</span>, <span class="param">duration</span>, <span class="param">delay</span>, <span class="param">timing</span> )</h4> 
+<h4 class="ttl mt0">Run( <span class="param">timeline</span>, <span class="param">duration</span>, <span class="param">delay</span>, <span class="param">timing</span> )</h4> 
+<h4 class="ttl mt0">Play( <span class="param">timeline</span>, <span class="param">duration</span>, <span class="param">delay</span>, <span class="param">timing</span> )</h4> 
+<p class="txt">Effects the animation to element. This method has four params.</p>
+<ul class="param-list">
+	<li><span class="param">timeline</span><span class="code">:timelineObj</span> - The timeline object.</li>
+	<li><span class="param">duration</span><span class="code">:number</span> - In second, the duration of animation. CSS3 params</li>
+	<li><span class="param">delay</span><span class="code">:number</span> - In second, the delay time before start animation. CSS3 params</li>
+	<li><span class="param">timing</span><span class="code">:function</span> - The time function of animation. CSS3 params</li>
+</ul>
+
+<h3 class="htxt">JSON and Data Modifier</h3> 
+
+<!-- element5.JSonString() --> 
+<h4 class="ttl mt0">JSonString( <span class="param">value</span> )</h4>
+<p class="txt">Converts the value to JSON string.</p> 
+<ul class="param-list">
+	<li><span class="param">value</span> - The value which wants to converts to the JSON string.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+<span class="keyword">var</span> JSONString = nav.JSonString( { width: <span class="param">320</span>, height: <span class="param">240</span> } ); 
+<span class="keyword">console</span>.log( JSONString );
+</pre> 
+
+<!-- element5.ParseJSON() --> 
+<h4 class="ttl">ParseJSON( <span class="param">jsonStr</span> )</h4>
+<p class="txt">Converts the JSON string to JSON Object.</p> 
+<ul class="param-list">
+	<li><span class="param">jsonStr</span> - The json string which wants to converts to JSON Object.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+<span class="keyword">var</span> obj = nav.ParseJSON( <span class="string">'{ \'width\': \'320\', \'height\': \'240\' }'</span> ); 
+<span class="keyword">console</span>.log( obj );
+</pre>
+
+<!-- element5.AddData() --> 
+<h4 class="ttl">AddData( <span class="param">name</span>, <span class="param">value</span> )</h4>
+<p class="txt">Add data to element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+	<li><span class="param">value</span> - The value of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.AddData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.GetData( <span class="string">'role'</span> ) );
+</pre>
+
+<!-- element5.SetData() --> 
+<h4 class="ttl">SetData( <span class="param">name</span>, <span class="param">value</span> )</h4>
+<p class="txt">Set data to element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+	<li><span class="param">value</span> - The value of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.GetData( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.GetData() --> 
+<h4 class="ttl">GetData(  <span class="param">name</span> )</h4>
+<p class="txt">Get data from element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.GetData( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.DeleteData() --> 
+<h4 class="ttl">DeleteData(  <span class="param">name</span> )</h4>
+<p class="txt">Delete data item from element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+nav.DeleteData( <span class="string">'role'</span> ); 
+<span class="keyword">console</span>.log( nav.GetData( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.SetBackData() --> 
+<h4 class="ttl">SetBackData( <span class="param">name</span>, <span class="param">value</span> )</h4>
+<p class="txt">Set back data to element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+	<li><span class="param">value</span> - The value of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetBackData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.GetBackData( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.GetData() --> 
+<h4 class="ttl">GetBackData(  <span class="param">name</span> )</h4>
+<p class="txt">Get back data from element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetBackData( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.GetBackData( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.SetProperty() --> 
+<h4 class="ttl">SetProperty( <span class="param">name</span>, <span class="param">value</span> )</h4>
+<p class="txt">Set property member to element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+	<li><span class="param">value</span> - The value of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.SetProperty( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.role );
+</pre> 
+
+<!-- element5.AddProperty() --> 
+<h4 class="ttl">AddProperty( <span class="param">name</span>, <span class="param">value</span> )</h4>
+<p class="txt">Add property member to element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+	<li><span class="param">value</span> - The value of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.AddProperty( <span class="string">'role'</span>, <span class="string">'captain'</span> ); 
+<span class="keyword">console</span>.log( nav.role );
+</pre> 
+
+<!-- element5.HasProperty() --> 
+<h4 class="ttl">HasProperty(  <span class="param">name</span> )</h4>
+<p class="txt">Checks the member property has whether or not inside element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+<span class="keyword">console</span>.log( nav.HasProperty( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.RemoveProperty() --> 
+<h4 class="ttl">RemoveProperty(  <span class="param">name</span> )</h4>
+<p class="txt">Remove the member property from element.</p> 
+<ul class="param-list">
+	<li><span class="param">name</span> - The name of data.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> ); 
+nav.AddProperty( <span class="string">'role'</span>, <span class="string">'captain'</span> );
+nav.RemoveProperty( <span class="string">'role'</span> );
+<span class="keyword">console</span>.log( nav.HasProperty( <span class="string">'role'</span> ) );
+</pre> 
+
+<!-- element5.AddEvent() --> 
+<h4 class="ttl">AddEvent( <span class="param">eventType</span>, <span class="param">eventHandle</span>, <span class="param">trace</span> )</h4>
+<p class="txt">Add event handle.</p> 
+<ul class="param-list">
+	<li><span class="param">eventType</span> - The type of event.</li>
+	<li><span class="param">eventHandle</span> - The handle called when event fires.</li>
+	<li><span class="param">trace</span> - The trace of event.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.AddEvent( <span class="string">'click'</span>, <span class="keyword">function</span>() { <span class="keyword">alert</span>( <span class="string">"OK"</span> ); }, <span class="keyword">false</span> ); 
+</pre> 
+
+<!-- element5.FireEvent() --> 
+<h4 class="ttl">FireEvent( <span class="param">eventType</span> )</h4>
+<p class="txt">Triggers event handle.</p> 
+<ul class="param-list">
+	<li><span class="param">eventType</span><span class="code">:string</span> - The type of event.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.AddEvent( <span class="string">'click'</span>, <span class="keyword">function</span>() { <span class="keyword">alert</span>( <span class="string">"OK"</span> ); }, <span class="keyword">false</span> ); 
+nav.FireEvent( <span class="string">'click'</span> );
+</pre> 
+
+<!-- element5.Draggable() --> 
+<h4 class="ttl">Draggable( <span class="param">home</span> )</h4>
+<p class="txt">Allows element is draggable.</p> 
+<ul class="param-list">
+	<li><span class="param">home</span><span class="code">:boolean</span> - The flag specify the drag to free way or home way when dragging done.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.Draggable( <span class="keyword">false</span> ); 
+</pre> 
+
+<!-- element5.onDragStart() --> 
+<h4 class="ttl">onDragStart( <span class="param">callback</span> )</h4>
+<p class="txt">Attachs the handle will be call on drag start.</p> 
+<ul class="param-list">
+	<li><span class="param">callback</span><span class="code">:function</span> - The handle.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.onDragStart( <span class="keyword">function</span>( e ) 
+{
+    <span class="comment">// ...</span>
+}); 
+</pre> 
+
+<!-- element5.onDragOver() --> 
+<h4 class="ttl">onDragOver( <span class="param">callback</span> )</h4>
+<p class="txt">Attachs the handle will be call on drag over element.</p> 
+<ul class="param-list">
+	<li><span class="param">callback</span><span class="code">:function</span> - The handle.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.onDragOver( <span class="keyword">function</span>( e ) 
+{
+    <span class="comment">// ...</span>
+}); 
+</pre> 
+
+<!-- element5.onDragEnd() --> 
+<h4 class="ttl">onDragEnd( <span class="param">callback</span> )</h4>
+<p class="txt">Attachs the handle will be call on drag end.</p> 
+<ul class="param-list">
+	<li><span class="param">callback</span><span class="code">:function</span> - The handle.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.onDragEnd( <span class="keyword">function</span>( e ) 
+{
+    <span class="comment">// ...</span>
+}); 
+</pre> 
+
+<!-- element5.Droppable() --> 
+<h4 class="ttl">Droppable( <span class="param">callback</span> )</h4>
+<h4 class="ttl mt0">onDrop( <span class="param">callback</span> )</h4>
+<p class="txt">Allows element is droppable.</p> 
+<ul class="param-list">
+	<li><span class="param">callback</span><span class="code">:function</span> - The handle.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> nav = element5( <span class="string">'#nav'</span> );
+nav.Droppable( <span class="keyword">function</span>( e ) 
+{
+    <span class="comment">// ...</span>
+}); 
+</pre> 
+
 </div>
 </body> 
 </html>

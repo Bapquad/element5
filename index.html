@@ -27,6 +27,7 @@ links.each( function( item, index )
 	
 <h2 id='doc-top'>element5 Methods</h2>
 
+<!-- element5.Create( target ) -->
 <h3 class="ttl">element5.Create( <span class="code param">target</span> )</h3>
 <p class="txt">Create the element with the description in <span class="code">target</span>.</p>
 <ul class="param-list">
@@ -37,6 +38,64 @@ links.each( function( item, index )
 <span class="keyword">var</span> el0 = element5.Create( <span class="string">'div#wrapper'</span> );
 <span class="keyword">var</span> el1 = element5.Create( <span class="string">'div.wrapper'</span> );
 <span class="keyword">var</span> el2 = element5.Create( <span class="string">'div[id=wrap][class=layout]'</span> );
+</pre>
+
+<!-- element5.GetBody() -->
+<h3 class="ttl">element5.GetBody()</h3>
+<p class="txt">Receives the body element. Notes with the <span class="code">DOMContentLoaded</span> event.</p>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">window</span>.addEventlistener( <span class="string">'DOMContentLoaded'</span>, <span class="keyword">function</span>( e ) 
+{
+    <span class="keyword">var</span> bodyElement = element5.GetBody();
+}, <span class="keyword">false</span> );
+</pre>
+
+<!-- element5.GetWindow() -->
+<h3 class="ttl">element5.GetWindow()</h3>
+<p class="txt">Receives the window.</p>
+<p class="txt">How to use:</p>
+<pre>
+element5.GetWindow().addEventlistener( <span class="string">'DOMContentLoaded'</span>, <span class="keyword">function</span>( e ) 
+{
+    <span class="keyword">var</span> bodyElement = element5.GetBody();
+}, <span class="keyword">false</span> );
+</pre>
+
+<!-- element5.MountDevice( deviceTarget ) -->
+<h3 class="ttl">element5.MountDevice( <span class="code param">description</span> )</h3>
+<p class="txt">Mounting the specify media device which your apps will run.</p>
+<ul class="param-list">
+	<li><span class="param">description</span> - Description about device.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> mobile400 = 
+{
+	deviceOption: <span class="string">''</span>, 
+	deviceType: <span class="string">'screen'</span>, 
+	features: [ <span class="string">'max-width:399px'</span> ], 
+	producted: <span class="keyword">false</span>,
+};
+element5.MountDevice( mobile400 );
+</pre>
+
+<!-- element5.Extension( extObj ) -->
+<h3 class="ttl">element5.Extension( <span class="code param">extObj</span> )</h3>
+<p class="txt">Helps to creating the extend functions for DOM element. Notes it help to extends, but not help to override.</p>
+<ul class="param-list">
+	<li><span class="param">extObj</span> - Object contains the methods used to manipulating on DOM elements.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+element5.Extension( {
+    sayHello: function() 
+    {
+        <span class="keyword">console</span>.log( <span class="string">'Hello! I\'m an elements.'</span> );
+    },
+});
+<span class="keyword">var</span> dom = element5.Create( <span class="string">'h1'</span> );
+dom.sayHello();
 </pre>
 
 </div>

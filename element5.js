@@ -472,60 +472,61 @@ function Factory()
 							return element5( el );
 						}
 						return el;
-					}
-				};
-				ClimbModifier.typing = function( selector, target ) 
-				{
-					var el = target || this;
+					}, 
 					
-					var selectType = selector[ 1 ];
-								
-					if( selectType === '#' )
+					typing: function( selector, target ) 
 					{
-						if( el.HasId ) 
+						var el = target || this;
+						
+						var selectType = selector[ 1 ];
+									
+						if( selectType === '#' )
 						{
-							return el.HasId( selector[ 2 ] );
+							if( el.HasId ) 
+							{
+								return el.HasId( selector[ 2 ] );
+							} 
+							else 
+							{
+								return DOMModifier.HasId( selector[ 2 ], el );
+							}
 						} 
+						else if( selectType === '.') 
+						{
+							if( el.HasClass ) 
+							{
+								return el.HasClass( selector[ 2 ] );
+							} 
+							else 
+							{
+								return DOMModifier.HasClass( selector[ 2 ], el );
+							}
+						} 
+						else if( selectType === '[' ) 
+						{
+							var pat = /\[([a-zA-Z0-9]+)=([a-zA-Z0-9]+)(\])/
+							selector = pat.exec( selector.input ); 
+							if( el.getAttribute ) 
+							{
+								var attrValue = el.getAttribute( selector[ 1 ] );
+								return ( selector[ 2 ] == attrValue ); 
+							}
+						}
 						else 
 						{
-							return DOMModifier.HasId( selector[ 2 ], el );
-						}
-					} 
-					else if( selectType === '.') 
-					{
-						if( el.HasClass ) 
-						{
-							return el.HasClass( selector[ 2 ] );
-						} 
-						else 
-						{
-							return DOMModifier.HasClass( selector[ 2 ], el );
-						}
-					} 
-					else if( selectType === '[' ) 
-					{
-						var pat = /\[([a-zA-Z0-9]+)=([a-zA-Z0-9]+)(\])/
-						selector = pat.exec( selector.input ); 
-						if( el.getAttribute ) 
-						{
-							var attrValue = el.getAttribute( selector[ 1 ] );
-							return ( selector[ 2 ] == attrValue ); 
+							var pat = /^([a-zA-Z0-9]+)$/g;
+							selector = pat.exec( selector.input );
+							if( el.tagName ) 
+							{
+								return ( el.tagName.toLowerCase() == selector.input ); 
+							} 
+							else 
+							{
+								return false;
+							}
 						}
 					}
-					else 
-					{
-						var pat = /^([a-zA-Z0-9]+)$/g;
-						selector = pat.exec( selector.input );
-						if( el.tagName ) 
-						{
-							return ( el.tagName.toLowerCase() == selector.input ); 
-						} 
-						else 
-						{
-							return false;
-						}
-					}
-				};
+				}; 
 				
 				var StyleModifier = 
 				{
@@ -955,9 +956,9 @@ function Factory()
 						return JSON.stringify( value );
 					}, 
 					
-					ParseJSON: function( json ) 
+					ParseJSON: function( jsonStr ) 
 					{
-						return JSON.parse( json );
+						return JSON.parse( jsonStr );
 					}, 
 					
 					AddData: function( name, value ) 
