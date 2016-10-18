@@ -2343,7 +2343,7 @@ function Factory()
 						if( motion.clip == undefined ) 
 						{
 							motion.clip = 0;
-						}
+						} 
 						
 						if( fps == undefined ) 
 						{
@@ -2361,11 +2361,14 @@ function Factory()
 							motion.Action( 0 );
 						}
 						
-						motion.MotionTimer = setInterval( function() 
+						if( motion.MotionTimer == undefined ) 
 						{
-							motion.clip -= offset;
-							motion.hoster.css( 'background-position-x', motion.clip + 'px' );
-						}, fps );
+							motion.MotionTimer = setInterval( function() 
+							{
+								motion.clip -= offset;
+								motion.hoster.css( 'background-position-x', motion.clip + 'px' );
+							}, fps ); 
+						}
 						
 						return motion;
 					}, 
@@ -2373,16 +2376,24 @@ function Factory()
 					Stop: function() 
 					{
 						var motion = this; 
-						motion.MotionTimer = clearInterval( motion.MotionTimer ); 
-						motion.hoster.css( 'background-position-x', '0px' );
-						delete motion.clip; 
+						if( motion.MotionTimer != undefined ) 
+						{
+							motion.MotionTimer = clearInterval( motion.MotionTimer ); 
+							motion.hoster.css( 'background-position-x', '0px' );
+							delete motion.clip; 
+							delete motion.MotionTimer;
+						}
 						return motion;
 					}, 
 					
 					Pause: function() 
 					{
-						var motion = this;
-						motion.MotionTimer = clearInterval( motion.MotionTimer );
+						var motion = this; 
+						if( motion.MotionTimer != undefined ) 
+						{
+							motion.MotionTimer = clearInterval( motion.MotionTimer );
+							delete motion.MotionTimer;
+						}
 						return motion;
 					}, 
 					
@@ -2453,37 +2464,46 @@ function Factory()
 						if( motion.clipY == undefined ) 
 						{
 							motion.clipY = 0;
-						}
+						} 
 						
-						motion.MotionTimer = setInterval( function() 
+						if( motion.MotionTimer == undefined ) 
 						{
-							motion.clipX -= motion.velocityX;
-							motion.clipY -= motion.velocityY;
-							motion.hoster.css({
-								'background-position-x': motion.clipX + 'px', 
-								'background-position-y': motion.clipY + 'px' 
-							});
-						}, fps );
+							motion.MotionTimer = setInterval( function() 
+							{
+								motion.clipX -= motion.velocityX;
+								motion.clipY -= motion.velocityY;
+								motion.hoster.css({
+									'background-position-x': motion.clipX + 'px', 
+									'background-position-y': motion.clipY + 'px' 
+								});
+							}, fps );
+						} 
 						
 						return motion;
 					}, 
 					
 					Stop: function() 
 					{
-						var motion = this;
-						motion.MotionTimer = clearInterval( motion.MotionTimer );
-						
-						motion.hoster.css({ 'background-position': '0px 0px' });
-						motion.clipX = 0;
-						motion.clipY = 0;
-						
+						var motion = this; 
+						if( motion.MotionTimer != undefined ) 
+						{
+							motion.MotionTimer = clearInterval( motion.MotionTimer ); 
+							motion.hoster.css({ 'background-position': '0px 0px' });
+							motion.clipX = 0;
+							motion.clipY = 0; 
+							delete motion.MotionTimer;
+						} 
 						return motion;
 					}, 
 					
 					Pause: function() 
 					{
-						var motion = this;
-						motion.MotionTimer = clearInterval( motion.MotionTimer );
+						var motion = this; 
+						if( motion.MotionTimer != undefined ) 
+						{
+							motion.MotionTimer = clearInterval( motion.MotionTimer ); 
+							delete motion.MotionTimer; 
+						}
 						return motion;
 					} 
 				};
