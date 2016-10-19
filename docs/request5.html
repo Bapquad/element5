@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> <!--manifest="test.appcache"-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type='text/css'>
+a, a:visited, a:active 
+{
+	color: #6a4586 !important; 
+	text-decoration: none;
+}
+</style> 
+<script src="../element5.js" type="text/javascript"></script> 
+<script src="script.js" type="text/javascript"></script> 
+<script type="text/javascript"> 
+// Sets up the title of page.
+document.title = 'request5 API Referrence';
+topPage.text.innerText = document.title; 
+</script>
+</head>
+
+<body> 
+<div id="doc-body"> 
+<h2 id='doc-top'>request5 Object</h2> 
+
+<!-- request5.Initialize() -->
+<h3 class="ttl">request5.Initialize( <span class="param">url</span>, <span class="param">data</span> )</h3>
+<p class="txt">Initializing the request.</p> 
+<ul class="param-list">
+	<li><span class="param">url</span> - The url for request.</li>
+	<li><span class="param">data</span> - The data for request.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.Initialize( <span class="string">'http://examples.com'</span> );
+</pre> 
+
+<!-- request5.Connect() -->
+<h3 class="ttl">request5.Connect( <span class="param">url</span>, <span class="param">onload</span>, <span class="param">data</span> )</h3>
+<p class="txt">connect the request.</p> 
+<ul class="param-list">
+	<li><span class="param">url</span> - The url for request.</li>
+	<li><span class="param">onload</span><span class="code">:function</code> - The function called when load complete.</li>
+	<li><span class="param">data</span> - The data for request.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.Connect( <span class="string">'http://examples.com'</span> );
+</pre> 
+
+<!-- request5.LoadVariables() -->
+<h3 class="ttl">request5.LoadVariables( <span class="param">url</span>, <span class="param">onload</span>, <span class="param">data</span> )</h3>
+<p class="txt">Load the variable from the request.</p> 
+<ul class="param-list">
+	<li><span class="param">url</span> - The url for request.</li>
+	<li><span class="param">onload</span><span class="code">:function</code> - The function called when load complete.</li>
+	<li><span class="param">data</span> - The data for request.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+</pre> 
+
+<!-- request5.onAbort() -->
+<h3 class="ttl">request5.onAbort( <span class="param">handle</span> )</h3>
+<h3 class="ttl mt0">request5.onCancel( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when abort request progress.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when request progress has be aborted.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onAbort( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onError() -->
+<h3 class="ttl">request5.onError( <span class="param">handle</span> )</h3>
+<h3 class="ttl mt0">request5.onFail( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request progress occurs an error.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when appears an error.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onError( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onStart() -->
+<h3 class="ttl">request5.onStart( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request progress started.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress started.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onStart( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onLoad() -->
+<h3 class="ttl">request5.onLoad( <span class="param">handle</span> )</h3>
+<h3 class="ttl mt0">request5.onComplete( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request progress loaded.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onLoad( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onFinish() -->
+<h3 class="ttl">request5.onFinish( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request progress end loaded.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onFinish( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onProgress() -->
+<h3 class="ttl">request5.onProgress( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request on progress.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onProgress( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onStateChange() -->
+<h3 class="ttl">request5.onStateChange( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request on progress.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onStateChange( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.onTimeout() -->
+<h3 class="ttl">request5.onTimeout( <span class="param">handle</span> )</h3>
+<p class="txt">The function called when request progress.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.onTimeout( <span class="keyword">function</span>( e ) { <span class="comment">/** ... */</span> });
+</pre> 
+
+<!-- request5.Connect() -->
+<h3 class="ttl">request5.Connect( <span class="param">synchFlag</span> )</h3>
+<p class="txt">The function called when request progress.</p> 
+<ul class="param-list">
+	<li><span class="param">synchFlag</span> - The synchFlag specify whether or not waiting for response.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.Initialize( <span class="string">'http://examples.com/variables.txt'</span> );
+request.Connect();
+</pre> 
+
+<!-- request5.Abort() -->
+<h3 class="ttl">request5.Abort()</h3>
+<p class="txt">The function used to abort request progress.</p> 
+<ul class="param-list">
+	<li><span class="param">handle</span> - The handle called when progress loaded.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> request = request5.LoadVariables( <span class="string">'http://examples.com/variables.txt'</span> );
+request.Abort();
+</pre> 
+
+</div>
+</body>
+</html>

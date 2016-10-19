@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> <!--manifest="test.appcache"-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type='text/css'>
+a, a:visited, a:active 
+{
+	color: #6a4586 !important; 
+	text-decoration: none;
+}
+</style> 
+<script src="../element5.js" type="text/javascript"></script> 
+<script src="script.js" type="text/javascript"></script> 
+<script type="text/javascript"> 
+// Sets up the title of page.
+document.title = 'timeline5 API Referrence';
+topPage.text.innerText = document.title; 
+</script>
+</head>
+
+<body>
+<div id="doc-body"> 
+<h2 id='doc-top'>timeline5 Object</h2> 
+
+<h3 class="ttl mt0">timeline5.Create( <span class="code param">timeline</span> )</h3>
+<p class="txt">Find or create the timeline with the description in <span class="code">timeline</span> param.</p>
+<ul class="param-list">
+	<li><span class="param">timeline</span> - Timeline string of searching.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> leftToR = timeline5.Create( 
+{
+    name: <span class="string">'leftToR'</span>, 
+    keyframes: 
+    [
+        { time: <span class="string">'0'</span>, style: { transform: <span class="string">'translateX( -100% )'</span>, }, }, 
+        { time: <span class="string">'100'</span>, style: { transform: <span class="string">'translateX( 0px )'</span>, }, }, 
+    ], 
+}); 
+<span class="keyword">var</span> timeline = timeline5.Create( leftToR );
+<span class="keyword">var</span> el = element5( <span class="string">'#aside'</span> );
+el.Play( timeline ); <span class="comment">// Or timeline.Effect( el, duration, delay, timeing )</span>
+</pre>
+
+</div>
+</body>
+</html>

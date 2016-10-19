@@ -17,7 +17,6 @@ var mobile400 =
 element5.MountDevice( mobile400 );
 
 // Edit the title
-document.title = 'element5 API Referrence';
 var webdir = 'http://bapquadgames.com/';
 
 // Reset the padding, margin.
@@ -26,7 +25,7 @@ style5.AddCss( 'body' ).css( { 'background': '#070117', 'color': 'white', 'font-
 style5.AddCss( 'ul#list li' ).css( { 'margin': '10px 0', 'font-size':'90%' } );
 style5.AddCss( 'h2#doc-top' ).css( { 'margin-left': '10px', marginTop: '30px', 'color': '#09f' } );
 style5.AddCss( 'h3.ttl, h4.ttl' ).css( { 'margin-left': '10px', 'margin-top': '40px', 'font-family': 'consolas', 'font-size': '17px' } );
-style5.AddCss( 'h4.ttl.mt0' ).css( { 'margin-top': '0px' } ); 
+style5.AddCss( 'h3.ttl.mt0, h4.ttl.mt0' ).css( { 'margin-top': '0px' } ); 
 style5.AddCss( '.code' ).css( { 'font-family': 'consolas' } ); 
 style5.AddCss( '.mt' ).css( { 'margin-top': '18px' } ); 
 style5.AddCss( '.keyword' ).css( { 'font-family': 'consolas', 'color': '#09f' } );
@@ -45,7 +44,6 @@ topPage.css( { 'font-size': '18px', 'background': '#28262d', 'color': 'white', '
 	
 topPage.text = topPage.Equip( element5.Create( 'span' ) ); 
 topPage.text.css( 'padding-left', '8px' ); 
-topPage.text.innerText = document.title; 
 topPage.menuBtn = topPage.Equip( element5( '#menu-button' ) );
 topPage.menuBtn.css( { 'margin-right': '8px', 'margin-top': '2px', 'float': 'right', 'width': '18px', 'height': '18px', 'background-image': 'url( ' + webdir + 'element5/img/mobilemenu.png )', 'background-size': '24px 18px', 'background-repeat': 'no-repeat', 'background-position': '-3px 0' }); 
 topPage.menuBtn.AddEvent( 'click', function() { }); 
