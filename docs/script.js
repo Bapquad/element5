@@ -18,26 +18,27 @@ element5.MountDevice( mobile400 );
 
 // Edit the title
 var webdir = 'http://bapquadgames.com/';
+var fontFamily = (bom5.Device.IsMobile) ? 'monospace' : 'consolas';
 
 // Reset the padding, margin.
 style5.AddCss( '*' ).css( { 'padding': '0', 'margin': '0' } );
 style5.AddCss( 'body' ).css( { 'background': '#070117', 'color': 'white', 'font-family': 'Arial', 'font-size': '90%' } );
 style5.AddCss( 'ul#list li' ).css( { 'margin': '10px 0', 'font-size':'90%' } );
 style5.AddCss( 'h2#doc-top' ).css( { 'margin-left': '10px', marginTop: '30px', 'color': '#09f' } );
-style5.AddCss( 'h3.ttl, h4.ttl' ).css( { 'margin-left': '10px', 'margin-top': '40px', 'font-family': 'consolas', 'font-size': '17px' } );
+style5.AddCss( 'h3.ttl, h4.ttl' ).css( { 'margin-left': '10px', 'margin-top': '40px', 'font-family': fontFamily, 'font-size': '17px' } );
 style5.AddCss( 'h3.ttl.mt0, h4.ttl.mt0' ).css( { 'margin-top': '0px' } ); 
-style5.AddCss( '.code' ).css( { 'font-family': 'consolas' } ); 
-style5.AddCss( '#list li a' ).css( { 'color': '#941efb' } ); 
+style5.AddCss( '.code' ).css( { 'font-family': fontFamily } ); 
+style5.AddCss( '#list li a' ).css( { 'color': '#6a4586' } ); 
 style5.AddCss( '.mt' ).css( { 'margin-top': '18px' } ); 
-style5.AddCss( '.keyword' ).css( { 'font-family': 'consolas', 'color': '#09f' } );
-style5.AddCss( '.comment' ).css( { 'font-family': 'consolas', 'color': '#f00' } );
-style5.AddCss( '.param' ).css( { 'font-family': 'consolas', 'color': '#fa0' } );
-style5.AddCss( '.string' ).css( { 'font-family': 'consolas', 'color': '#da6c0b' } );
+style5.AddCss( '.keyword' ).css( { 'font-family': fontFamily, 'color': '#09f' } );
+style5.AddCss( '.comment' ).css( { 'font-family': fontFamily, 'color': '#f00' } );
+style5.AddCss( '.param' ).css( { 'font-family': fontFamily, 'color': '#fa0' } );
+style5.AddCss( '.string' ).css( { 'font-family': fontFamily, 'color': '#da6c0b' } );
 style5.AddCss( '.htxt' ).css( { 'margin-left': '10px', 'margin-top': '40px', 'color': '#09f' } ); 
 style5.AddCss( '.mdh' ).css( { 'margin-left' : '10px', 'font-size': '17px' } ); 
 style5.AddCss( '.txt' ).css( { 'margin' : '6px 0 6px 10px', 'font-size': '12px' } ); 
 style5.AddCss( '.param-list' ).css( { 'margin' : '6px 10px', 'list-style': 'none', 'font-size': '12px' } ); 
-style5.AddCss( 'pre' ).css( { 'font-family': 'consolas', 'margin' : '0px 10px', 'padding': '10px', 'background': '#222', 'border': '1px solid #aaa', 'overflow-x': 'scroll', 'font-size':'11px' } ); 
+style5.AddCss( 'pre' ).css( { 'font-family': fontFamily, 'margin' : '0px 10px', 'padding': '10px', 'background': '#222', 'border': '1px solid #aaa', 'overflow-x': 'scroll', 'font-size':'11px' } ); 
 
 // Create the top page
 var topPage = element5.Create( 'h1#top-page' ); 
