@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> <!--manifest="test.appcache"-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../element5.js" type="text/javascript"></script> 
+<script src="script.js" type="text/javascript"></script> 
+<script type="text/javascript"> 
+// Sets up the title of page.
+document.title = 'store5 API Referrence';
+topPage.text.innerText = document.title; 
+</script>
+</head>
+
+<body>
+<div id="doc-body"> 
+<h2 id='doc-top'>store5 Object</h2> 
+
+<h3 class="htxt">ExpireData Simulator Methods</h3>
+
+<!-- open() -->
+<h4 class="ttl mt0">store5.open( <span class="param">simulatorType</span> )</h4>
+<p class="txt">Open the cookie database simulator.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">console</span>.log( checkOpera );
+</pre> 
+
+<!-- public() -->
+<h4 class="ttl">CookieDataSim.public( <span class="param">varName</span>[, <span class="param">varValue</span>[, <span class="param">expire</span>]] )</h4>
+<p class="txt">Create the public variable, this variable maybe access everywhere in apps.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li>
+	<li><span class="param">expire</span><span class="code">:number</span> - In seconds, It is the time which this variable exist. When the time has be over, it has deleted auto.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+cookieDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span>, <span class="param">4</span> * dayUnit );
+</pre> 
+
+<!-- private() -->
+<h4 class="ttl">CookieDataSim.private( <span class="param">varName</span>[, <span class="param">varValue</span>[, <span class="param">expire</span>]] )</h4>
+<p class="txt">Create the private variable, this variable maybe access in current branch only. It meaning user be at root branch will not see this variable, if it has been set up in sub branch.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li>
+	<li><span class="param">expire</span><span class="code">:number</span> - In seconds, It is the time which this variable exist. When the time has be over, it has deleted auto.</li>
+</ul>
+<p class="txt">How to use:</p>
+<p class="txt">In "./sub_branch/index.html"</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+cookieDB.private( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span>, <span class="param">4</span> * dayUnit );
+</pre> 
+<p class="txt">In "./index.html"</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+<span class="keyword">var</span> username = cookieDB.private( <span class="string">'username'</span> );
+<span class="keyword">console</span>.log( username ); 	<span class="comment">// It returns undefined.</span>
+</pre> 
+
+<!-- GetValue() -->
+<h4 class="ttl">CookieDataSim.GetValue()</h4>
+<p class="txt">Get value of cookie variable.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+<span class="keyword">var</span> cookieItem = cookieDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span>, <span class="param">4</span> * dayUnit );
+<span class="keyword">console</span>.log( cookieItem.GetValue() );
+</pre> 
+
+<!-- SetValue() -->
+<h4 class="ttl">CookieDataSim.SetValue( <span class="param">value</span> )</h4>
+<p class="txt">Set value of cookie variable.</p> 
+<ul class="param-list"> 
+	<li><span class="param">varName</span> - The name of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+<span class="keyword">var</span> cookieItem = cookieDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span>, <span class="param">4</span> * dayUnit );
+<span class="keyword">console</span>.log( cookieItem.SetValue( <span class="string">'Cuong H.Vu'</span> ) );
+</pre> 
+
+<!-- Remove() -->
+<h4 class="ttl">CookieDataSim.Remove()</h4>
+<p class="txt">Delete cookie variable.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> cookieDB = store5.open( <span class="string">'cookie_ds'</span> );
+<span class="keyword">var</span> dayUnit = <span class="param">24</span> * <span class="param">60</span> * <span class="param">60</span>;
+<span class="keyword">var</span> cookieItem = cookieDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span>, <span class="param">4</span> * dayUnit );
+cookieItem.Remove(); 
+<span class="keyword">console</span>.log( cookieItem ); 
+</pre> 
+
+<h3 class="htxt">LocalData Simulator Methods</h3> 
+
+<!-- public() -->
+<h4 class="ttl mt0">LocalDataSim.public( <span class="param">varName</span>[, <span class="param">varValue</span>] )</h4>
+<p class="txt">Create the public variable, this variable maybe access everywhere in apps.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> localDB = store5.open( <span class="string">'local_ds'</span> );
+localDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+</pre> 
+
+<!-- private() -->
+<h4 class="ttl">LocalDataSim.private( <span class="param">varName</span>[, <span class="param">varValue</span>] )</h4>
+<p class="txt">Create the private variable, this variable maybe access everywhere in apps.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> localDB = store5.open( <span class="string">'local_ds'</span> );
+localDB.private( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+</pre> 
+
+<!-- GetValue() -->
+<h4 class="ttl">LocalDataSim.GetValue()</h4>
+<p class="txt">Get value of local variable.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> localDB = store5.open( <span class="string">'local_ds'</span> );
+<span class="keyword">var</span> localItem = localDB.public( <span class="string">'username'</span> );
+<span class="keyword">console</span>.log( localItem.GetValue() );
+</pre> 
+
+<!-- SetValue() -->
+<h4 class="ttl">LocalDataSim.SetValue( <span class="param">value</span> )</h4>
+<p class="txt">Set value of local variable.</p> 
+<ul class="param-list"> 
+	<li><span class="param">varName</span> - The name of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> localDB = store5.open( <span class="string">'local_ds'</span> );
+<span class="keyword">var</span> localItem = localDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+localItem.SetValue( <span class="string">'Cuong H.Vu'</span> )
+</pre> 
+
+<!-- Remove() -->
+<h4 class="ttl">LocalDataSim.Remove()</h4>
+<p class="txt">Delete local variable.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> localDB = store5.open( <span class="string">'local_ds'</span> );
+<span class="keyword">var</span> localItem = localDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+localItem.Remove(); 
+<span class="keyword">console</span>.log( localItem );
+</pre> 
+
+<h3 class="htxt">SessionData Simulator Methods</h3> 
+
+<!-- public() -->
+<h4 class="ttl mt0">SessionDataSim.public( <span class="param">varName</span>[, <span class="param">varValue</span>] )</h4>
+<p class="txt">Create the public variable, this variable maybe access everywhere in apps.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> );
+sessionDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+</pre> 
+
+<!-- private() -->
+<h4 class="ttl">SessionDataSim.private( <span class="param">varName</span>[, <span class="param">varValue</span>] )</h4>
+<p class="txt">Create the private variable, this variable maybe access in current branch only. It meaning user be at root branch will not see this variable, if it has been set up in sub branch.</p> 
+<ul class="param-list">
+	<li><span class="param">varName</span><span class="code">:string</span> - The name of variable.</li>
+	<li><span class="param">varValue</span><span class="code">:string</span> - The value of variable.</li> 
+</ul>
+<p class="txt">How to use:</p>
+<p class="txt">In "./sub_branch/index.html"</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> );
+sessionDB.private( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+</pre> 
+<p class="txt">In "./index.html"</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> ); 
+<span class="keyword">var</span> username = sessionDB.private( <span class="string">'username'</span> );
+<span class="keyword">console</span>.log( username );  <span class="comment">// It returns undefined.</span>
+</pre> 
+
+<!-- SetValue() -->
+<h4 class="ttl">SessionDataSim.SetValue( <span class="param">value</span> )</h4>
+<p class="txt">Set value of session variable.</p> 
+<ul class="param-list"> 
+	<li><span class="param">varName</span> - The name of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> );
+<span class="keyword">var</span> sessionItem = sessionDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+<span class="keyword">console</span>.log( sessionItem.SetValue( <span class="string">'Cuong H.Vu'</span> ) );
+</pre> 
+
+<!-- GetValue() -->
+<h4 class="ttl">SessionDataSim.GetValue()</h4>
+<p class="txt">Get value of session variable.</p> 
+<ul class="param-list"> 
+	<li><span class="param">varName</span> - The name of variable.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> );
+<span class="keyword">var</span> sessionItem = sessionDB.public( <span class="string">'username'</span>, <span class="string">'Cuong H.Vu'</span> );
+<span class="keyword">console</span>.log( sessionItem.GetValue() );
+</pre> 
+
+<!-- Remove() -->
+<h4 class="ttl">SessionDataSim.Remove()</h4>
+<p class="txt">Delete session variable.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> sessionDB = store5.open( <span class="string">'session_ds'</span> );
+<span class="keyword">var</span> sessionItem = sessionDB.public( <span class="string">'username'</span> );
+sessionItem.Remove(); 
+<span class="keyword">console</span>.log( sessionItem ); 
+</pre> 
+
+<h3 class="htxt">IndexedDB Simulator Methods</h3> 
+
+<!-- Init() -->
+<h4 class="ttl mt0">IndexedDB.Init( tables )</h4>
+<p class="txt">Initialize a database with tables. this initialize run once when first update or upgrade database;</p> 
+<ul class="param-list"> 
+	<li><span class="param">tables</span> - The table structures.</li>
+</ul>
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> indexDB = store5.open( <span class="string">'indexed_db'</span> );
+indexDB.init(
+    { name: <span class="string">'misson_one'</span>, key: <span class="string">'id'</span>, 
+        structure: 
+        [ 
+            { name: <span class="string">'player_name'</span>, key: [<span class="string">'playerName'</span>, <span class="string">'playerBirth'</span>], types: { unique: <span class="keyword">true</span> } },
+        ] 
+    }
+); 
+</pre> 
+
+<!-- Close() -->
+<h4 class="ttl">IndexedDB.Close()</h4>
+<p class="txt">Close the database.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> indexDB = store5.open( <span class="string">'indexed_db'</span>, <span class="string">'program'</span> ); <span class="comment">// 'program' is an name of database.</span>
+indexDB.Init(
+    { name: <span class="string">'misson_one'</span>, key: <span class="string">'id'</span>, 
+        structure: 
+        [ 
+            { name: <span class="string">'player_name'</span>, key: [<span class="string">'playerName'</span>, <span class="string">'playerBirth'</span>], types: { unique: <span class="keyword">true</span> } },
+        ] 
+    }
+); 
+indexDB.connect = <span class="keyword">function</span>() 
+{
+	indexDB.close( <span class="keyword">this</span> );
+}
+</pre> 
+
+<!-- Drop() -->
+<h4 class="ttl">IndexedDB.Drop()</h4>
+<p class="txt">Drop the database.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> link = store5.open( <span class="string">'indexed_db'</span>, <span class="string">'program'</span> );
+link.Drop();
+</pre>
+
+<!-- Upgrade() -->
+<h4 class="ttl">IndexedDB.Upgrade()</h4>
+<p class="txt">Upgrade the database.</p> 
+<p class="txt">How to use:</p>
+<pre>
+<span class="keyword">var</span> link = store5.open( <span class="string">'indexed_db'</span>, <span class="string">'program'</span> ); <span class="comment">// 'program' is an name of database.</span>
+link.Init(
+    { name: <span class="string">'misson_one'</span>, key: <span class="string">'id'</span>, 
+        structure: 
+        [ 
+            { name: <span class="string">'player_name'</span>, key: [<span class="string">'playerName'</span>, <span class="string">'playerBirth'</span>], types: { unique: <span class="keyword">true</span> } },
+        ] 
+    }
+); 
+link.connect = <span class="keyword">function</span>() 
+{
+    <span class="keyword">console</span>.log( <span class="keyword">this</span> );			 <span class="comment">// show database object</span>
+    <span class="keyword">console</span>.log( <span class="keyword">this</span>.From( <span class="string">'misson_one'</span> ) );    <span class="comment">// show table object</span>
+    link.Upgrade(
+        { name: <span class="string">'misson_two'</span>, key: <span class="string">'id'</span>, 
+            structure: 
+            [ 
+                { name: <span class="string">'player_name'</span>, key: [<span class="string">'playerName'</span>, <span class="string">'playerBirth'</span>], types: { unique: <span class="keyword">true</span> } },
+            ] 
+        }
+    ); 
+}
+</pre> 
+
+</div>
+</body>
+</html>
