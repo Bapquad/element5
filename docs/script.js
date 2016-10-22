@@ -66,7 +66,7 @@ mainPage.introSection.introTxt.innerText = "element5 is a javascript library, wh
 var text = mainPage.Equip( element5.Create( 'h4' ) ).css( 'padding-left', '10px' ).css( 'margin-top', '20px' );
 text.innerText = 'element5 includes follow objects:';
 
-var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( { 'padding-left': '10px', 'list-style': 'none', 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0', 'max-width': '550px' } );
+var list = mainPage.Equip( element5.Create( 'ul#list' ) ).css( { 'padding-left': '10px', 'list-style': 'none', 'padding':'10px', 'background':'#27183a', 'margin': '15px 10px 0', 'max-width': '550px', 'border': '1px solid #ccc1da' } );
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="element5.html">element5</a> - This is an object primary using with our dom elements.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="style5.html">style5</a> - This is an object using in adjusting the css.';
 list.Equip( element5.Create( 'li' ) ).innerHTML = '<a href="timeline5.html">timeline5</a> - This is an object using to creating the animation.';
