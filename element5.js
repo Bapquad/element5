@@ -884,7 +884,7 @@ function Factory()
 						Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
 						Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
 						// Element.prototype.onfullscreenerror = Element.prototype.onmozfullscreenerror || Element.prototype.onmsfullscreenerror || Element.prototype.onfullscreenerror;
-						// Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
+						Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
 						document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
 						// document.onfullscreenerror = document.onwebkitfullscreenerror || document.onmozfullscreenerror || document.onmsfullscreenerror || document.onfullscreenerror;
 						// document.onfullscreenchange = document.onwebkitfullscreenchange || document.onmozfullscreenchange || document.onmsfullscreenchange || document.onfullscreenchange;
@@ -892,22 +892,16 @@ function Factory()
 						return function( targetElement ) 
 						{
 							var el = targetElement || this; 
-							if( !el.fullscreenElement ) 
-							{
-								el.requestFullscreen(); 
-								el.fullscreenElement = true;
-							}
+							el.requestFullscreen(); 
+							el.fullscreenElement = true;
 						}; 
 					})(), 
 					
 					EscapeFullscreen: function( targetElement ) 
 					{
 						var el = targetElement || this; 
-						if( el.fullscreenElement ) 
-						{
-							document.exitFullscreen(); 
-							el.fullscreenElement = false;
-						}
+						document.exitFullscreen(); 
+						el.fullscreenElement = false;
 					}, 
 					
 					ToggleFullscreen: function( targetElement ) 
@@ -2340,30 +2334,26 @@ function Factory()
 					Run: function( fps )
 					{
 						var motion = this;
-						
-						if( motion.clip == undefined ) 
-						{
-							motion.clip = 0;
-						} 
-						
-						if( fps == undefined ) 
-						{
-							fps = 1000;
-						}
-						else 
-						{
-							fps = fps/1000;
-						} 
-						
-						var offset = parseInt( motion.width ); 
-						
-						if( motion.topIndex == undefined ) 
-						{
-							motion.Action( 0 );
-						}
-						
 						if( motion.MotionTimer == undefined ) 
 						{
+							if( motion.clip == undefined ) 
+							{
+								motion.clip = 0;
+							} 
+							
+							if( fps == undefined ) 
+							{
+								fps = 1000;
+							}
+							else 
+							{
+								fps = 1000/fps;
+							} 
+						
+							var offset = parseInt( motion.width ); 
+						
+							if( motion.topIndex == undefined ) { motion.Action( 0 ); }
+						
 							motion.MotionTimer = setInterval( function() 
 							{
 								motion.clip -= offset;
@@ -2436,39 +2426,24 @@ function Factory()
 					
 					Run: function( fps )
 					{
-						if( fps == undefined ) 
-						{
-							fps = 1000;
-						}
-						else 
-						{
-							fps = fps/1000;
-						} 
-						
 						var motion = this; 
-						
-						if( motion.velocityX == undefined ) 
-						{
-							motion.velocityX = 0.1;
-						} 
-						
-						if( motion.velocityY == undefined ) 
-						{
-							motion.velocityY = 0;
-						} 
-						
-						if( motion.clipX == undefined ) 
-						{
-							motion.clipX = 0;
-						} 
-						
-						if( motion.clipY == undefined ) 
-						{
-							motion.clipY = 0;
-						} 
-						
 						if( motion.MotionTimer == undefined ) 
 						{
+							
+							if( fps == undefined ) 
+							{
+								fps = 1000;
+							}
+							else 
+							{
+								fps = 1000/fps;
+							} 
+							
+							if( motion.velocityX == undefined ) { motion.velocityX = 1; } 
+							if( motion.velocityY == undefined ) { motion.velocityY = 0; } 
+							if( motion.clipX == undefined ) { motion.clipX = 0; } 
+							if( motion.clipY == undefined ) { motion.clipY = 0; } 
+						
 							motion.MotionTimer = setInterval( function() 
 							{
 								motion.clipX -= motion.velocityX;
@@ -2951,7 +2926,7 @@ function Factory()
 				
 				var dataModifier = 
 				{
-					readVariables( text ) 
+					readVariables: function( text ) 
 					{
 						text = text || this.responseText;
 						var pat = /([\w\_]+)=([\w\-\_]+)/gi;
@@ -3264,7 +3239,7 @@ function Factory()
 							
 							// Open new a database.
 							var storageType = storageTypes[ current ][ 2 ]; 
-							var dbName, dbVersion = parseInt( arguments[ 2 ] ) || 1;
+							var dbName;
 							///////////////////////////////////
 							var secondUnit = 1000;
 							var minuteUnit = 60 * secondUnit;
@@ -4096,17 +4071,36 @@ function Factory()
 									indexedDB = store5.interface();
 								} 
 								
-								var db;
-								var request = indexedDB.open( dbName, dbVersion ); 
+								if( !IDBTransaction.READ_WRITE ) 
+								{
+									IDBTransaction.READ_WRITE = 'readwrite';
+								} 
+								
+								if( !IDBTransaction.READ_ONLY ) 
+								{
+									IDBTransaction.READ_ONLY = 'readonly';
+								}
+								
+								var request, db;
+								
+								if( dbVersion ) 
+								{
+									request = indexedDB.open( dbName, dbVersion ); 
+								} 
+								else 
+								{
+									request = indexedDB.open( dbName ); 
+								}
 								
 								var databaseModifier = 
 								{
 									GetTable: function() 
 									{
 										var tableName = arguments[ 0 ]; 
+										var method = arguments[ 1 ] || IDBTransaction.READ_WRITE;
 										if( this.objectStoreNames.contains (tableName) )
 										{
-											var transaction = this.transaction( tableName, IDBTransaction.READ_WRITE );
+											var transaction = this.transaction( tableName, method );
 											return transaction.objectStore( tableName ); 
 										} 
 										return 0;								
@@ -4138,7 +4132,21 @@ function Factory()
 									drop: function() 
 									{
 										var myCore = this;
-										indexedDB.deleteDatabase( dbName ); 
+										
+										db.close();
+										
+										var request = indexedDB.deleteDatabase( db.name ); 
+										
+										request.onsuccess = function( e ) 
+										{
+											console.log( "Database deleted." );
+										}; 
+										
+										request.onerror = function( e ) 
+										{
+											console.log( "Database deleting is failure!" );
+										};
+										
 										return myCore;
 									}, 
 									upgrade: function() 
@@ -4150,11 +4158,13 @@ function Factory()
 										var connect = request.connect;
 										
 										var args = Array.from(arguments); 
-										var upgradeVersion = args.splice( 0, 1 );
+										
+										var upgradeVersion = args.splice( 0, 1 ) [ 0 ]; 
 										
 										request = store5.open( 'indexed_db', 'program', upgradeVersion ); 
 										
-										myCore.init.apply( request, args.splice( 0 ) );
+										myCore.init.apply( request, args.splice( 0 ) ); 
+										
 										if( connect ) 
 										{
 											request.connect = connect;
@@ -4177,6 +4187,10 @@ function Factory()
 											if( db.objectStoreNames.contains( item.name ) )
 											{
 												db.deleteObjectStore( item.name );
+												if( item.key == undefined )
+												{
+													continue;
+												}
 											} 
 											
 											var objectStore = db.createObjectStore( item.name, { keyPath: item.key } ); 
@@ -4192,6 +4206,11 @@ function Factory()
 									}
 									
 								}, false );
+								
+								request.addEventListener( 'error', function( e ) 
+								{
+									console.log( 'Connect Database Fail!' );
+								});
 
 								request.addEventListener( 'success', function( e ) 
 								{
@@ -4604,13 +4623,13 @@ function Factory()
 					
 					EnterFullscreen: function() 
 					{
-						element5.EnterFullscreen( document ); 
+						element5.GetBody().EnterFullscreen(); 
 						return this;
 					},
 					
 					EscapeFullscreen: function() 
 					{
-						element5.EscapeFullscreen( document ); 
+						element5.GetBody().EscapeFullscreen(); 
 						return this;
 					}, 
 					
