@@ -30,7 +30,7 @@ topPage.text.innerText = document.title;
 </ul>
 <p class="txt">How to use:</p>
 <pre>
-<span class="keyword">var</span> leftToR = timeline5.Create( 
+<span class="keyword">var</span> timeline = timeline5.Create( 
 {
     name: <span class="string">'leftToR'</span>, 
     keyframes: 
@@ -39,7 +39,6 @@ topPage.text.innerText = document.title;
         { time: <span class="string">'100'</span>, style: { transform: <span class="string">'translateX( 0px )'</span>, }, }, 
     ], 
 }); 
-<span class="keyword">var</span> timeline = timeline5.Create( leftToR );
 <span class="keyword">var</span> el = element5( <span class="string">'#aside'</span> );
 el.Play( timeline ); <span class="comment">// Or timeline.Effect( el, duration, delay, timeing )</span>
 </pre>

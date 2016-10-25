@@ -1997,6 +1997,8 @@ function Factory()
 					var len = keyframes.length;
 					var content = [];
 					
+					
+					
 					for( var i = 0; i < len; i++ ) 
 					{
 						content.push( keyframes[ i ].time + '% { }' );
@@ -2006,34 +2008,71 @@ function Factory()
 					
 					timeline = Style.sheet.cssRules[ index ]; 
 					
-					for( var i = 0; i < len; i++ ) 
-					{
-						element5.Extend( timeline.cssRules[ i ], Style.ruleModifier );
-						
-						timeline.cssRules[ i ].SetStyles( keyframes[ i ].style );
-					}
-					
 					timeline.Effect = function( el, duration, delay, timing ) 
 					{
 						var timeline = this;
-						delay = ( ( delay / 1000 ) || 0 ) + 's'; 
+						var delayOffset, timer;
+						
+						if( timer ) 
+						{
+							clearTimeout( timer );
+						}
+						
+						if( delay != undefined && delay > 0 )
+						{
+							delayOffset = delay;
+						} 
+						else 
+						{
+							delayOffset = 50;
+						}
+						
+						delay = ( ( delay / 1000 ) || 0.05 ) + 's'; 
 						duration = ( ( duration / 1000 ) || 1 ) + 's'; 
 						timing = timing || 'linear';
 						
 						el.SetStyle( 'animation-delay', delay ); 
 						el.SetStyle( 'animation-duration', duration ); 
 						el.SetStyle( 'animation-timing-function', timing ); 
-						
 						el.SetStyle( 'animation-name', '' );
-						var timer = setTimeout( function() 
-						{
-							el.SetStyle( 'animation-name', timeline.name ); 
-							clearTimeout( timer );
-						}, 30); 
+						
+						timer = setTimeout( 
+							function() 
+							{ 
+								el.SetStyle( 'animation-name', timeline.name ); 
+								clearTimeout( timer ) 
+							}, 
+							delayOffset 
+						);
+						
+						return timeline;
 					};
 					
 					timeline.keyframes = keyframes; 
 					timeline.Keyframes = timeline.cssRules;
+					
+					timeline.Keyframe = function( index ) 
+					{
+						var timeline = this;
+						var keyframe = timeline.Keyframes[ index ];
+						
+						if( keyframe.AddStyle != undefined ) 
+						{
+							return keyframe;
+						}
+						
+						keyframe = element5.Extend( keyframe, Style.ruleModifier );
+						if( keyframe.AddSelector ) 
+						{
+							delete keyframe.AddSelector;
+						}
+						return keyframe;
+					};
+					
+					for( var i = 0; i < len; i++ ) 
+					{
+						timeline.Keyframe( i ).SetStyles( keyframes[ i ].style ); 
+					}
 					
 					return timeline;
 				}; 
