@@ -406,9 +406,17 @@ function Factory()
 						}
 						
 						if( parentEl ) 
+						{
+							if( !parentEl.el5 ) 
+							{
+								return element5( parentEl );
+							}
 							return parentEl;
+						}
 						else 
+						{
 							return null;
+						}
 					}, 
 					ParentUntil : function( selector, s, target ) 
 					{
@@ -470,7 +478,7 @@ function Factory()
 						if( !el.el5 ) 
 						{
 							return element5( el );
-						}
+						} 
 						return el;
 					}, 
 					
@@ -778,6 +786,22 @@ function Factory()
 						return this;
 					}, 
 					
+					Prepend: function( el ) 
+					{
+						if( el.nodeType != undefined ) 
+						{
+							var nodeType = parseInt( el.nodeType );
+							
+							var firstNode = element5( this.firstElementChild ); 
+							
+							if( ( el.el5 && ( nodeType === 1 ) ) || nodeType === 3 ) 
+							{
+								el.EquipBefore( firstNode );
+							} 
+							return el;
+						}
+					}, 
+					
 					Equip: function( el ) 
 					{
 						if( el.nodeType != undefined ) 
@@ -851,7 +875,7 @@ function Factory()
 								if( node != undefined ) 
 								{
 									node = node.parentNode;
-									node.insertBefore( this, el.el.nextElementSibling);
+									node.insertBefore( this, el.nextElementSibling );
 								}
 								else 
 								{
@@ -2942,10 +2966,12 @@ function Factory()
 						xhr.addEventListener( 'timeout', handle, false ); 
 						return this;
 					}, 
-					Connect: function( synchFlag ) 
+					Connect: function( before, synchFlag ) 
 					{
 						synchFlag = synchFlag || true;
-						if( this.requestData ) 
+						var data = this.requestData;
+						
+						if( data ) 
 						{
 							this.open( 'post', this.requestUrl, synchFlag ); 
 						} 
@@ -2953,8 +2979,31 @@ function Factory()
 						{
 							this.open( 'get', this.requestUrl, synchFlag );
 						} 
-						this.send( this.requestData ); 
-						return this;
+						
+						if( typeof data == 'object' ) 
+						{
+							if( !( data.__proto__.toString().indexOf( 'FormData' ) >= 0 ) )  
+							{
+								data = new FormData(); 
+								var temp = this.requestData;
+								
+								for( x in temp ) 
+								{
+									data.append( x, temp[ x ] );
+								}
+							}
+						} 
+						else if ( typeof data == 'string' )
+						{
+							this.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded charset=utf-8' );
+						}
+						
+						if( before ) 
+						{						
+							before.apply( this );
+						} 
+						
+						return this.send( data );
 					}, 
 					Abort: function() 
 					{
@@ -2968,7 +3017,7 @@ function Factory()
 					readVariables: function( text ) 
 					{
 						text = text || this.responseText;
-						var pat = /([\w\_]+)=([\w\-\_]+)/gi;
+						var pat = /([\w\_]+)=([^\&]+)/gi;
 						var result = text.match( pat ); 
 						if( result ) 
 						{
