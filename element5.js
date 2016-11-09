@@ -346,6 +346,19 @@ function Factory()
 							return len;
 						}
 					}, 
+					FirstChild: function() 
+					{
+						var el = this.firstElementChild;
+						if( el == null ) 
+						{
+							return null;
+						}
+						if( !el.el5 ) 
+						{
+							return element5( el );
+						} 
+						return el;
+					},
 					Next: function() 
 					{
 						var el = this.nextElementSibling; 
@@ -361,7 +374,7 @@ function Factory()
 						var el = this.previousElementSibling;
 						if( el ) 
 						{
-							if( !el.el5 ) element5( el );
+							if( !el.el5 ) element5( el ); 
 							return el;
 						} 
 						return false;
@@ -389,7 +402,7 @@ function Factory()
 						} 
 						else 
 						{
-							var pat = /(#|.|\[|[a-zA-Z0-9]*)([a-zA-Z0-9]+)/;
+							var pat = /(#|.|\[|[a-zA-Z0-9\-\_]*)([a-zA-Z0-9\-\_]+)/;
 							var selector = pat.exec( selector );
 							
 							if( selector )
@@ -790,16 +803,18 @@ function Factory()
 					{
 						if( el.nodeType != undefined ) 
 						{
-							var nodeType = parseInt( el.nodeType );
 							
-							var firstNode = element5( this.firstElementChild ); 
-							
-							if( ( el.el5 && ( nodeType === 1 ) ) || nodeType === 3 ) 
+							var firstNode = this.firstElementChild;
+							if( firstNode ) 
 							{
-								el.EquipBefore( firstNode );
+								this.insertBefore( el, firstNode );
 							} 
-							return el;
+							else 
+							{
+								this.appendChild( el );
+							}
 						}
+						return el; 
 					}, 
 					
 					Equip: function( el ) 
@@ -2373,7 +2388,7 @@ function Factory()
 					return media;
 				}
 				
-				Style.AddLine( '.hidden' ).SetStyles( { position: 'fixed', bottom : '-100%', left : '-100%', top : 'auto', right : 'auto' } ); 
+				Style.AddLine( '.hidden' ).SetStyles( { display: 'none' } ); 
 				Style.AddLine( '.invisible' ).SetStyles( { visibility : 'hidden', opacity: '0' } ); 
 				
 				module.exports = Style;
@@ -3033,6 +3048,11 @@ function Factory()
 						{
 							return result;
 						}
+					}, 
+					parseJSON: function( text ) 
+					{
+						text = text || this.responseText; 
+						return JSON.parse( text );
 					}
 				};
 				
