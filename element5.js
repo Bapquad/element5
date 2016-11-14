@@ -799,6 +799,26 @@ function Factory()
 						return this;
 					}, 
 					
+					Html: function( html ) 
+					{
+						var el = this;
+						if( el.nodeType ) 
+						{
+							el.innerHTML = html;
+						} 
+						return el;
+					}, 
+					
+					Text: function( txt ) 
+					{
+						var el = this;
+						if( el.nodeType ) 
+						{
+							el.innerText = txt; 
+						} 
+						return el;
+					}, 
+					
 					Prepend: function( el ) 
 					{
 						if( el.nodeType != undefined ) 
@@ -1899,6 +1919,7 @@ function Factory()
 					} 
 					return;
 				}; 
+				element5.create = element5.Create;
 				
 				element5.MountDevice = function( device ) 
 				{
@@ -1918,11 +1939,13 @@ function Factory()
 					} 
 					return device;
 				};
+				element5.mountDevice = element5.MountDevice;
 				
 				element5.Extension = function( ext ) 
 				{
 					elementExtCollection.push( ext ); 
 				};
+				element5.extension = element5.Extension;
 				
 				element5.Extend = function( applier, hier ) 
 				{
@@ -1943,8 +1966,9 @@ function Factory()
 					
 					return applier;
 				}; 
+				element5.extend = element5.Extend;
 				
-				element5.includeHtml = function( el ) 
+				element5.IncludeHtml = function( el ) 
 				{
 					if ( el.getAttribute("w3-include-html") ) 
 					{
@@ -1976,7 +2000,8 @@ function Factory()
 						
 						return;
 					}
-				}
+				};
+				element5.includeHtml = element5.IncludeHtml;
 				
 				module.exports = element5; 
 			},  
@@ -3049,10 +3074,15 @@ function Factory()
 							return result;
 						}
 					}, 
-					parseJSON: function( text ) 
+					parseJSON: function( jsonText ) 
 					{
-						text = text || this.responseText; 
-						return JSON.parse( text );
+						jsonText = jsonText || this.responseText; 
+						return JSON.parse( jsonText );
+					}, 
+					readJSON: function( jsonText ) 
+					{
+						jsonText = jsonText || this.responseText;
+						return JSON.parse( jsonText );
 					}
 				};
 				
@@ -3062,8 +3092,10 @@ function Factory()
 					{
 						var xhr = new XMLHttpRequest(); 
 						xhr.requestUrl = url || 0; 
-						xhr.requestData = data || 0;
-						return element5.Extend( xhr, XHRModifier );
+						xhr.requestData = data || 0; 
+						element5.Extend( xhr, XHRModifier );
+						xhr.connect = xhr.Connect;
+						return xhr;
 					}, 
 					
 					Connect: function( url, onload, data ) 
