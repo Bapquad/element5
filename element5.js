@@ -554,20 +554,30 @@ function Factory()
 					Style: function( styles ) 
 					{
 						if( this.CssSelf )
+						{
 							this.CssSelf.SetStyles( styles ); 
+						}
 						else if( this.CssComm )
+						{
 							this.CssComm.SetStyles( styles ); 
+						}
 						return this;
 					}, 
 					
 					AddStyle: function( name, value ) 
 					{
 						if( this.CssSelf ) 
+						{
 							this.CssSelf.SetStyle( name, value ); 
+						}
 						else if( this.CssComm )
+						{
 							this.CssComm.SetStyle( name, value ); 
+						}
 						else 
+						{
 							this.style[ name ] = value;
+						}
 						return this;
 					}, 
 					
@@ -576,19 +586,31 @@ function Factory()
 						if( com ) 
 						{
 							if( this.CssComm )
+							{
 								this.CssComm.SetStyle( name, value ); 
+							}
 							else if( this.CssSelf ) 
+							{
 								this.CssSelf.SetStyle( name, value ); 
+							}
 							else 
+							{
 								this.style[ name ] = value; 
+							}
 							return this;
 						}
 						if( this.CssSelf ) 
+						{
 							this.CssSelf.SetStyle( name, value ); 
+						}
 						else if( this.CssComm )
+						{
 							this.CssComm.SetStyle( name, value ); 
+						}
 						else 
+						{
 							this.style[ name ] = value;
+						}
 						return this;
 					}, 
 					
@@ -617,15 +639,23 @@ function Factory()
 						if( com === 'com' ) 
 						{
 							if( this.CssComm )
+							{
 								this.CssComm.SetStyles( styles ); 
-							else if( this.CssSelf )
+							}
+							else if( this.CssSelf ) 
+							{
 								this.CssSelf.SetStyles( styles ); 
+							}
 							return this;
 						}
 						if( this.CssSelf )
+						{
 							this.CssSelf.SetStyles( styles ); 
-						else if( this.CssComm )
+						}
+						else if( this.CssComm ) 
+						{
 							this.CssComm.SetStyles( styles ); 
+						}
 						return this;
 					}, 
 					
@@ -801,6 +831,19 @@ function Factory()
 					
 					Html: function( html ) 
 					{
+						var el = this; 
+						if( el.nodeType ) 
+						{
+							el.innerHTML = html;
+							var tmpe = element5.create( 'div' );
+							tmpe.innerHTML = html;
+							return tmpe;
+						} 
+						return el;
+					}, 
+
+					html: function( html ) 
+					{
 						var el = this;
 						if( el.nodeType ) 
 						{
@@ -808,7 +851,20 @@ function Factory()
 						} 
 						return el;
 					}, 
-					
+
+					Empty: function() 
+					{
+						var el = this;
+						return el.empty();
+					}, 
+
+					empty: function() 
+					{
+						var el = this;
+						el.innerHTML = '';
+						return el;
+					},
+
 					Text: function( txt ) 
 					{
 						var el = this;
@@ -818,6 +874,18 @@ function Factory()
 						} 
 						return el;
 					}, 
+					
+					SetText: function( txt ) 
+					{
+						var el = this;
+						return el.Text( txt );
+					}, 
+
+					setText: function( txt ) 
+					{
+						var el = this;
+						return el.Text( txt );
+					},
 					
 					Prepend: function( el ) 
 					{
@@ -3094,6 +3162,7 @@ function Factory()
 						xhr.requestUrl = url || 0; 
 						xhr.requestData = data || 0; 
 						element5.Extend( xhr, XHRModifier );
+						element5.Extend( xhr, dataModifier );
 						xhr.connect = xhr.Connect;
 						return xhr;
 					}, 
@@ -4533,6 +4602,11 @@ function Factory()
 			}, 
 			function( module, __webpack_require__ ) 		// pack require ( 9 ) 
 			{
+				Array.prototype.clone = function() 
+				{
+					return this.slice(0);
+				};
+				
 				var Solution = 
 				{
 					SetMutationEvent: (function()
