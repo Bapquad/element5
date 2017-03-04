@@ -902,7 +902,7 @@ function Factory()
 								this.appendChild( el );
 							}
 						}
-						return this; 
+						return el; 
 					}, 
 					
 					Equip: function( el ) 
@@ -910,10 +910,12 @@ function Factory()
 						if( el.nodeType != undefined ) 
 						{
 							var nodeType = parseInt( el.nodeType );
+
 							if( ( el.el5 && ( nodeType === 1 ) ) || nodeType === 3 ) 
 							{
 								this.appendChild( el );
 							} 
+							return el;
 						}
 						else if( el.length )
 						{
@@ -922,8 +924,8 @@ function Factory()
 							{
 								this.Equip( el[ i ] );
 							}
-						}
-						return this;
+						}  
+						return el;
 					}, 
 					
 					EquipedBy: function( el ) 
@@ -948,12 +950,12 @@ function Factory()
 						try 
 						{
 							if( el == undefined ) throw "The 'el' param is undefined.";
-							
 							if( this.nodeType === 1 ) 
 							{
 								var node = el.parentNode;
 								node.insertBefore( this, el ); 
 							}
+							return this;
 						} 
 						catch( err ) 
 						{
@@ -961,9 +963,8 @@ function Factory()
 								console.error( err );
 							else 
 								console.log( err );
+							return;
 						}
-						
-						return this;
 					}, 
 					
 					EquipAfter: function( el ) 
@@ -971,7 +972,6 @@ function Factory()
 						try 
 						{
 							if( el == undefined ) throw "The 'el' param is undefined."; 
-							
 							if( this.nodeType === 1 ) 
 							{
 								var node = el.nextElementSibling;
@@ -986,6 +986,7 @@ function Factory()
 									node.appendChild( this );
 								}
 							}
+							return this;
  						}
 						catch( err ) 
 						{
@@ -993,22 +994,15 @@ function Factory()
 								console.error( err );
 							else 
 								console.log( err ); 
+							return;
 						}
-						
-						return this;
 					}, 
 					
 					Clone: function( deep ) 
 					{
-						if( deep == undefined ) 
-						{
-							deep = true;
-						}
-						
 						var el = this;
-						var elCloned = el.cloneNode( deep ); 
-						elCloned.clonedBy = true;
-						
+						var elc = el.cloneNode( true ); 
+						elc.clonedBy = true;
 						return element5( elc );
 					},
 					
@@ -1027,8 +1021,6 @@ function Factory()
 							var el = targetElement || this; 
 							el.requestFullscreen(); 
 							el.fullscreenElement = true;
-							
-							return this;
 						}; 
 					})(), 
 					
@@ -1037,8 +1029,6 @@ function Factory()
 						var el = targetElement || this; 
 						document.exitFullscreen(); 
 						el.fullscreenElement = false;
-						
-						return this;
 					}, 
 					
 					ToggleFullscreen: function( targetElement ) 
@@ -1054,7 +1044,7 @@ function Factory()
 							document.exitFullscreen(); 
 							el.fullscreenElement = false;
 						}
-						return this;
+						return el;
 					},
 				}; 
 				// Alias Section for Element DOM Modifier.
@@ -1064,18 +1054,16 @@ function Factory()
 				{
 					includeHTML: function() 
 					{
-						var el = this;
-						element5.includeHtml( el ); 
-						return el;
+						element5.includeHtml( this ); 
+						return this;
 					},
 				};
 				
 				var AniModifier = {
 					EffectedBy: function( timeline, duration, delay, timing ) 
 					{
-						var el = this;
-						timeline.Effect( el, duration, delay, timing ); 
-						return el;
+						timeline.Effect( this, duration, delay, timing ); 
+						return this;
 					}, 
 				};
 				AniModifier.Animation = AniModifier.EffectedBy;
@@ -1469,7 +1457,6 @@ function Factory()
 						trace = trace || false;
 						var el = this;
 						el.addEventListener( eventType, eventHandle, trace );
-						return el;
 					}, 
 					
 					FireEvent: function( eventType ) 
@@ -1532,8 +1519,6 @@ function Factory()
 							event.synthetic = true; // allow detection of synthetic events
 							el.fireEvent( "on" + eventType, event );
 						}
-						
-						return el;
 					}, 
 					
 					Draggable: function( home ) 
@@ -1597,7 +1582,7 @@ function Factory()
 									console.error( err ); 
 								else 
 									console.log( err ); 
-								return el;
+								return;
 							}
 						} 
 						
@@ -1647,7 +1632,7 @@ function Factory()
 									console.error( err ); 
 								else 
 									console.log( err );
-								return el;
+								return;
 							}
 						} 
 						
@@ -1703,7 +1688,7 @@ function Factory()
 									console.error( err ); 
 								else 
 									console.log( err ); 
-								return el;
+								return;
 							} 
 						}
 						
@@ -2338,9 +2323,8 @@ function Factory()
 					},
 					SetStyle: function( name, value ) 
 					{
-						var rule = this;
-						rule.style[name] = value;
-						return rule;
+						this.style[name] = value;
+						return this;
 					}, 
 					
 					css: function() 
@@ -2357,32 +2341,29 @@ function Factory()
 					
 					Css: function() 
 					{
-						var rule = this;
 						if( arguments.length ) 
 						{
 							if( arguments.length == 1 )
-								rule.SetStyles( arguments[0] );
+								this.SetStyles( arguments[0] );
 							else if( arguments.length == 2 ) 
-								rule.SetStyle( arguments[0], arguments[1] );
+								this.SetStyle( arguments[0], arguments[1] );
 						}
-						return rule;
+						return this;
 					},
 					
 					AddStyle: function( name, value ) 
 					{
-						var rule = this;
-						rule.style[name] = value;
-						return rule;
+						this.style[name] = value;
+						return this;
 					}, 
 					
 					SetStyles: function( styles ) 
 					{
-						var rule = this;
 						for( x in styles) 
 						{
-							rule.SetStyle( x, styles[x] );
+							this.SetStyle( x, styles[x] );
 						} 
-						return rule;
+						return this;
 					}, 
 				}; 
 				
@@ -2580,13 +2561,7 @@ function Factory()
 					
 					Action: function( topIndex ) 
 					{
-						if( topIndex == undefined ) 
-						{
-							topIndex = 0;
-						}
-						
 						var motion = this;
-						
 						motion.topIndex = topIndex; 
 						
 						var topOffset = ( topIndex * parseInt( motion.height ) );
@@ -3147,7 +3122,7 @@ function Factory()
 				
 				var dataModifier = 
 				{
-					ReadVariables: function( text ) 
+					readVariables: function( text ) 
 					{
 						text = text || this.responseText;
 						var pat = /([\w\_]+)=([^\&]+)/gi;
@@ -3167,12 +3142,12 @@ function Factory()
 							return result;
 						}
 					}, 
-					ParseJSON: function( jsonText ) 
+					parseJSON: function( jsonText ) 
 					{
 						jsonText = jsonText || this.responseText; 
 						return JSON.parse( jsonText );
 					}, 
-					ReadJSON: function( jsonText ) 
+					readJSON: function( jsonText ) 
 					{
 						jsonText = jsonText || this.responseText;
 						return JSON.parse( jsonText );
@@ -3190,11 +3165,6 @@ function Factory()
 						element5.Extend( xhr, dataModifier );
 						xhr.connect = xhr.Connect;
 						return xhr;
-					}, 
-					
-					Instance: function( url, data ) 
-					{
-						return Request.Initialize( url, data );
 					}, 
 					
 					Connect: function( url, onload, data ) 
@@ -3464,8 +3434,8 @@ function Factory()
 							default:
 								return null;
 						}
-					},
-					Open: function( storageType ) 
+					}, 
+					open: function( storageType ) 
 					{
 						try 
 						{
@@ -3604,24 +3574,12 @@ function Factory()
 								{
 									GetValue: function() 
 									{
-										var record = this;
-										if( record.destroyed )
-										{
-											return;
-										}
-										return record.value.data;
+										return this.value.data;
 									}, 
 									
 									Destroy: function() 
 									{
 										var record = this;
-										
-										if( record.destroyed )
-										{
-											return;
-										}
-										
-										record.destroyed = true;
 										
 										var cookieString = 
 										[
@@ -3641,23 +3599,6 @@ function Factory()
 									SetValue: function( data )
 									{
 										var record = this; 
-										
-										try 
-										{
-											if( record.destroyed ) throw "This item had been destroyed.";
-										}
-										catch( err ) 
-										{
-											if( console.error ) 
-											{
-												console.error( err );
-											}
-											else 
-											{
-												console.log( err );
-											}
-											return;
-										}
 										
 										record.value.data = data;
 										
@@ -3771,23 +3712,20 @@ function Factory()
 										
 										if( arguments.length == 1 ) 
 										{
-											records = loadDB();
+											if( myCore.Public[ key ] != undefined ) 
+											{
+												return myCore.Public[ key ];
+											}
+											
 											var len = records.length;
+											
 											for ( var i = 0; i < len; i++ ) 
 											{
 												var item = records[ i ];
 												if( item.key == key && item.value.meta.branch == "/" ) 
 												{
-													if( myCore.Public[ key ] == undefined ) 
-													{
-														myCore.Public[ key ] = element5.Extend( item, recordModifier );
-													}
-													return myCore.Public[ key ]; 
+													return myCore.Public[ key ] = element5.Extend( item, recordModifier ); 
 												}
-											}
-											if( myCore.Public[ key ] != undefined ) 
-											{
-												myCore.Public[ key ].Destroy();
 											}
 											return;
 										} 
@@ -4015,30 +3953,17 @@ function Factory()
 									Remove: function() 
 									{
 										var item = this;
-										if( item.removed ) 
-										{
-											return;
-										}
-										item.removed = true;
 										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
 										storageAdapter.removeItem( keyInput );
 									}, 
 									GetValue: function() 
 									{
 										var item = this;
-										if( item.removed ) 
-										{
-											return;
-										}
 										return item.value.value.data;
 									}, 
 									SetValue: function( data ) 
 									{
 										var item = this;
-										if( item.removed ) 
-										{
-											return;
-										}
 										keyInput = 'lds_id ' + item.id + ' ' + item.key; 
 										item.value.value.data = data; 
 										storageAdapter.setItem( keyInput, JSON.stringify( item.value ) );
@@ -4276,7 +4201,7 @@ function Factory()
 									
 									Empty: function() 
 									{
-										//storageAdapter
+										storageAdapter
 									}
 								};
 								

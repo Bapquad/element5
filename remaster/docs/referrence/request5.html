@@ -1,0 +1,564 @@
+<h1>request5</h1>
+<h2>Introduction</h2>
+<p class="note">request5 is a static class about network such as get, post ajax.
+<h3>Functions</h3>
+<div class="entire" id="Initialize">
+	<h4 class="code">request5.Initialize( <span class="param">url</span>, <span class="param">data</span> )</h4>
+	<div class="explain">
+		<p class="note">Initializing a request object. This request object is instance of XMLHttpRequest.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">url</span>:<span class="code">string</span> the url string to request.</li>
+				<li><span class="code-param">data</span>:<span class="code">object</span> the data package to request.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myXHR = request5.Initialize( <span class="char">'http://examples.com'</span> );</li>
+				<li>console.log( myXHR );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>A XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Instance">
+	<h4 class="code">request5.Instance( <span class="param">url</span>, <span class="param">data</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates a new request instance. This request object is instance of XMLHttpRequest.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">url</span>:<span class="code">string</span> the url string to request.</li>
+				<li><span class="code-param">data</span>:<span class="code">object</span> the data package to request.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myXHR = request5.Instance( <span class="char">'http://examples.com'</span> );</li>
+				<li>console.log( myXHR );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>A XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Connect">
+	<h4 class="code">request5.Connect( <span class="param">url</span>, <span class="param">onload</span>, <span class="param">data</span> )</h4>
+	<div class="explain">
+		<p class="note">Initializing a new request instance then make a request to url. This request object is instance of XMLHttpRequest.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">url</span>:<span class="code">string</span> the url string to request.</li>
+				<li><span class="code-param">onload</span>:<span class="code">function</span> the event handle occurs when a request has completely loaded.</li>
+				<li><span class="code-param">data</span>:<span class="code">object</span> the data package to request.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myConn = request5.Connect( <span class="char">'http://examples.com'</span>, <span class="word">function</span>() </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something ...</span></li>
+				<li>});</li>
+				<li>console.log( myConn );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>A XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="LoadVariables">
+	<h4 class="code">request5.LoadVariables( <span class="param">url</span>, <span class="param">onload</span>, <span class="param">data</span> )</h4>
+	<div class="explain">
+		<p class="note">Initializing a new request instance then make a request to url. This request object is instance of XMLHttpRequest and extended by a object called DataModifier.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">url</span>:<span class="code">string</span> the url string to request.</li>
+				<li><span class="code-param">onload</span>:<span class="code">function</span> the event handle occurs when a request has completely loaded.</li>
+				<li><span class="code-param">data</span>:<span class="code">object</span> the data package to request.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="file-block">
+			<p class="code filename">http://examples.com/variables.txt</p>
+			<div class="code-block">
+				<ul>
+					<li>username=Jack Sander&amp;career=Developer&amp;age=21</li>
+				</ul>
+			</div>
+		</div>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.Connect( <span class="char">'http://examples.com/variables.txt'</span>, <span class="word">function</span>() </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something ...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>A XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<h3>XHR Modifier Events</h3>
+
+<div class="entire" id="onAbort">
+	<h4 class="code">onAbort( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs an abort event handle. This handle occurs when the connecting has been abort.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting has aborted.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVar.onAbort( <span class="word">function</span>( <span class="word">event</span> ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onCancel">
+	<h4 class="code">onCancel( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a cancel event handle. This handle occurs when the connecting has been cancel.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting has canceled.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onCancel( <span class="word">function</span>( <span class="word">event</span> ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onError">
+	<h4 class="code">onError( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs an error event handle. This handle occurs when the connection meet an error.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connection has meet an error.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onError( <span class="char">function</span>( <span class="word">event</span> ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onFail">
+	<h4 class="code">onFail( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a fail event handle. This handle occurs when the connection meet a request problem.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connection has meet a request problem.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onFail( <span class="char">function</span>( <span class="word">event</span> ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onStart">
+	<h4 class="code">onStart( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a start event handle. This handle occurs when the connecting has been started.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connection has been started.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onStart( <span class="char">function</span>( <span class="word">event</span> ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span></li>
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onLoad">
+	<h4 class="code">onLoad( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a load event handle. This handle occurs when the connecting had loaded completely.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting had loaded completely.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onLoad( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onComplete">
+	<h4 class="code">onComplete( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a load event handle. This handle occurs when the connecting had loaded completely.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting had loaded completely.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onComplete( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onFinish">
+	<h4 class="code">onFinish( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a finish event handle. This handle occurs when the connecting had finished completely.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting had finished completely.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onFinish( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onProgress">
+	<h4 class="code">onProgress( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a progress event handle. This handle occurs when the connecting has been on the request progress.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting has been on the request progress.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onProgress( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onStateChange">
+	<h4 class="code">onStateChange( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a state change event handle. This handle occurs when the connecting has changed the request state.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting has changed the request state.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onStateChange( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onTimeout">
+	<h4 class="code">onTimeout( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs a timeout event handle. This handle occurs when the connecting has meet the time off.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> an event handle occurs when the connecting has meet the time off.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onTimeout( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// do something...</span>;</li> 
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<h3>XHR Modifier Methods</h3>
+
+<div class="entire" id="Connect">
+	<h4 class="code">Connect( <span class="param">syncFlag</span> )</h4>
+	<div class="explain">
+		<p class="note">Make a connect.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">syncFlag</span>:<span class="code">boolean</span> a flag specifies whether be or not wait the response. Default it is <span class="code">true</span> value.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myConn = request5.Initialize( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.Connect();</li>
+				<li>console.log( myConn );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Abort">
+	<h4 class="code">Abort()</h4>
+	<div class="explain">
+		<p class="note">Aborts a connect.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.Abort();</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<h3>Data Modifier Methods</h3>
+
+<div class="entire" id="ReadVariables">
+	<h4 class="code">ReadVariables( <span class="param">text</span> )</h4>
+	<div class="explain">
+		<p class="note">Reads data from a plain text.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">text</span>:<span class="code">string</span> a plain text.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onLoad( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// read data</span>;</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">var</span> myData = <span class="word">event</span>.target.ReadVariables();</li>				
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ParseJSON">
+	<h4 class="code">ParseJSON( <span class="param">JSONString</span> )</h4>
+	<div class="explain">
+		<p class="note">Reads data from a JSON string.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">JSONString</span>:<span class="code">string</span> a json string.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.json'</span> );</li>
+				<li>myVars.onLoad( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// read data</span>;</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">var</span> myData = <span class="word">event</span>.target.ParseJSON();</li>				
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ReadJSON">
+	<h4 class="code">ReadJSON( <span class="param">JSONString</span> )</h4>
+	<div class="explain">
+		<p class="note">Reads data from a JSON string.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">JSONString</span>:<span class="code">string</span> a json string.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> myVars = request5.LoadVariables( <span class="char">'http://examples.com/variables.txt'</span> );</li>
+				<li>myVars.onLoad( <span class="word">function</span>( <span class="word">event</span> )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// read data</span>;</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">var</span> myData = <span class="word">event</span>.target.ReadJSON();</li>				
+				<li>});</li>
+				<li>console.log( myVars );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self XMLHttpRequest instance.</p>
+		</div>
+	</div>
+</div>

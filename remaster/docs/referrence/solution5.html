@@ -1,0 +1,266 @@
+<h1>solution5</h1>
+<h2>Introduction</h2>
+<p class="note">solution5 is a static class has a lot of static functions and the dynamic methods.
+<h3>Functions</h3>
+<div class="entire" id="SetMutationEvent">
+	<h4 class="code">SetMutationEvent( <span class="param">DOMElement</span>, <span class="param">DOMAddEventHandle</span>, <span class="param">DOMRemoveEventHandle</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the action occurs when the DOMElement has been added or removed.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">DOMElement</span>:<span class="code">DOMObject</span> a html dom object.</li>
+				<li><span class="code-param">DOMAddEventHandle</span>:<span class="code">function</span> a event handle occurs when DOM added into document.</li>
+				<li><span class="code-param">DOMRemoveEventHandle</span>:<span class="code">function</span> a event handle occurs when DOM removed into document.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> formElement = element5( <span class="char">'#formID'</span> );</li>
+				<li>solution5.SetMutationEvent( DOMElement, function( e ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e );</li>
+				<li>});</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="RequestWorker">
+	<h4 class="code">RequestWorker( <span class="param">scriptPath</span>, <span class="param">onMessageHandle</span> )</h4>
+	<div class="explain">
+		<p class="note">Request a worker.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">scriptPath</span>:<span class="code">string</span> a string presents a worker script path.</li>
+				<li><span class="code-param">onMessageHandle</span>:<span class="code">function</span> a message event handle.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> worker = solution5.RequestWorker( <span class="char">'/js/worker.js'</span>, <span class="function">function</span>( e ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e );</li>
+				<li>});</li>
+				<li>console.log( worker );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The worker instance object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="OutThread">
+	<h4 class="code">OutThread( <span class="param">scriptPath</span>, <span class="param">onMessageHandle</span> )</h4>
+	<div class="explain">
+		<p class="note">Request a worker.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">scriptPath</span>:<span class="code">string</span> a string presents a worker script path.</li>
+				<li><span class="code-param">onMessageHandle</span>:<span class="code">function</span> a message event handle.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> thread = solution5.OutThread( <span class="char">'/js/worker.js'</span>, <span class="function">function</span>( e ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e );</li>
+				<li>});</li>
+				<li>console.log( thread );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The worker instance object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ServerSentEvent">
+	<h4 class="code">ServerSentEvent( <span class="param">serverScriptPath</span>, <span class="param">onMessageHandle</span> )</h4>
+	<div class="explain">
+		<p class="note">Request a response server event.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">serverScriptPath</span>:<span class="code">string</span> a string presents a worker script path.</li>
+				<li><span class="code-param">onMessageHandle</span>:<span class="code">function</span> a message event handle.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> response = solution5.ServerSentEvent( <span class="char">'/js/worker.js'</span>, <span class="function">function</span>( e ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e );</li>
+				<li>});</li>
+				<li>console.log( response );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ServerMessage">
+	<h4 class="code">ServerMessage( <span class="param">serverScriptPath</span>, <span class="param">onMessageHandle</span> )</h4>
+	<div class="explain">
+		<p class="note">Request a response server event.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">serverScriptPath</span>:<span class="code">string</span> a string presents a worker script path.</li>
+				<li><span class="code-param">onMessageHandle</span>:<span class="code">function</span> a message event handle.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> response = solution5.ServerMessage( <span class="char">'/js/worker.js'</span>, <span class="function">function</span>( e ) 
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e );</li>
+				<li>});</li>
+				<li>console.log( response );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Debug">
+	<h4 class="code">Debug( <span class="param">mode</span> )</h4>
+	<div class="explain">
+		<p class="note">Turns on the document in the Debug mode.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">mode</span>:<span class="code">string</span> a constant for turn on/off the Debug mode.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.Debug( <span class="char">'ON'</span> );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="WriteError">
+	<h4 class="code">WriteError( <span class="param">message</span> )</h4>
+	<div class="explain">
+		<p class="note">When turns on the document in the Debug mode use only.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">message</span>:<span class="code">string</span> a message displayed.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.Debug( <span class="char">'ON'</span> );</li>
+				<li>solution5.WriteError( <span class="char">'This is error message.'</span> );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="WriteAlert">
+	<h4 class="code">WriteAlert( <span class="param">message</span> )</h4>
+	<div class="explain">
+		<p class="note">When turns on the document in the Debug mode use only.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">message</span>:<span class="code">string</span> a message alerted.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.Debug( <span class="char">'ON'</span> );</li>
+				<li>solution5.WriteAlert( <span class="char">'This is test message.'</span> );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="EnterFullscreen">
+	<h4 class="code">EnterFullscreen()</h4>
+	<div class="explain">
+		<p class="note">Make the body element enter to fullscreen mode.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.EnterFullscreen();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The solution5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="EscapeFullscreen">
+	<h4 class="code">EscapeFullscreen()</h4>
+	<div class="explain">
+		<p class="note">Make the body element enter to fullscreen mode.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.EscapeFullscreen();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The solution5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ToggleFullscreen">
+	<h4 class="code">ToggleFullscreen()</h4>
+	<div class="explain">
+		<p class="note">Make the body element enter to fullscreen mode.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>solution5.ToggleFullscreen();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The solution5 object.</p>
+		</div>
+	</div>
+</div>

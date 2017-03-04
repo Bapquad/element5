@@ -1,0 +1,262 @@
+<h1>style5</h1>
+<h2>Introduction</h2>
+<p class="note">style5 is a static class has a lot of static functions and the dynamic methods.
+<h3>Functions</h3>
+<div class="entire" id="AddLine">
+	<h4 class="code">style5.AddLine( <span class="param">selector</span> )</h4>
+	<div class="explain">
+		<p class="note">Creating the style rule element.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">selector</span>:<span class="code">string</span> a description string in the element query format.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddLine( <span class="char">'div#wrapper'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="AddCss">
+	<h4 class="code">style5.AddCss( <span class="param">selector</span> )</h4>
+	<div class="explain">
+		<p class="note">Add the style rule element.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">selector</span>:<span class="code">string</span> a description string in the element query format.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h3>Methods</h3>
+
+<div class="entire" id="AddSelector">
+	<h4 class="code">AddSelector( <span class="param">selector</span> )</h4>
+	<div class="explain">
+		<p class="note">Add more the selector to the style rule.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">selector</span>:<span class="code">string</span> a description string in the element query format.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.AddSelector( <span class="char">'#header'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="AddStyle">
+	<h4 class="code">AddStyle( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Add more the style properties to the style rule.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> the name of the style property.</li>
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the style property.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.AddStyle( <span class="char">'color'</span>, <span class="char">'#000'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Css">
+	<h4 class="code">Css( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element. In this case for the company.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> the name of the style property.</li>
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the style property.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.Css( <span class="char">'color'</span>, <span class="char">'#000'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Css">
+	<h4 class="code">Css( <span class="param">styles</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element. In this case for the company.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">styles</span>:<span class="code">object</span> holds the style properties.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.Css( </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'color'</span>: <span class="char">'#000'</span> 
+				<li>});</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="SetStyle">
+	<h4 class="code">SetStyle( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element. In this case for the company.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> the name of the style property.</li>
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the style property.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.SetStyle( <span class="char">'color'</span>, <span class="char">'#000'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="SetStyles">
+	<h4 class="code">SetStyles( <span class="param">styles</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element. In this case for the company.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">styles</span>:<span class="code">object</span> holds the style properties.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.SetStyles( </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'color'</span>: <span class="char">'#000'</span> 
+				<li>});</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="css">
+	<h4 class="code">css( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> the name of the style property.</li>
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the style property.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.css( <span class="char">'color'</span>, <span class="char">'#000'</span> );</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="css">
+	<h4 class="code">css( <span class="param">styles</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the css style to DOM element.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">styles</span>:<span class="code">object</span> holds the style properties.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> styleObject = style5.AddCss( <span class="char">'div#wrapper'</span> );</li>
+				<li>styleObject.css( </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'color'</span>: <span class="char">'#000'</span> 
+				<li>});</li>
+				<li>console.log( styleObject );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self style rule object.</p>
+		</div>
+	</div>
+</div>

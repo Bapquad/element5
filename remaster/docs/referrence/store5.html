@@ -1,0 +1,662 @@
+<h1>store5</h1>
+<h2>Introduction</h2>
+<p class="note">store5 is a static class about data storage such as localstore, sessionstore, and indexDB.
+<h3>Functions</h3>
+
+<div class="entire" id="Open">
+	<h4 class="code">store5.Open( <span class="param">storageType</span> )</h4>
+	<div class="explain">
+		<p class="note">Open a database simulator.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">storageType</span>:<span class="code">string</span> a string present for database type.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> db = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+				<li>console.log( db );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The storage object value. The <span class="code-param">storageType</span> param has follow constants:</p>
+			<ul class="param">
+				<li><span class="code-param">'cookie_ds'</span> - data storage base on cookie. It returns the ExpireData Simulator object.</li>
+				<li><span class="code-param">'local_ds'</span> - data storage base on local storage interfaces. It returns the LocalData Simulator object</li>
+				<li><span class="code-param">'session_ds'</span> - data storage base on session storage interfaces. It returns the SessionData Simulator object</li>
+				<li><span class="code-param">'indexed_db'</span> - data storage base on IndexedDB interfaces. It returns the IndexedDB Simulator object, It must be declared with a database name.</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h3>ExpireData Simulator Methods</h3>
+<div class="entire" id="public">
+	<h4 class="code">public( <span class="param">name</span>, <span class="param">value</span>, <span class="param">expire</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the public variable. This can access everywhere in the apps.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents the name of variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">any</span> (Optional) a data value.</li>
+				<li><span class="code-param">expire</span>:<span class="code">number</span> (Optional) a number presents the expire time. In the second unit.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+				<li>cookieDB.public( <span class="char">'username'</span>, <span class="char">'Huy Cuong'</span>, <span class="decimal">24</span> * <span class="decimal">60</span> * <span class="decimal">60</span> );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The ExpireData Record Item object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="private">
+	<h4 class="code">private( <span class="param">name</span>, <span class="param">value</span>, <span class="param">expire</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the private variable. This can access in the current branch only.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents the name of variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">any</span> (Optional) a data value.</li>
+				<li><span class="code-param">expire</span>:<span class="code">number</span> (Optional) a number presents the expire time. In the second unit.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="file-block">
+			<p class="code filename">./sub_branch/index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+					<li>cookieDB.private( <span class="char">'username'</span>, <span class="char">'Huy Cuong'</span>, <span class="decimal">24</span> * <span class="decimal">60</span> * <span class="decimal">60</span> );</li>
+					<li>console.log( cookieDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="file-block">
+			<p class="code filename">./index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+					<li>console.log( cookieDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The ExpireData Record Item object.</p>
+		</div>
+	</div>
+</div>
+
+<h3>ExpireData Record Item Methods</h3>
+
+<div class="entire" id="GetValue">
+	<h4 class="code">GetValue( <span class="param">name</span> )</h4>
+	<div class="explain">
+		<p class="note">Get value of the cookie variable.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents the name of variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+				<li><span class="word">var</span> item = cookieDB.private( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span>, <span class="decimal">60</span> ) );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The any object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="SetValue">
+	<h4 class="code">SetValue( <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set value to the cookie variable.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">value</span>:<span class="code">string</span> a string presents the value of the variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+				<li><span class="word">var</span> item = cookieDB.private( <span class="char">'username'</span>, <span class="char">'Jack Sander'</span>, <span class="decimal">60</span> ) );</li>
+				<li>item.SetValue( <span class="char">'Jack Sanders'</span> );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Destroy">
+	<h4 class="code">Destroy()</h4>
+	<div class="explain">
+		<p class="note">Destroy the cookie variable.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> cookieDB = store5.Open( <span class="char">'cookie_ds'</span> );</li>
+				<li><span class="word">var</span> item = cookieDB.private( <span class="char">'username'</span>, <span class="char">'Jack Sander'</span>, <span class="decimal">60</span> ) );</li>
+				<li>item.SetValue( <span class="char">'Jack Sanders'</span> );</li>
+				<li>item.Destroy();</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<h3>Localdata Simulator Methods</h3>
+
+<div class="entire" id="public">
+	<h4 class="code">public( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the public variable. This can access everywhere in the apps.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents name of the variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">any</span> a string presents value of the variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+				<li><span class="word">var</span> item = localDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>console.log( item );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The LocalData Simulator Item object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="private">
+	<h4 class="code">private( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the private variable. This can access in the current branch only.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents the name of variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">any</span> (Optional) a data value.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="file-block">
+			<p class="code filename">./sub_branch/index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+					<li>localDB.private( <span class="char">'username'</span>, <span class="char">'Huy Cuong'</span> );</li>
+					<li>console.log( localDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="file-block">
+			<p class="code filename">./index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+					<li>console.log( localDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The LocalData Record Item object.</p>
+		</div>
+	</div>
+</div>
+
+<h3>LocalData Simulator Item Methods</h3>
+
+<div class="entire" id="GetValue">
+	<h4 class="code">GetValue()</h4>
+	<div class="explain">
+		<p class="note">Receives the value of the variable.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+				<li><span class="word">var</span> item = localDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The any object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="SetValue">
+	<h4 class="code">SetValue( <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the value of the variable.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+				<li><span class="word">var</span> item = localDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>item.SetValue( <span class="char">'Jackie Sanders'</span> ) );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self LocalData Simulator Item object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Remove">
+	<h4 class="code">Remove()</h4>
+	<div class="explain">
+		<p class="note">Remove the variable from LocalDB database.</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> localDB = store5.Open( <span class="char">'local_ds'</span> );</li>
+				<li><span class="word">var</span> item = localDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>item.Remove();</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<h3>SessionData Simulator Methods</h3>
+
+<div class="entire" id="public">
+	<h4 class="code">public( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the public variable in SessionStorage. This can access everywhere in the apps.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> the name of the variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+				<li><span class="word">var</span> item = sessionDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>console.log( item );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The SessionData Simulator Item object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="private">
+	<h4 class="code">private( <span class="param">name</span>, <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Creates the private variable. This can access in the current branch only.</p>
+		<div class="note">
+			<p class="bold">The params</p>
+			<ul class="param">
+				<li><span class="code-param">name</span>:<span class="code">string</span> a string presents the name of variable.</li>
+				<li><span class="code-param">value</span>:<span class="code">any</span> (Optional) a data value.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="file-block">
+			<p class="code filename">./sub_branch/index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+					<li>sessionlDB.private( <span class="char">'username'</span>, <span class="char">'Huy Cuong'</span> );</li>
+					<li>console.log( sessionDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="file-block">
+			<p class="code filename">./index.html</p>
+			<div class="code-block">
+				<ul>
+					<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+					<li>console.log( sessionDB.private( <span class="char">'username'</span> ) );</li>
+				</ul>
+			</div>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The SessionData Record Item object.</p>
+		</div>
+	</div>
+</div>
+
+<h3>SessionData Record Item Methods</h3>
+
+<div class="entire" id="GetValue">
+	<h4 class="code">GetValue()</h4>
+	<div class="explain">
+		<p class="note">Receives the value of the variable.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+				<li><span class="word">var</span> item = sessionDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The any object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="SetValue">
+	<h4 class="code">SetValue( <span class="param">value</span> )</h4>
+	<div class="explain">
+		<p class="note">Set the value of the variable.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">value</span>:<span class="code">string</span> the value of the variable.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+				<li><span class="word">var</span> item = sessionDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>item.SetValue( <span class="char">'Jackie Sanders'</span> ) );</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The self SessionData Simulator Item object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Remove">
+	<h4 class="code">Remove()</h4>
+	<div class="explain">
+		<p class="note">Removes the variable from SessionDB system.</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> sessionDB = store5.Open( <span class="char">'session_ds'</span> );</li>
+				<li><span class="word">var</span> item = sessionDB.public( <span class="char">'username'</span>, <span class="char">'Jack Sanders'</span> );</li>
+				<li>item.Remove();</li>
+				<li>console.log( item.GetValue() );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The void return.</p>
+		</div>
+	</div>
+</div>
+
+<h3>IndexedDB Simulator Methods</h3>
+
+<div class="entire" id="Init">
+	<h4 class="code">Init( <span class="param">tables</span> )</h4>
+	<div class="explain">
+		<p class="note">Initializes a database with the tables. It runs when first update or upgrade database only.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">tables</span>:<span class="code">object</span> the table structures.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Init(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+				<li>);</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBOpenDBRequest object with IndexedDB Simulator extensions.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Close">
+	<h4 class="code">Close()</h4>
+	<div class="explain">
+		<p class="note">Closes the database connection.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Init(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+				<li>);</li>
+				<li>indexDB.connect = <span class="word">function</span>() </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;indexDB.Close();</li>
+				<li>}</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBOpenDBRequest object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Drop">
+	<h4 class="code">Drop()</h4>
+	<div class="explain">
+		<p class="note">Drops the database.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Drop();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBOpenDBRequest object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Upgrade">
+	<h4 class="code">Upgrade( <span class="param">tables</span> )</h4>
+	<div class="explain">
+		<p class="note">Upgrades a database with the tables.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">tables</span>:<span class="code">object</span> the table structures.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Init(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+				<li>);</li>
+				<li>indexDB.connect = <span class="word">function</span>() </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;indexDB.Upgrade(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;);</li>
+				<li>}</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBOpenDBRequest object.</p>
+		</div>
+	</div>
+</div>
+
+<h3>IDBDatabase Methods</h3>
+
+<div class="entire" id="From">
+	<h4 class="code">From( <span class="param">tableName</span> )</h4>
+	<div class="explain">
+		<p class="note">Receives the table (the ObjectStore Interfaces).</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">tableName</span>:<span class="code">string</span> the table name.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Init(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+				<li>);</li>
+				<li>indexDB.connect = <span class="word">function</span>()</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( this.From( <span class="char">'mission_one'</span> ) );</li>
+				<li>}</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBObjectStore object.</p>
+		</div>
+	</div>
+</div> 
+
+<div class="entire" id="GetTable">
+	<h4 class="code">GetTable( <span class="param">tableName</span> )</h4>
+	<div class="explain">
+		<p class="note">Receives the table.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">tableName</span>:<span class="code">string</span> the table name.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> indexDB = store5.Open( <span class="char">'indexed_db'</span>, <span class="char">'program'</span> );</li>
+				<li>indexDB.Init(</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span>: <span class="char">'mission_one'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span>: <span class="char">'id'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'structure'</span>: [</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'name'</span> : <span class="char">'player_name'</span>, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'key'</span> : [ <span class="char">'playerName'</span>, <span class="char">'playerBirth'</span> ], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="char">'types'</span> : { <span class="char">'unique'</span> : <span class="word">true</span> } </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], </li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+				<li>);</li>
+				<li>indexDB.connect = <span class="word">function</span>()</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( this.GetTable( <span class="char">'mission_one'</span> ) );</li>
+				<li>}</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The IDBObjectStore object.</p>
+		</div>
+	</div>
+</div>

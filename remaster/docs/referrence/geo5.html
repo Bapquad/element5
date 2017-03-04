@@ -1,0 +1,225 @@
+<h1>geo5</h1>
+<h2>Introduction</h2>
+<p class="note">geo5 is static class about global position system.
+<h3>Functions</h3>
+<div class="entire" id="GetPosition">
+	<h4 class="code">geo5.GetPosition()</h4>
+	<div class="explain">
+		<p class="note">Receives the location of device.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li><span class="word">var</span> geoObj = geo5.GetPosition();</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="GetLocation">
+	<h4 class="code">geo5.GetLocation()</h4>
+	<div class="explain">
+		<p class="note">Receives the location of device.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li><span class="word">var</span> geoObj = geo5.GetLocation();</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="GetCurrentPosition">
+	<h4 class="code">geo5.GetCurrentPosition()</h4>
+	<div class="explain">
+		<p class="note">Receives the location of device.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li><span class="word">var</span> geoObj = geo5.GetCurrentPosition();</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="GetCurrentLocation">
+	<h4 class="code">geo5.GetCurrentLocation()</h4>
+	<div class="explain">
+		<p class="note">Receives the location of device.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li><span class="word">var</span> geoObj = geo5.GetCurrentLocation();</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Scan">
+	<h4 class="code">geo5.Scan()</h4>
+	<div class="explain">
+		<p class="note">Receives the location of device.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e )</li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li><span class="word">var</span> geoObj = geo5.Scan();</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="ScanWith">
+	<h4 class="code">geo5.ScanWith( <span class="param">success</span>, <span class="param">error</span>, <span class="param">options</span> )</h4>
+	<div class="explain">
+		<p class="note">Scans current position of the device.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">success</span>:<span class="code">function</span> event handle occurs if get location successfully.</li>
+				<li><span class="code-param">error</span>:<span class="code">string</span> event handle occurs if get location failure.</li>
+				<li><span class="code-param">options</span>:<span class="code">object</span> options for scan.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> geoObj = geo5.ScanWith( <span class="word">function</span>( e ) </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="Reset">
+	<h4 class="code">geo5.Reset()</h4>
+	<div class="explain">
+		<p class="note">Resets current position of the device for preparing to search new session.</p>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li><span class="word">var</span> geoObj = geo5.ScanWith( <span class="word">function</span>( e ) </li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;geo5.Reset();</li>
+				<li>});</li>
+				<li>console.log( geoObj );</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<h3>Events</h3>
+
+<div class="entire" id="onDetect">
+	<h4 class="code">geo5.onDetect( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs event handle occurs when system located the device.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> a event handle occurs when system detected the device position.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e ) <li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li>geo5.Scan();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
+<div class="entire" id="onChange">
+	<h4 class="code">geo5.onChange( <span class="param">handle</span> )</h4>
+	<div class="explain">
+		<p class="note">Attachs event handle occurs when the device position changed.</p>
+		<div class="note">
+			<p class="bold">The param</p>
+			<ul class="param">
+				<li><span class="code-param">handle</span>:<span class="code">function</span> a event handle occurs when system detected the device position changing.</li>
+			</ul>
+		</div>
+		<p class="bold">How to use</p>
+		<div class="code-block">
+			<ul>
+				<li>geo5.onDetect( <span class="word">function</span>( e ) <li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li>geo5.onChange( <span class="word">function</span>( e ) <li>
+				<li>{</li>
+				<li>&nbsp;&nbsp;&nbsp;&nbsp;console.log( e.position.coords.latitude, e.position.coords.longitude );</li>
+				<li>});</li>
+				<li>geo5.Scan();</li>
+			</ul>
+		</div>
+		<div class="note">
+			<p class="bold">The return</p>
+			<p>The geo5 object.</p>
+		</div>
+	</div>
+</div>
+
