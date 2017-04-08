@@ -1167,6 +1167,12 @@ function Factory()
 					GetData: function( name ) 
 					{
 						var el = this;
+						
+						if( el.BackData == undefined ) 
+						{
+							return null;
+						}
+						
 						if( name == undefined && el.BackData != undefined ) 
 						{
 							return el.BackData; 
