@@ -115,9 +115,10 @@ function Factory()
 						{
 							el.ShiftClass( clsn[ 2 ] ); 
 						}
+						el.el5 = clsn[ 2 ];
 					} 
-					
-					el.el5 = true; 
+					else 
+						el.el5 = true; 
 					
 					return el;
 				}; 
@@ -581,8 +582,17 @@ function Factory()
 						return this;
 					}, 
 					
-					SetStyle: function( name, value, com ) 
+					AddContext: function( ctx ) 
 					{
+						if( typeof this.el5 == 'string' ) 
+						{
+							this.CssSelf.AddSelector( ctx + ' ' + this.tagName.toLowerCase() + '.' + this.el5 );
+						} 
+						return this;
+					}, 
+					
+					SetStyle: function( name, value, com ) 
+					{				
 						if( com ) 
 						{
 							if( this.CssComm )
@@ -1146,7 +1156,7 @@ function Factory()
 								{
 									if( item.indexOf( name ) === 2 ) 
 									{
-										el.BackData[ index ] = ( '{"' + name + '":' + el.JSonString( value ) + '}' ); 
+										el.BackData[ i ] = ( '{"' + name + '":' + el.JSonString( value ) + '}' ); 
 										return el;
 									}
 								}
