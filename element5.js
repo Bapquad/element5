@@ -773,8 +773,12 @@ function Factory()
 					HasClass: function( clsn, target ) 
 					{
 						var el = target || this;
-						var clsnAttr = el.getAttribute( 'class' ); 
-						return ( clsnAttr != null && clsnAttr != '' && clsnAttr.indexOf( clsn ) >= 0 ); 
+						if( el.getAttribute ) 
+						{
+							var clsnAttr = el.getAttribute( 'class' ); 
+							return ( clsnAttr != null && clsnAttr != '' && clsnAttr.indexOf( clsn ) >= 0 ); 
+						}
+						return false;
 					}, 
 					
 					RemoveClass: function( clsn ) 
