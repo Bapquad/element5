@@ -115,7 +115,14 @@ function Factory()
 						{
 							el.ShiftClass( clsn[ 2 ] ); 
 						}
-						el.el5 = clsn[ 2 ];
+						if( clsn ) 
+						{
+							el.el5 = clsn[ 2 ];
+						}
+						else 
+						{
+							el.el5 = true;
+						}
 					} 
 					else 
 						el.el5 = true; 
