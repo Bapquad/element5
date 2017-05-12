@@ -4846,6 +4846,135 @@ function Factory()
 						};
 					})(),
 					
+					Binding: ( function() 
+					{
+						return function( vm, context ) 
+						{
+							var instance = new vm();
+							var doc;
+							
+							if( !!context && context !== undefined && typeof context === 'string' ) 
+							{
+								doc = document.getElementById( context );
+							}
+							else 
+							{
+								doc = document;
+							}
+							
+							var events = [ 'click', 'mouseup', 'mousedown', 'mouseleave', 'mouseover', 'mouseout' ];
+							
+							function insertText( property, value, ctx ) 
+							{
+								ctx = ctx || doc;
+								var p = property;
+								var typeShow = [ 'text', 'value' ];
+								
+								for( var i = 0; i < typeShow.length; i++ ) 
+								{
+									var type = typeShow[ i ];
+									var qstr = '[data-' + type + '=' + p + ']';
+									var sel = ctx.querySelectorAll( qstr );
+									var els = Array.from( sel );
+									els.forEach( function( el ) 
+									{
+										if( type === 'text' ) 
+										{
+											el.textContent = value;
+										}
+										else 
+										{
+											el.outerHTML = el.outerHTML.replace( el.value, value );
+										}
+									});				
+								}
+							};
+							
+							function fillData( property, records, ctx ) 
+							{
+								ctx = ctx || doc;
+								var p = property;
+								var qstr = '[data-list=' + property + ']';
+								var sel = ctx.querySelectorAll( qstr );
+								var els = Array.from( sel );
+								els.forEach( function( el ) 
+								{
+									// Build the template
+									var tpl = new Array();
+									
+									if( el.repeat === undefined ) 
+									{
+										el.repeat = el.innerHTML;
+									}
+									
+									// clear template list 
+									el.innerHTML = '';
+									
+									var lim = records.length;
+									for( var i = 0; i < lim; i++ ) 
+									{
+										var record = records[ i ];
+										var cont = document.createElement( el.tagName );
+										
+										cont.innerHTML = el.repeat;
+										
+										for( var x in record ) 
+										{
+											insertText( x, record[ x ], cont );
+										}
+										tpl.push( cont.innerHTML );
+									}
+									el.innerHTML = tpl.join('\n');
+								});
+							};
+							
+							function initProp( property, instance, ctx ) 
+							{
+								ctx = doc || document;
+								var value = instance[ property ];
+								if( value.constructor === Array ) 
+								{
+									var prop = property;
+									instance[ property ] = prop;
+									solution5.Watch( instance, instance[ property ], function( propertyName, oldValue, newValue ) 
+									{
+										fillData( prop, instance[ prop ], ctx ); 
+									});
+									instance[ property ] = value;
+									return;
+								} 
+								else if( value.constructor === Function ) 
+								{
+									for( var i = 0; i < events.length; i++ ) 
+									{
+										var eventType = events[ i ];
+										var els = Array.from( doc.querySelectorAll( '[data-' + eventType + '=' + property + ']' ) );
+										els.forEach( function( el ) 
+										{
+											var callback = value;
+											el.addEventListener( eventType, function( e ) 
+											{
+												callback.call( instance, e );
+											});
+										});
+									}
+									return;
+								}
+								else if( value.constructor === String || value.constructor === Number )
+								{
+									value = ( value.constructor === Number ) ? value.toString() : value;
+									insertText( property, value, ctx );
+								}
+							}
+							
+							// construct
+							for( var property in instance ) 
+							{
+								initProp( property, instance, doc );
+							}
+						}
+					})(),
+					
 					// TODO:
 					RequestWorker: function ( scriptPath, onMessage ) 
 					{
