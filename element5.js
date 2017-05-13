@@ -4850,7 +4850,7 @@ function Factory()
 					{
 						return function() 
 						{
-							var agrs = Array.from( arguments ), routes, d = arguments[ arguments.length - 1 ];
+							var agrs = Array.from( arguments ), routes, d = arguments[ arguments.length - 1 ], a = arguments[ 0 ];
 							if( d instanceof Function ) 
 							{
 								routes = agrs.splice( 0, agrs.length-1 );
@@ -4861,7 +4861,12 @@ function Factory()
 								routes = agrs;
 							}
 							
-							window.onpopstate = function() 
+							if( a.__vmodel ) 
+							{
+								routes = routes.splice( a.__vmodel );
+							}
+							
+							var f = function() 
 							{
 								var hash = window.location.hash, vars;
 								if( hash.indexOf( '{' ) > -1 && hash.lastIndexOf( '}' ) > -1 ) 
@@ -4892,15 +4897,19 @@ function Factory()
 											$_get[ inp[ 1 ] ] = inp[ 2 ];
 										}
 									}
-									c.apply();
+									c.apply( ( a.__vmodel ) ? a : window, [ $_get ] );
 									delete window[ '$_get' ];
 								}
 							};
+							
+							window.onpopstate = f;
 
 							if( d ) 
 							{
-								d( routes );
+								d.apply( window, [routes] );
 							}
+							
+							return f;
 						};
 					})(),
 					
@@ -4942,7 +4951,19 @@ function Factory()
 										}
 										else 
 										{
-											el.outerHTML = el.outerHTML.replace( el.value, value );
+											var tagName = el.tagName.toLowerCase();
+											var attrs = [];
+											for( var k = 0; k < el.attributes.length; k++ ) 
+											{
+												var key = el.attributes[ k ];
+												
+												if( key.name != 'value' ) 
+												{
+													attrs.push( key.name + '="' + key.value + '"' );
+												}
+											}
+											attrs.push( 'value="' + value + '"' ); 
+											el.outerHTML = '<' + tagName + ' ' + attrs.join( ' ' ) + ' />';
 										}
 									});				
 								}
@@ -5031,6 +5052,7 @@ function Factory()
 								initProp( property, instance, doc );
 							} 
 							
+							instance.__vmodel = 1;
 							return instance;
 						};
 					})(),
