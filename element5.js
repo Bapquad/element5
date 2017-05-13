@@ -4846,6 +4846,64 @@ function Factory()
 						};
 					})(),
 					
+					Routing: ( function() 
+					{
+						return function() 
+						{
+							var agrs = Array.from( arguments ), routes, d = arguments[ arguments.length - 1 ];
+							if( d instanceof Function ) 
+							{
+								routes = agrs.splice( 0, agrs.length-1 );
+							} 
+							else 
+							{
+								d = undefined;
+								routes = agrs;
+							}
+							
+							window.onpopstate = function() 
+							{
+								var hash = window.location.hash, vars;
+								if( hash.indexOf( '{' ) > -1 && hash.lastIndexOf( '}' ) > -1 ) 
+								{
+									vars = hash.slice( hash.indexOf( '{' ) + 1, hash.lastIndexOf( '}' ) );
+								}
+								
+								hash = (vars) ? hash.slice( 0, hash.indexOf( '{' ) ) : hash;
+								
+								var route = routes.filter( function( c ) 
+								{
+									return hash === c.hash;
+								});
+								
+								if( route.length )
+								{
+									var r = route[ 0 ];
+									var c = r.todo;
+									document.title = r.title;
+									
+									$_get = new Object();
+									if(vars) 
+									{
+										vars = vars.split( ';' );
+										for( var i = 0; i < vars.length; i++ ) 
+										{
+											inp = (/([a-zA-Z0-9\_]+)=([a-zA-Z0-9\_]+)/g).exec( vars[ i ].trim() );
+											$_get[ inp[ 1 ] ] = inp[ 2 ];
+										}
+									}
+									c.apply();
+									delete window[ '$_get' ];
+								}
+							};
+
+							if( d ) 
+							{
+								d( routes );
+							}
+						};
+					})(),
+					
 					Binding: ( function() 
 					{
 						return function( vm, context ) 
@@ -4880,7 +4938,7 @@ function Factory()
 									{
 										if( type === 'text' ) 
 										{
-											el.textContent = value;
+											el.innerHTML = value;
 										}
 										else 
 										{
@@ -4971,8 +5029,10 @@ function Factory()
 							for( var property in instance ) 
 							{
 								initProp( property, instance, doc );
-							}
-						}
+							} 
+							
+							return instance;
+						};
 					})(),
 					
 					// TODO:
