@@ -5013,7 +5013,7 @@ function Factory()
 									}
 								});
 							};
-							
+							var observed = [];
 							function initProp( property, inst, ctx, ide ) 
 							{
 								var ct = ctx || doc;
@@ -5021,8 +5021,27 @@ function Factory()
 								
 								if( value.constructor === String || value.constructor === Number )
 								{
+									var prop = property;
 									value = ( value.constructor === Number ) ? value.toString() : value;
-									insertText( property, value, ct );
+									if( ide || ide === 0 ) 
+									{
+										return;
+									}
+									
+									var has = observed.filter( function(c) 
+									{
+										return prop == c;
+									});
+									if( !has.length ) 
+									{
+										observed.push( prop );
+										inst[ prop ] = prop;
+										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
+										{
+											insertText( prop, inst[ prop ], ct ); 
+										});
+										inst[ prop ] = value;
+									}
 								} 
 								else if( value.constructor === Function ) 
 								{
@@ -5056,13 +5075,15 @@ function Factory()
 									{
 										return;
 									}
-									if( !inst[ property ].observed ) 
+									if( !inst[ prop ].observed ) 
 									{
-										inst[ property ].observed = true;
-										inst[ prop ] = solution5.ObserveArray(value, function() 
+										inst[ prop ].observed = true;
+										inst[ prop ] = prop;
+										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
 										{
-											fillData( prop, value, ct ); 
+											fillData( prop, inst[ prop ], ct ); 
 										});
+										inst[ prop ] = value;
 									} 
 									return;
 								}
