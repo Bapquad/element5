@@ -4848,7 +4848,7 @@ function Factory()
 					
 					Routing: ( function() 
 					{
-						return function() 
+						return ( function() 
 						{
 							var agrs = Array.from( arguments ), routes, d = arguments[ arguments.length - 1 ], a = arguments[ 0 ];
 							if( d instanceof Function ) 
@@ -4910,15 +4910,23 @@ function Factory()
 							}
 							
 							return f;
-						};
+						});
+					})(),
+					
+					Computed: ( function() 
+					{
+						return (function( f ) 
+						{
+							return { 'computed':false, 'callback': f };
+						});
 					})(),
 					
 					Binding: ( function() 
 					{
-						return function( vm, context ) 
+						return ( function( vm, context ) 
 						{
 							var inst = ( vm instanceof Function ) ? new vm() : vm;
-							var doc;
+							var doc, observed = [], computed = [];
 							
 							if( inst[ 'remove' ] ) { delete inst[ 'remove' ]; }
 							if( inst[ '__vmodel' ] ) { delete inst[ '__vmodel' ]; }
@@ -4932,9 +4940,9 @@ function Factory()
 								doc = document;
 							}
 							
-							var events = [ 'click', 'mouseup', 'mousedown', 'mouseleave', 'mouseover', 'mouseout' ];
+							var events = [ 'click', 'mouseup', 'mousedown', 'mouseleave', 'mouseover', 'mouseout', 'change', 'keydown', 'keyup', 'blur', 'focus' ];
 							
-							function insertText( property, value, ctx ) 
+							function insertText( property, value, ctx, ide ) 
 							{
 								var ct = ctx || doc;
 								var p = property;
@@ -4946,20 +4954,25 @@ function Factory()
 									var qstr = '[data-' + type + '=' + p + ']';
 									var sel = ct.querySelectorAll( qstr );
 									var els = Array.from( sel );
-									els.forEach( function( el ) 
+									for( var j = 0; j < els.length; j++ ) 
 									{
+										var el = els[ j ];
 										if( type === 'text' ) 
 										{
 											el.innerHTML = value;
 										}
 										else 
 										{
+											if( ide == undefined ) 
+											{
+												el.value = value;
+												continue;
+											}
 											var tagName = el.tagName.toLowerCase();
 											var attrs = [];
 											for( var k = 0; k < el.attributes.length; k++ ) 
 											{
 												var key = el.attributes[ k ];
-												
 												if( key.name != 'value' ) 
 												{
 													attrs.push( key.name + '="' + key.value + '"' );
@@ -4968,7 +4981,7 @@ function Factory()
 											attrs.push( 'value="' + value + '"' ); 
 											el.outerHTML = '<' + tagName + ' ' + attrs.join( ' ' ) + ' />';
 										}
-									});				
+									};
 								}
 							};
 														
@@ -5003,7 +5016,7 @@ function Factory()
 										cont.innerHTML = el.repeat;
 										for( var x in record ) 
 										{
-											insertText( x, record[ x ], cont );
+											insertText( x, record[ x ], cont, i );
 										}
 										var nct = cont.children[0];
 										
@@ -5013,17 +5026,19 @@ function Factory()
 									}
 								});
 							};
-							var observed = [];
+							
 							function initProp( property, inst, ctx, ide ) 
 							{
 								var ct = ctx || doc;
 								var value = inst[ property ];
+								var prop = property;
 								
 								if( value.constructor === String || value.constructor === Number )
 								{
-									var prop = property;
+									
 									value = ( value.constructor === Number ) ? value.toString() : value;
-									if( ide || ide === 0 ) 
+									
+									if( ide || ide === 0 || computed.filter( function( c ) { return prop == c.prop; } ).length ) 
 									{
 										return;
 									}
@@ -5032,6 +5047,7 @@ function Factory()
 									{
 										return prop == c;
 									});
+									
 									if( !has.length ) 
 									{
 										observed.push( prop );
@@ -5039,6 +5055,7 @@ function Factory()
 										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
 										{
 											insertText( prop, inst[ prop ], ct ); 
+											computeAuto( inst );
 										});
 										inst[ prop ] = value;
 									}
@@ -5057,6 +5074,7 @@ function Factory()
 												var callback = value;
 												function eventHandle( e ) 
 												{
+													e.preventDefault();
 													callback.call( inst, e );
 												}
 												el.addEventListener( eventType, eventHandle );
@@ -5068,9 +5086,6 @@ function Factory()
 								}
 								else if( value.constructor === Array ) 
 								{
-									
-									var prop = property;
-									
 									if( ide || ide === 0 ) 
 									{
 										return;
@@ -5082,10 +5097,30 @@ function Factory()
 										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
 										{
 											fillData( prop, inst[ prop ], ct ); 
+											computeAuto( inst );
 										});
 										inst[ prop ] = value;
 									} 
 									return;
+								}
+								else if( value.constructor === Object ) 
+								{
+									if( !value.computed && value.callback ) 
+									{
+										value.computed = true;
+										computed.push( { prop:prop, callback: value.callback } );
+									}
+								}
+							}
+							
+							function computeAuto( obj ) 
+							{
+								var lim = computed.length;
+								for( var i = 0; i < lim; i++ ) 
+								{
+									var p = computed[ i ].prop;
+									var c = computed[ i ].callback;
+									obj[ p ] = c.apply( obj );
 								}
 							}
 							
@@ -5108,7 +5143,7 @@ function Factory()
 							
 							inst.__vmodel = 1;
 							return inst;
-						};
+						});
 					})(),
 					
 					ObserveArray: function( arr, d ) 
