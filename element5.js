@@ -4917,8 +4917,11 @@ function Factory()
 					{
 						return function( vm, context ) 
 						{
-							var instance = new vm();
+							var inst = ( vm instanceof Function ) ? new vm() : vm;
 							var doc;
+							
+							if( inst[ 'remove' ] ) { delete inst[ 'remove' ]; }
+							if( inst[ '__vmodel' ] ) { delete inst[ '__vmodel' ]; }
 							
 							if( !!context && context !== undefined && typeof context === 'string' ) 
 							{
@@ -4933,7 +4936,7 @@ function Factory()
 							
 							function insertText( property, value, ctx ) 
 							{
-								ctx = ctx || doc;
+								var ct = ctx || doc;
 								var p = property;
 								var typeShow = [ 'text', 'value' ];
 								
@@ -4941,7 +4944,7 @@ function Factory()
 								{
 									var type = typeShow[ i ];
 									var qstr = '[data-' + type + '=' + p + ']';
-									var sel = ctx.querySelectorAll( qstr );
+									var sel = ct.querySelectorAll( qstr );
 									var els = Array.from( sel );
 									els.forEach( function( el ) 
 									{
@@ -4968,13 +4971,14 @@ function Factory()
 									});				
 								}
 							};
-							
+														
 							function fillData( property, records, ctx ) 
 							{
-								ctx = ctx || doc;
+								var ct = ctx || doc;
 								var p = property;
-								var qstr = '[data-list=' + property + ']';
-								var sel = ctx.querySelectorAll( qstr );
+								var qstr = '[data-list=' + p + ']';
+								
+								var sel = ct.querySelectorAll( qstr );
 								var els = Array.from( sel );
 								els.forEach( function( el ) 
 								{
@@ -4990,72 +4994,110 @@ function Factory()
 									el.innerHTML = '';
 									
 									var lim = records.length;
+
 									for( var i = 0; i < lim; i++ ) 
 									{
 										var record = records[ i ];
 										var cont = document.createElement( el.tagName );
 										
 										cont.innerHTML = el.repeat;
-										
 										for( var x in record ) 
 										{
 											insertText( x, record[ x ], cont );
 										}
-										tpl.push( cont.innerHTML );
+										var nct = cont.children[0];
+										
+										el.appendChild( nct );
+										
+										binding( inst, nct, i );
 									}
-									el.innerHTML = tpl.join('\n');
 								});
 							};
 							
-							function initProp( property, instance, ctx ) 
+							function initProp( property, inst, ctx, ide ) 
 							{
-								ctx = doc || document;
-								var value = instance[ property ];
-								if( value.constructor === Array ) 
+								var ct = ctx || doc;
+								var value = inst[ property ];
+								
+								if( value.constructor === String || value.constructor === Number )
 								{
-									var prop = property;
-									instance[ property ] = prop;
-									solution5.Watch( instance, instance[ property ], function( propertyName, oldValue, newValue ) 
-									{
-										fillData( prop, instance[ prop ], ctx ); 
-									});
-									instance[ property ] = value;
-									return;
+									value = ( value.constructor === Number ) ? value.toString() : value;
+									insertText( property, value, ct );
 								} 
 								else if( value.constructor === Function ) 
 								{
 									for( var i = 0; i < events.length; i++ ) 
 									{
 										var eventType = events[ i ];
-										var els = Array.from( doc.querySelectorAll( '[data-' + eventType + '=' + property + ']' ) );
+										var els = Array.from( ct.querySelectorAll( '[data-' + eventType + '=' + property + ']' ) );
 										els.forEach( function( el ) 
 										{
-											var callback = value;
-											el.addEventListener( eventType, function( e ) 
+											if( !el.binding ) el.binding = { update: -1 };
+											if( el.binding.update < 0 ) 
 											{
-												callback.call( instance, e );
-											});
+												var callback = value;
+												function eventHandle( e ) 
+												{
+													callback.call( inst, e );
+												}
+												el.addEventListener( eventType, eventHandle );
+											}
+											el.binding.update = ide;
 										});
 									}
 									return;
 								}
-								else if( value.constructor === String || value.constructor === Number )
+								else if( value.constructor === Array ) 
 								{
-									value = ( value.constructor === Number ) ? value.toString() : value;
-									insertText( property, value, ctx );
+									
+									var prop = property;
+									
+									if( ide || ide === 0 ) 
+									{
+										return;
+									}
+									if( !inst[ property ].observed ) 
+									{
+										inst[ property ].observed = true;
+										inst[ prop ] = solution5.ObserveArray(value, function() 
+										{
+											fillData( prop, value, ct ); 
+										});
+									} 
+									return;
 								}
 							}
 							
-							// construct
-							for( var property in instance ) 
+							function binding( obj, ctx, ide ) 
 							{
-								initProp( property, instance, doc );
-							} 
+								var ct = ctx || doc;
+								
+								for( var prop in obj ) 
+								{
+									initProp( prop, obj, ct, ide );
+								} 
+							}
 							
-							instance.__vmodel = 1;
-							return instance;
+							binding( inst, doc );
+							
+							inst.remove = function( list, index ) 
+							{
+								list.splice( index, 1 );
+							};
+							
+							inst.__vmodel = 1;
+							return inst;
 						};
 					})(),
+					
+					ObserveArray: function( arr, d ) 
+					{
+						var obj = new Object();
+						obj.observe = 'observe';
+						solution5.Watch( obj, obj.observe, function( propName, oldVal, newVal ) { d() });
+						obj.observe = arr;
+						return arr;
+					},
 					
 					// TODO:
 					RequestWorker: function ( scriptPath, onMessage ) 
