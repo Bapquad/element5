@@ -4923,226 +4923,388 @@ function Factory()
 					
 					Binding: ( function() 
 					{
-						return ( function( vm, context ) 
+						return ( function( viewmodel, context ) 
 						{
-							var inst = ( vm instanceof Function ) ? new vm() : vm;
-							var doc, observed = [], computed = [];
-							
-							if( inst[ 'remove' ] ) { delete inst[ 'remove' ]; }
-							if( inst[ '__vmodel' ] ) { delete inst[ '__vmodel' ]; }
-							
-							if( !!context && context !== undefined && typeof context === 'string' ) 
-							{
-								doc = document.getElementById( context );
-							}
-							else 
-							{
-								doc = document;
-							}
+							var root = ( viewmodel instanceof Function ) ? new viewmodel() : viewmodel;
+							var doc = ( !!context && context !== undefined && typeof context === 'string' ) ? document.getElementById( context ) : document;
 							
 							var events = [ 'click', 'mouseup', 'mousedown', 'mouseleave', 'mouseover', 'mouseout', 'change', 'keydown', 'keyup', 'blur', 'focus' ];
+							var lotas = [ 'text', 'html', 'value', 'src', 'href' ];
+							var loops = [ 'each', 'list' ];
+							var funcs = [ 'method', 'function', 'visible', 'disable', 'select' ];
 							
-							function insertText( property, value, ctx, ide ) 
+							function eventIs( t ) 
 							{
-								var ct = ctx || doc;
-								var p = property;
-								var typeShow = [ 'text', 'value' ];
-								
-								for( var i = 0; i < typeShow.length; i++ ) 
+								var r = events.filter( function( c ) 
 								{
-									var type = typeShow[ i ];
-									var qstr = '[data-' + type + '=' + p + ']';
-									var sel = ct.querySelectorAll( qstr );
-									var els = Array.from( sel );
-									for( var j = 0; j < els.length; j++ ) 
-									{
-										var el = els[ j ];
-										if( type === 'text' ) 
-										{
-											el.innerHTML = value;
-										}
-										else 
-										{
-											if( ide == undefined ) 
-											{
-												el.value = value;
-												continue;
-											}
-											var tagName = el.tagName.toLowerCase();
-											var attrs = [];
-											for( var k = 0; k < el.attributes.length; k++ ) 
-											{
-												var key = el.attributes[ k ];
-												if( key.name != 'value' ) 
-												{
-													attrs.push( key.name + '="' + key.value + '"' );
-												}
-											}
-											attrs.push( 'value="' + value + '"' ); 
-											el.outerHTML = '<' + tagName + ' ' + attrs.join( ' ' ) + ' />';
-										}
-									};
-								}
-							};
-														
-							function fillData( property, records, ctx ) 
+									return c === t;
+								});
+								return ( r.length ) ? true : false;
+							}
+							
+							function lotaIs( t ) 
 							{
-								var ct = ctx || doc;
-								var p = property;
-								var qstr = '[data-list=' + p + ']';
+								var r = lotas.filter( function( c ) 
+								{
+									return c === t;
+								});
+								return ( r.length ) ? true : false;
+							}
+							
+							function loopIs( t ) 
+							{
+								var r = loops.filter( function( c ) 
+								{
+									return c === t;
+								});
+								return ( r.length ) ? true : false;
+							}
+							
+							function funcIs( t ) 
+							{
+								var r = funcs.filter( function( c ) 
+								{
+									return c === t;
+								});
+								return ( r.length ) ? true : false;
+							}
+							
+							function toqs( t, p ) 
+							{
+								return '[data-' + t + '=' + p + ']';
+							}
+							
+							function toels( q, ctx ) 
+							{
+								var result = [];
 								
-								var sel = ct.querySelectorAll( qstr );
-								var els = Array.from( sel );
+								if( ctx.length ) 
+								{
+									for( var i = 0; i < ctx.length; i++ ) 
+									{
+										var narr = toels( q, ctx[ i ] );
+										result = result.concat( narr );
+									}
+								}
+								else 
+								{
+									result = Array.from( ctx.querySelectorAll( q ) );
+								}
+
+								return result;
+							}
+							
+							function applyEvent( obj, p, et, el, id ) 
+							{
+								if( !el.binding ) 
+								{
+									el.binding = { update: id };
+								}
+								else 
+								{
+									el.binding.update = id;
+								}
+								
+								var callback = obj[ p ];
+								function eh( e ) 
+								{
+									e.preventDefault();
+									callback.call( obj, e );
+								}
+								el.addEventListener( et, eh );
+							}
+							
+							function addEvent( obj, p, et, ct, id ) 
+							{
+								var els = toels( toqs( et, p ), ct );
+								
 								els.forEach( function( el ) 
 								{
-									// Build the template
-									var tpl = new Array();
-									
-									if( el.repeat === undefined ) 
+									if( el.eventRooted ) 
 									{
-										el.repeat = el.innerHTML;
+										return;
 									}
 									
-									// clear template list 
-									el.innerHTML = '';
-									
-									var lim = records.length;
-
-									for( var i = 0; i < lim; i++ ) 
-									{
-										var record = records[ i ];
-										var cont = document.createElement( el.tagName );
-										
-										cont.innerHTML = el.repeat;
-										for( var x in record ) 
-										{
-											insertText( x, record[ x ], cont, i );
-										}
-										var nct = cont.children[0];
-										
-										el.appendChild( nct );
-										
-										binding( inst, nct, i );
-									}
+									applyEvent( obj, p, et, el, id );
 								});
-							};
-							
-							function initProp( property, inst, ctx, ide ) 
-							{
-								var ct = ctx || doc;
-								var value = inst[ property ];
-								var prop = property;
-								
-								if( value.constructor === String || value.constructor === Number )
-								{
-									
-									value = ( value.constructor === Number ) ? value.toString() : value;
-									
-									if( ide || ide === 0 || computed.filter( function( c ) { return prop == c.prop; } ).length ) 
-									{
-										return;
-									}
-									
-									var has = observed.filter( function(c) 
-									{
-										return prop == c;
-									});
-									
-									if( !has.length ) 
-									{
-										observed.push( prop );
-										inst[ prop ] = prop;
-										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
-										{
-											insertText( prop, inst[ prop ], ct ); 
-											computeAuto( inst );
-										});
-										inst[ prop ] = value;
-									}
-								} 
-								else if( value.constructor === Function ) 
-								{
-									for( var i = 0; i < events.length; i++ ) 
-									{
-										var eventType = events[ i ];
-										var els = Array.from( ct.querySelectorAll( '[data-' + eventType + '=' + property + ']' ) );
-										els.forEach( function( el ) 
-										{
-											if( !el.binding ) el.binding = { update: -1 };
-											if( el.binding.update < 0 ) 
-											{
-												var callback = value;
-												function eventHandle( e ) 
-												{
-													e.preventDefault();
-													callback.call( inst, e );
-												}
-												el.addEventListener( eventType, eventHandle );
-											}
-											el.binding.update = ide;
-										});
-									}
-									return;
-								}
-								else if( value.constructor === Array ) 
-								{
-									if( ide || ide === 0 ) 
-									{
-										return;
-									}
-									if( !inst[ prop ].observed ) 
-									{
-										inst[ prop ].observed = true;
-										inst[ prop ] = prop;
-										solution5.Watch( inst, inst[ prop ], function( propName, oldVal, newVal ) 
-										{
-											fillData( prop, inst[ prop ], ct ); 
-											computeAuto( inst );
-										});
-										inst[ prop ] = value;
-									} 
-									return;
-								}
-								else if( value.constructor === Object ) 
-								{
-									if( !value.computed && value.callback ) 
-									{
-										value.computed = true;
-										computed.push( { prop:prop, callback: value.callback } );
-									}
-								}
 							}
 							
-							function computeAuto( obj ) 
+							function trace( p, ctx, id ) 
 							{
-								var lim = computed.length;
+								console.log( '[', 'property: ' + '"' + p + '"', 'context:', ctx, 'id: ' + id, ']' );
+							}
+							
+							function collecting( o, p, ctx, id ) 
+							{
+								var lim = lotas.length;
+								var collect = [];
 								for( var i = 0; i < lim; i++ ) 
 								{
-									var p = computed[ i ].prop;
-									var c = computed[ i ].callback;
-									obj[ p ] = c.apply( obj );
+									var ta = lotas[ i ];
+									var els = toels( toqs( ta, p ), ctx );
+									if( els.length ) 
+									{
+										collect = collect.concat( els );
+									}
+								}
+								return collect;
+							}
+							
+							function bindValue() 
+							{
+								
+							}
+							
+							function binding( o, p, ctx, id ) 
+							{
+// trace( p, ctx, id );/////////////////////////////////////////////////
+								var ct = ctx || doc;
+								var v = o[ p ];
+								var pt = v.constructor;
+								
+								switch( pt ) 
+								{
+									case Object:
+										if( !v.computed && v.callback ) 
+										{
+											var c = v.callback;
+											v.computed = true;
+											o.computed.push( { p:p, c:c } );
+											o[ p ] = v.callback.apply( o );
+										}
+									case String:
+									case Number:
+										v = ( pt != String ) ? v.toString() : v;
+										var cb = collecting( o, p, ct, id );
+										observeAuto( o, p, function( pn, oVal, nVal ) 
+										{
+											cb.forEach( function( el ) 
+											{
+												var attrs = Array.from( el.attributes );
+												for( var i = 0; i < attrs.length; i++ ) 
+												{
+													var attr = attrs[ i ];
+													var extp = attr.name.replace( 'data-', '' ).trim();
+													if( extp == 'text' ) 
+													{
+														el.textContent = nVal;
+													}
+													else if( extp == 'html' ) 
+													{
+														el.innerHTML = nVal;
+													}
+													else
+													{
+														el.setAttribute( extp, nVal );
+														if( el.nodeName.toLowerCase().trim() == 'input' && el.type == undefined || el.type == 'text' ) 
+														{
+															el.addEventListener( 'change', function( e ) 
+															{
+																o[ p ] = e.target.value;
+															});
+														}
+													}
+												}
+											}); 
+										});
+										break;
+									case Array:
+										observeAuto( o, p, function( pn, oVal, nVal ) 
+										{
+											var els = [];
+											var a = nVal;
+											
+											for( var i = 0; i < loops.length; i++ ) 
+											{
+												els = els.concat( toels( toqs( loops[ i ], p ), ct ) );
+											}
+											
+											if( a.length )
+											{
+												for( var i = 0; i < a.length; i++ ) 
+												{
+													var templates = new Array();
+													els.forEach( function( el )
+													{
+														var template = el.firstElementChild;
+														
+														if( i > 0 ) 
+														{
+															template = template.cloneNode( true );
+															el.appendChild( template );
+														}
+														else 
+														{
+															if( template == null ) 
+															{
+																template = el.template;
+																el.innerHTML = template;
+															}
+															else 
+															{
+																el.innerHTML = template.outerHTML;
+															}
+													
+															template = el.firstElementChild;
+														}
+														templates.push( template );
+														
+														if( !template.binding ) 
+														{
+															template.binding = { update: i };
+														}
+														else 
+														{
+															template.binding.update = i;
+														}
+														
+														for( var j = 0; j < events.length; j++ ) 
+														{
+															var et = events[ j ];
+															for( var k = 0; k < root.funcRoot.length; k++ ) 
+															{
+																var els = toels( toqs( et, root.funcRoot[ k ] ), template );
+																els.forEach( function( el ) 
+																{
+																	if( !el.eventRooted ) 
+																	{
+																		el.eventRooted = root.funcRoot[ k ];
+																		applyEvent( root, el.eventRooted, et, el, i );
+																	}
+																});
+															}
+														}
+													});
+													initProperty( a[ i ], templates, i );
+												}
+											} 
+											else 
+											{
+												els.forEach( function( el ) 
+												{
+													var template = el.firstElementChild;
+													if( template != null ) 
+													{
+														el.template = el.firstElementChild.outerHTML;
+													}
+													el.innerHTML = '';
+												});
+											}
+										});
+										break;
+									case Function: 
+									default:
+										for( var i = 0; i < events.length; i++ ) 
+										{
+											var et = events[ i ];
+											addEvent( o, p, et, ct, id );
+										}
+										break;
+								}
+								
+							}
+							
+							function observeAuto( o, p, c ) 
+							{
+								if( !o.observed.filter(function(c){return c==p}).length ) 
+								{
+									o.observed.push( p );
+									
+									if( o[p] instanceof Array ) 
+									{
+										var bkv = o[ p ];
+										o[ p ] = '';
+										solution5.Watch( o, p, function( pn, ov, nv ) 
+										{
+											c.apply( o, [ pn, ov, nv ] );
+											computeAuto( o );
+										});
+										o[p] = bkv;
+										return;
+									}
+									else 
+									{
+										solution5.Watch( o, p, function( pn, ov, nv ) 
+										{
+											c.apply( o, [ pn, ov, nv ] ); 
+											if( !o.computed.filter( function( c ) { return p == c.p; } ).length ) 
+											{
+												computeAuto( o );
+											}
+										});
+									}
+								} 
+								c.apply( o, [ p, '', o[p] ] );
+							}
+							
+							function computeAuto( o ) 
+							{
+								var lim = o.computed.length;
+								for( var i = 0; i < lim; i++ ) 
+								{
+									var p = o.computed[ i ].p;
+									var c = o.computed[ i ].c;
+									o[ p ] = c.apply( o );
 								}
 							}
 							
-							function binding( obj, ctx, ide ) 
+							function initProperty( o, ctx, id ) 
 							{
 								var ct = ctx || doc;
 								
-								for( var prop in obj ) 
+								if( o.propList == undefined ) 
 								{
-									initProp( prop, obj, ct, ide );
+									o.propList = new Array();
+									for( var p in o ) 
+									{
+										if( p === 'propList' || p === 'computed' || p === 'observed' || ( p === 'remove' && id == undefined ) ) 
+										{
+											continue;
+										}
+										o.propList.push( p );
+									}
+								}
+								
+								if( o.funcRoot == undefined && id == undefined ) 
+								{
+									o.funcRoot = new Array();
+									for( var p in o ) 
+									{
+										if( o[ p ] instanceof Function ) 
+										{
+											o.funcRoot.push( p );
+										}
+									}
+								}
+								
+								if( o.computed == undefined ) 
+								{
+									o.computed = [];
+								}
+								
+								if( o.observed == undefined ) 
+								{
+									o.observed = [];
+								}
+								
+								var propList = o.propList;
+								
+								for( var i = 0; i < propList.length; i++ ) 
+								{
+									var p = propList[ i ];
+									binding( o, p, ct, id );
 								} 
 							}
 							
-							binding( inst, doc );
+							initProperty( root, doc );
 							
-							inst.remove = function( list, index ) 
+							root.remove = function( a, id ) 
 							{
-								list.splice( index, 1 );
+								return a.splice( id, 1 );
 							};
 							
-							inst.__vmodel = 1;
-							return inst;
+							root.__vmodel = 1;
+							return root;
 						});
 					})(),
 					
