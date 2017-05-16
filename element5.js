@@ -4982,15 +4982,33 @@ function Factory()
 								{
 									for( var i = 0; i < ctx.length; i++ ) 
 									{
-										var narr = toels( q, ctx[ i ] );
-										result = result.concat( narr );
+										if( ctx[ i ].tagName.toLowerCase() == 'option' ) 
+										{
+											var item = ctx[ i ];
+											q = q.substr(1);
+											q = q.substr(0,q.lastIndexOf(']')).trim();
+											q = q.split( '=' );
+											for( var k = 0; k < item.attributes.length; k++ ) 
+											{
+												var attr = item.attributes[ k ];
+												if( attr.name == q[ 0 ] && attr.value == q[ 1 ] ) 
+												{
+													result = result.concat( item );
+													break;
+												}
+											}
+										}
+										else 
+										{
+											var narr = toels( q, ctx[ i ] );
+											result = result.concat( narr );
+										}
 									}
 								}
 								else 
 								{
 									result = Array.from( ctx.querySelectorAll( q ) );
 								}
-
 								return result;
 							}
 							
@@ -5047,6 +5065,7 @@ function Factory()
 										collect = collect.concat( els );
 									}
 								}
+								
 								return collect;
 							}
 							
@@ -5057,7 +5076,7 @@ function Factory()
 							
 							function binding( o, p, ctx, id ) 
 							{
-// trace( p, ctx, id );/////////////////////////////////////////////////
+trace( p, ctx, id );/////////////////////////////////////////////////
 								var ct = ctx || doc;
 								var v = o[ p ];
 								var pt = v.constructor;
@@ -5075,16 +5094,23 @@ function Factory()
 									case String:
 									case Number:
 										v = ( pt != String ) ? v.toString() : v;
-										var cb = collecting( o, p, ct, id );
-										observeAuto( o, p, function( pn, oVal, nVal ) 
+										o.context = ct;
+										observeAuto( o, p, function( pn, oVal, nVal )
 										{
+											var cb = collecting( o, p, o.context, id );
 											cb.forEach( function( el ) 
 											{
 												var attrs = Array.from( el.attributes );
 												for( var i = 0; i < attrs.length; i++ ) 
 												{
 													var attr = attrs[ i ];
+													if( attr.name.indexOf( 'data-' ) < 0 || p != attr.value ) 
+													{
+														continue;
+													}
+													
 													var extp = attr.name.replace( 'data-', '' ).trim();
+													
 													if( extp == 'text' ) 
 													{
 														el.textContent = nVal;
@@ -5106,7 +5132,7 @@ function Factory()
 													}
 												}
 											}); 
-										});
+										}, ct);
 										break;
 									case Array:
 										observeAuto( o, p, function( pn, oVal, nVal ) 
@@ -5147,7 +5173,6 @@ function Factory()
 													
 															template = el.firstElementChild;
 														}
-														templates.push( template );
 														
 														if( !template.binding ) 
 														{
@@ -5157,13 +5182,13 @@ function Factory()
 														{
 															template.binding.update = i;
 														}
-														
 														for( var j = 0; j < events.length; j++ ) 
 														{
 															var et = events[ j ];
 															for( var k = 0; k < root.funcRoot.length; k++ ) 
 															{
 																var els = toels( toqs( et, root.funcRoot[ k ] ), template );
+																
 																els.forEach( function( el ) 
 																{
 																	if( !el.eventRooted ) 
@@ -5174,6 +5199,8 @@ function Factory()
 																});
 															}
 														}
+														
+														templates.push( template );
 													});
 													initProperty( a[ i ], templates, i );
 												}
@@ -5190,7 +5217,7 @@ function Factory()
 													el.innerHTML = '';
 												});
 											}
-										});
+										}, ct);
 										break;
 									case Function: 
 									default:
@@ -5234,7 +5261,7 @@ function Factory()
 										});
 									}
 								} 
-								c.apply( o, [ p, '', o[p] ] );
+								c.apply( o, [ p, '', o[p]] );
 							}
 							
 							function computeAuto( o ) 
@@ -5257,7 +5284,12 @@ function Factory()
 									o.propList = new Array();
 									for( var p in o ) 
 									{
-										if( p === 'propList' || p === 'computed' || p === 'observed' || ( p === 'remove' && id == undefined ) ) 
+										if( p === 'funcRoot' || 
+											p === 'dataList' || 
+											p === 'propList' || 
+											p === 'computed' || 
+											p === 'observed' || 
+											( p === 'remove' && id == undefined ) ) 
 										{
 											continue;
 										}
@@ -5273,6 +5305,27 @@ function Factory()
 										if( o[ p ] instanceof Function ) 
 										{
 											o.funcRoot.push( p );
+										}
+									}
+								}
+								
+								if( o.dataList == undefined && id == undefined )
+								{
+									o.dataList = new Array();
+									for( var p in o ) 
+									{
+										if( o[ p ] instanceof Array ) 
+										{
+											if( p === 'funcRoot' || 
+												p === 'dataList' || 
+												p === 'propList' || 
+												p === 'computed' || 
+												p === 'observed' || 
+												( p === 'remove' && id == undefined ) ) 
+											{
+												continue;
+											}
+											o.dataList.push( p );
 										}
 									}
 								}
