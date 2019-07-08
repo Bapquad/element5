@@ -1035,11 +1035,11 @@ function Factory()
 					
 					EnterFullscreen: ( function() 
 					{
-						Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
-						Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
+						// Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
+						// Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
 						// Element.prototype.onfullscreenerror = Element.prototype.onmozfullscreenerror || Element.prototype.onmsfullscreenerror || Element.prototype.onfullscreenerror;
-						Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
-						document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
+						// Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
+						// document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
 						// document.onfullscreenerror = document.onwebkitfullscreenerror || document.onmozfullscreenerror || document.onmsfullscreenerror || document.onfullscreenerror;
 						// document.onfullscreenchange = document.onwebkitfullscreenchange || document.onmozfullscreenchange || document.onmsfullscreenchange || document.onfullscreenchange;
 						
