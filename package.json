@@ -1,0 +1,26 @@
+{
+  "name": "@bapquad/element5",
+  "version": "1.0.0",
+  "description": "element5 source package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bapquad/element5.git",
+    "directory": "packages/name"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
+  },
+  "keywords": [
+    "element5"
+  ],
+  "author": "Cuong H.Vu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bapquad/element5/issues"
+  },
+  "homepage": "https://github.com/bapquad/element5#readme"
+}
