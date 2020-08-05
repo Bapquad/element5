@@ -1,18 +1,14 @@
 {
   "name": "@bapquad/element5",
   "version": "1.0.0",
-  "description": "element5 source package",
+  "description": "An open source javascript library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bapquad/element5.git",
-    "directory": "packages/name"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com/"
+    "url": "git+https://github.com/bapquad/element5.git"
   },
   "keywords": [
     "element5"
