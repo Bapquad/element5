@@ -116,6 +116,7 @@ function Factory()
 					element5.Extend( el, MediaModifier ); 
 					element5.Extend( el, ClimbModifier ); 
 					element5.Extend( el, JSONModifier );
+					element5.Extend( el, UIXModifier );
 					
 					// Execute the giving extension.
 					elementExtCollection.forEach( function( item, index ) 
@@ -1048,51 +1049,6 @@ function Factory()
 						
 						return element5( elc );
 					},
-					
-					EnterFullscreen: ( function() 
-					{
-						// Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
-						// Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
-						// Element.prototype.onfullscreenerror = Element.prototype.onmozfullscreenerror || Element.prototype.onmsfullscreenerror || Element.prototype.onfullscreenerror;
-						// Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
-						// document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
-						// document.onfullscreenerror = document.onwebkitfullscreenerror || document.onmozfullscreenerror || document.onmsfullscreenerror || document.onfullscreenerror;
-						// document.onfullscreenchange = document.onwebkitfullscreenchange || document.onmozfullscreenchange || document.onmsfullscreenchange || document.onfullscreenchange;
-						
-						return function( targetElement ) 
-						{
-							var el = targetElement || this; 
-							el.requestFullscreen(); 
-							el.fullscreenElement = true;
-							
-							return this;
-						}; 
-					})(), 
-					
-					EscapeFullscreen: function( targetElement ) 
-					{
-						var el = targetElement || this; 
-						document.exitFullscreen(); 
-						el.fullscreenElement = false;
-						
-						return this;
-					}, 
-					
-					ToggleFullscreen: function( targetElement ) 
-					{
-						var el = targetElement || this;
-						if( !el.fullscreenElement ) 
-						{
-							el.requestFullscreen(); 
-							el.fullscreenElement = true;
-						} 
-						else 
-						{
-							document.exitFullscreen(); 
-							el.fullscreenElement = false;
-						}
-						return this;
-					},
 				}; 
 				// Alias Section for Element DOM Modifier.
 				DOMModifier.PushClass = DOMModifier.AddClass; 
@@ -1585,7 +1541,10 @@ function Factory()
 						
 						return el;
 					}, 
-					
+				}; 
+				JSONModifier.DeleteProperty = JSONModifier.RemoveProperty;
+				
+				var UIXModifier = {
 					Draggable: function( home ) 
 					{
 						var el = this; 
@@ -1879,9 +1838,53 @@ function Factory()
 						
 						return el;
 					}, 
-				}; 
-				JSONModifier.onDrop = JSONModifier.Droppable;
-				JSONModifier.DeleteProperty = JSONModifier.RemoveProperty;
+					
+					EnterFullscreen: ( function() 
+					{
+						// Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullscreen || Element.prototype.requestFullscreen;
+						// Element.prototype.exitFullscreen = Element.prototype.webkitExitFullscreen || Element.prototype.mozCancelFullScreen || Element.prototype.msExitFullscreen || Element.prototype.exitFullscreen;
+						// Element.prototype.onfullscreenerror = Element.prototype.onmozfullscreenerror || Element.prototype.onmsfullscreenerror || Element.prototype.onfullscreenerror;
+						// Element.prototype.onfullscreenchange = Element.prototype.onmozfullscreenchange || Element.prototype.onmsfullscreenchange || Element.prototype.onfullscreenchange;
+						// document.exitFullscreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen || document.exitFullscreen;
+						// document.onfullscreenerror = document.onwebkitfullscreenerror || document.onmozfullscreenerror || document.onmsfullscreenerror || document.onfullscreenerror;
+						// document.onfullscreenchange = document.onwebkitfullscreenchange || document.onmozfullscreenchange || document.onmsfullscreenchange || document.onfullscreenchange;
+						
+						return function( targetElement ) 
+						{
+							var el = targetElement || this; 
+							el.requestFullscreen(); 
+							el.fullscreenElement = true;
+							
+							return this;
+						}; 
+					})(), 
+					
+					EscapeFullscreen: function( targetElement ) 
+					{
+						var el = targetElement || this; 
+						document.exitFullscreen(); 
+						el.fullscreenElement = false;
+						
+						return this;
+					}, 
+					
+					ToggleFullscreen: function( targetElement ) 
+					{
+						var el = targetElement || this;
+						if( !el.fullscreenElement ) 
+						{
+							el.requestFullscreen(); 
+							el.fullscreenElement = true;
+						} 
+						else 
+						{
+							document.exitFullscreen(); 
+							el.fullscreenElement = false;
+						}
+						return this;
+					},
+				};
+				UIXModifier.onDrop = UIXModifier.Droppable;
 				
 				element5.fps = 60;
 				element5.GetWindow = function() 
@@ -2075,11 +2078,11 @@ function Factory()
 				};
 				element5.mountDevice = element5.MountDevice;
 				
-				element5.Extension = function( ext ) 
+				element5.Extends = function( ext ) 
 				{
 					elementExtCollection.push( ext ); 
 				};
-				element5.extension = element5.Extension;
+				element5.extends = element5.Extends;
 				
 				element5.Extend = function( applier, hier ) 
 				{
@@ -3239,6 +3242,55 @@ function Factory()
 					}
 				};
 				
+				var socketModifier = 
+				{
+					socket: undefined, 
+					onOpen: function(cb) 
+					{
+						this.socket.onopen = cb;
+						return this;
+					}, 
+					onMessage: function(cb) 
+					{
+						this.socket.addEventListener('message', cb);
+						return this;
+					},
+					onError: function(cb) 
+					{
+						this.socket.onerror = cb;
+						return this;
+					}, 
+					onClose: function(cb) 
+					{
+						this.socket.onclose = cb; 
+						return this;
+					}, 
+					Remove: function(cb) 
+					{ 
+						this.socket.removeEventListener('message', cb);
+						return this;
+					}, 
+					Get: function(cb) 
+					{
+						var ws = this.socket;
+						this.socket.onmessage = function(e) 
+						{
+							cb(e.data, ws);
+						}
+						return this;
+					}, 
+					Post: function(data) 
+					{
+						this.socket.send(data);
+						return this;
+					},
+					Close: function() 
+					{
+						this.socket.close(); 
+						return this;
+					}
+				}
+				
 				var Request = 
 				{
 					Initialize : function( url, data ) 
@@ -3270,6 +3322,12 @@ function Factory()
 						var xhr = request5.Connect( url, onload, data );
 						element5.Extend( xhr, dataModifier );
 						return xhr;
+					},
+					
+					OpenSocket: function(url) 
+					{
+						socketModifier.socket = new WebSocket(url);
+						return socketModifier;
 					}
 				} 
 				
@@ -5601,4 +5659,3 @@ trace( p, ctx, id );/////////////////////////////////////////////////
 
 // Export Element 5
 Element5UniversalExport( window, Factory ); 
-	
