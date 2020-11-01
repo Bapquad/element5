@@ -2188,7 +2188,6 @@ function Factory()
 				Style.AddTimeLine = function( timeline ) 
 				{
 					var keyframes = timeline.keyframes;
-					
 					this.Find( timeline.name, function() 
 					{
 						if( Style.currentIndex >= 0 ) 
@@ -2196,22 +2195,15 @@ function Factory()
 							Style.Delete( Style.currentIndex ); 
 						}
 					}); 
-					
 					var index = Style.sheet.cssRules.length; 
 					var len = keyframes.length;
 					var content = [];
-					
-					
-					
 					for( var i = 0; i < len; i++ ) 
 					{
 						content.push( keyframes[ i ].time + '% { }' );
 					}
-					
 					Style.sheet.attach( '@keyframes ' + timeline.name + ' { ' + content.join( ' ' ) + ' } ' , index );
-					
 					timeline = Style.sheet.cssRules[ index ]; 
-					
 					timeline.Effect = function( el, duration, delay, timing ) 
 					{
 						var timeline = this;
