@@ -1055,10 +1055,10 @@ function Factory()
 				
 				var DOMLoader = 
 				{
-					includeHTML: function() 
+					includeHTML: function(cb) 
 					{
 						var el = this;
-						element5.includeHtml( el ); 
+						element5.includeHtml(el, cb); 
 						return el;
 					},
 				};
@@ -2114,29 +2114,23 @@ function Factory()
 				}; 
 				element5.extend = element5.Extend;
 				
-				element5.IncludeHtml = function( el ) 
+				element5.IncludeHtml = function( el, cb ) 
 				{
 					if ( el.getAttribute("w3-include-html") ) 
 					{
 						var a = el.cloneNode( false );
-						
 						var file = el.getAttribute("w3-include-html");
-						
 						var xhr = new XMLHttpRequest();
-						
 						xhr.onreadystatechange = function() 
 						{
 							if ( xhr.readyState == 4 && xhr.status == 200 ) 
 							{
 								a.removeAttribute( "w3-include-html" );
-								
 								a.innerHTML = xhr.responseText; 
-								
 								el.parentNode.replaceChild( a, el );
-								
 								var callback = el.getAttribute( 'callback' );
-								if( callback ) 
-									new Function( callback )();
+								if( callback ) new Function( callback )();
+								if( undefined!=cb ) cb();
 							}
 						}      
 						
