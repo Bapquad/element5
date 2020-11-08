@@ -2947,7 +2947,7 @@ function Factory()
 									video: {
 										width: width, 
 										height: height, 
-										deviceId: { exact: webcamList[ currentCam ] }
+										deviceId: { exact: webcamList[currentCam] }
 									}
 								}).then( initializeVideoStream ).catch( enumDeviceErrorHandle );
 							}
@@ -2969,7 +2969,7 @@ function Factory()
 							{
 								if(undefined!=callback) 
 								{
-									callback(webcamList);
+									callback(webcamList, "");
 								}
 								return;
 							}
@@ -2983,7 +2983,7 @@ function Factory()
 							
 							if(undefined!=callback) 
 							{
-								callback(webcamList);
+								callback(webcamList, webcamList[currentCam]);
 							}
 						}
 						
@@ -3048,6 +3048,10 @@ function Factory()
 							{
 								console.error( 'The following error occurred: ' + e.name + '. Please check your microphone or Allow access microphone on webbrowser and try again.' );
 							}
+							if(undefined!=callback) 
+							{
+								callback(deviceList, deviceList[deviceCurrent]);
+							}
 						} 
 						
 						function deviceChanged( e ) 
@@ -3084,7 +3088,7 @@ function Factory()
 									initializeAudioStream(stream);
 									if(undefined!=callback) 
 									{
-										callback(deviceList);
+										callback(deviceList, deviceList[deviceCurrent]);
 									}
 								}).catch( enumDeviceErrorHandle );
 							} 
@@ -3146,7 +3150,7 @@ function Factory()
 							{
 								if(undefined!=callback) 
 								{
-									callback(deviceList);
+									callback(deviceList, "");
 								}
 								return; 
 							}
