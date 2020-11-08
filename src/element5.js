@@ -2880,7 +2880,8 @@ function Factory()
 							"width": width, 
 							"height": height, 
 							"src": url
-						});
+						}); 
+						return image; 
 					}, 
 					StartCamera: function( video, width, height, callback ) 
 					{
