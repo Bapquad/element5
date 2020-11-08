@@ -1125,6 +1125,24 @@ function Factory()
 						return JSON.parse( jsonStr );
 					}, 
 					
+					Attr: function( name, value ) 
+					{ 
+						var el = this;
+						if(typeof name === 'string') 
+						{
+							el.setAttribute(name, value);
+						} 
+						else if(typeof name === 'object') 
+						{
+							var attr = name;
+							for(var x in attr) 
+							{
+								el.setAttribute(x, attr[x]);
+							}
+						}
+						return el;
+					}, 
+					
 					AddData: function( name, value ) 
 					{
 						try 
@@ -2856,6 +2874,14 @@ function Factory()
 				// TODO
 				var Media = 
 				{
+					StartStream: function(image, url, width, height) 
+					{ 
+						image.attr({
+							"width": width, 
+							"height": height, 
+							"src": url
+						});
+					}, 
 					StartCamera: function( video, width, height, callback ) 
 					{
 						var mediaStream = 0;
