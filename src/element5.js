@@ -2856,7 +2856,7 @@ function Factory()
 				// TODO
 				var Media = 
 				{
-					StartCamera: function( video, width, height ) 
+					StartCamera: function( video, width, height, callback ) 
 					{
 						var mediaStream = 0;
 						var webcamList = 0;
@@ -2932,14 +2932,17 @@ function Factory()
 							var len = devices.length;
 							for( var i = 0; i < len; i++ ) 
 							{
-								if( devices[ i ].kind == 'videoinput' ) 
+								if( devices[i].kind == 'videoinput' ) 
 								{
-									webcamList[ webcamList.length ] = devices[ i ].deviceId;
+									webcamList[webcamList.length] = devices[i].deviceId;
 								}
 							} 
 							
 							if( webcamList.length <= 0 ) 
+							{
+								callback(webcamList);
 								return;
+							}
 							
 							currentCam = 0;
 							
@@ -2947,6 +2950,8 @@ function Factory()
 							
 							// TODO Media devicechange Event. 
 							navigator.mediaDevices.addEventListener( 'devicechange' , deviceChanged );
+							
+							callback(webcamList);
 						}
 						
 						function init() 
@@ -2986,7 +2991,7 @@ function Factory()
 								} 
 								document.head.removeChild( webrtc );
 							};
-							webrtc.src = "/element5/webrtc/adapter.js";
+							webrtc.src = "http://bapquadgames.com/element5/webrtc/adapter.js";
 							document.head.appendChild( webrtc ); 
 							Media.include_webrtc_once = true;
 						} 
