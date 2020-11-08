@@ -2967,7 +2967,10 @@ function Factory()
 							
 							if( webcamList.length <= 0 ) 
 							{
-								callback(webcamList);
+								if(undefined!=callback) 
+								{
+									callback(webcamList);
+								}
 								return;
 							}
 							
@@ -2978,7 +2981,10 @@ function Factory()
 							// TODO Media devicechange Event. 
 							navigator.mediaDevices.addEventListener( 'devicechange' , deviceChanged );
 							
-							callback(webcamList);
+							if(undefined!=callback) 
+							{
+								callback(webcamList);
+							}
 						}
 						
 						function init() 
@@ -3024,7 +3030,7 @@ function Factory()
 						} 
 					}, 
 					
-					StartMicrophone: function() 
+					StartMicrophone: function(callback) 
 					{
 						var deviceList = 0;
 						var deviceCurrent = null; 
@@ -3040,7 +3046,7 @@ function Factory()
 							} 
 							else 
 							{
-								console.error( 'The following error occurred: ' + e.name + '. Please check your camera and try again.' );
+								console.error( 'The following error occurred: ' + e.name + '. Please check your microphone or Allow access microphone on webbrowser and try again.' );
 							}
 						} 
 						
@@ -3053,12 +3059,11 @@ function Factory()
 						function initializeAudioStream( stream ) 
 						{
 							mediaStream = stream; 
-							
 							webRtcSource = audioContext.createMediaStreamSource( stream ); 
 							webRtcSource.connect( audioContext.destination ); 
 						}
 						
-						function initSession() 
+						function initSession(callback) 
 						{
 							if( deviceCurrent !== null ) 
 							{
@@ -3070,14 +3075,20 @@ function Factory()
 								} 
 								
 								clearSession();
-								
 								navigator.mediaDevices.getUserMedia( 
 								{
 									audio: {
-										deviceId: { exact: deviceList[ deviceCurrent ] }
+										deviceId: { exact: deviceList[deviceCurrent] }
 									} 
-								}).then( initializeAudioStream ).catch( enumDeviceErrorHandle );
+								}).then( (stream) => {
+									initializeAudioStream(stream);
+									if(undefined!=callback) 
+									{
+										callback(deviceList);
+									}
+								}).catch( enumDeviceErrorHandle );
 							} 
+							return audioContext; 
 						}
 						
 						function clearSession() 
@@ -3093,12 +3104,13 @@ function Factory()
 								var audioTrack = mediaStream.getAudioTracks(); 
 								audioTrack[ 0 ].stop();
 								mediaStream = 0;
-							}
+							} 
+							return audioContext;
 						}
 						
 						function stopSession() 
 						{
-							clearSession();
+							return clearSession();
 						}
 						
 						function deviceEnumeratedHandle( devices ) 
@@ -3107,7 +3119,7 @@ function Factory()
 							var len = devices.length;
 							for( var i = 0; i < len; i++ ) 
 							{
-								if( devices[ i ].kind == 'audioinput' ) 
+								if( devices[i].kind == 'audioinput' ) 
 								{
 									var hasDeviceId = false;
 									
@@ -3115,7 +3127,7 @@ function Factory()
 									{
 										for( var j = 0; j < deviceList.length; j++ ) 
 										{
-											if( deviceList[ j ] === devices[ i ].deviceId ) 
+											if( deviceList[j] === devices[i].deviceId ) 
 											{
 												hasDeviceId = true;
 												break;
@@ -3125,19 +3137,23 @@ function Factory()
 									
 									if( !hasDeviceId ) 
 									{
-										deviceList[ deviceList.length ] = devices[ i ].deviceId; 
+										deviceList[deviceList.length] = devices[i].deviceId; 
 									}
 								}
 							} 
 							
 							if( deviceList.length <= 0 ) 
 							{
+								if(undefined!=callback) 
+								{
+									callback(deviceList);
+								}
 								return; 
 							}
 							
 							deviceCurrent = 0;
 							
-							initSession();
+							initSession(callback);
 							
 							// TODO Media devicechange Event. 
 							navigator.mediaDevices.addEventListener( 'devicechange' , deviceChanged );
