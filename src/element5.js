@@ -975,6 +975,38 @@ function Factory()
 						return this;
 					}, 
 					
+					Add: function( el ) 
+					{
+						if( el.nodeType != undefined ) 
+						{
+							var nodeType = parseInt( el.nodeType );
+							if( ( el.el5 && ( nodeType === 1 ) ) || nodeType === 3 ) 
+							{
+								this.appendChild( el );
+							} 
+						}
+						else if( el.length )
+						{
+							var len = el.length;
+							for( var i = 0; i < len; i++ ) 
+							{
+								this.Add( el[ i ] );
+							}
+						}
+						return this;
+					}, 
+					
+					AddedBy: function( el ) 
+					{
+						var nodeType = parseInt( el.nodeType ); 
+
+						if( ( el.el5 || el.tagName === 'BODY') && nodeType === 1 ) 
+						{
+							el.appendChild( this );
+						} 
+						return this;
+					}, 
+					
 					EquipEvent: function( addHandle, removeHandle ) 
 					{
 						solution5.SetMutationEvent( this, addHandle, removeHandle ); 
@@ -1070,6 +1102,12 @@ function Factory()
 						timeline.Effect( el, duration, delay, timing ); 
 						return el;
 					}, 
+					Motion: function(anime) 
+					{
+						var el = this;
+						anime.Effect(el);
+						return el;
+					},
 				};
 				AniModifier.Animation = AniModifier.EffectedBy;
 				AniModifier.Run = AniModifier.EffectedBy;
@@ -1471,7 +1509,22 @@ function Factory()
 						return el;
 					}, 
 					
+					On: function( e, h, t ) 
+					{
+						t = t || false;
+						var el = this;
+						el.addEventListener( e, h, t );
+						return el;
+					},
+					
 					RemoveEvent: function( e, h ) 
+					{
+						var el = this;
+						el.removeEventListener( e, h );
+						return el;
+					}, 
+					
+					Off: function( e, h ) 
 					{
 						var el = this;
 						el.removeEventListener( e, h );
@@ -2188,6 +2241,7 @@ function Factory()
 				Style.AddTimeLine = function( timeline ) 
 				{
 					var keyframes = timeline.keyframes;
+					
 					this.Find( timeline.name, function() 
 					{
 						if( Style.currentIndex >= 0 ) 
@@ -2195,15 +2249,22 @@ function Factory()
 							Style.Delete( Style.currentIndex ); 
 						}
 					}); 
+					
 					var index = Style.sheet.cssRules.length; 
 					var len = keyframes.length;
 					var content = [];
+					
+					
+					
 					for( var i = 0; i < len; i++ ) 
 					{
 						content.push( keyframes[ i ].time + '% { }' );
 					}
+					
 					Style.sheet.attach( '@keyframes ' + timeline.name + ' { ' + content.join( ' ' ) + ' } ' , index );
+					
 					timeline = Style.sheet.cssRules[ index ]; 
+					
 					timeline.Effect = function( el, duration, delay, timing ) 
 					{
 						var timeline = this;
