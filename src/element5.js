@@ -3853,9 +3853,9 @@ function Factory()
 										document.cookie = cookieString; 
 										
 										if( record.value.meta.branch == "/" )
-											delete coreDS.Public[ record.key ]; 
+											delete coreDS.pubRec[record.key]; 
 										else 
-											delete coreDS.Private[ record.key ]; 
+											delete coreDS.priRec[record.key]; 
 									}, 
 									
 									SetValue: function( data )
@@ -4053,6 +4053,7 @@ function Factory()
 									
 									Private: function() 
 									{
+										console.log("here");
 										var key = arguments[0], 
 											value = arguments[1], 
 											expires = arguments[2]; 
@@ -4523,7 +4524,10 @@ function Factory()
 								function loadDB() 
 								{
 									var records = new Array();
-									
+									if(undefined===coreDS.pubRec) 
+									{
+										coreDS.pubRec = new Array();
+									}
 									var len = storageAdapter.length;  
 									
 									for( var i = 0; i < len; i++ ) 
