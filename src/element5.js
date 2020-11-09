@@ -4792,7 +4792,7 @@ function Factory()
 						} 
 					}
 				}; 
-				
+				Store.open = Store.Open;
 				module.exports = Store;
 			}, 
 			function( module, __require_pak__ ) 		// pack require ( 8 ) 
