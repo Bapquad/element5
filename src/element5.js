@@ -3426,6 +3426,11 @@ function Factory()
 					OpenSocket: function(url) 
 					{
 						socketModifier.socket = new WebSocket(url);
+						socketModifier.remove = socketModifier.Remove;
+						socketModifier.get = socketModifier.Get;
+						socketModifier.send = socketModifier.Post;
+						socketModifier.post = socketModifier.Post;
+						socketModifier.close = socketModifier.Close;
 						return socketModifier;
 					}
 				} 
