@@ -3989,25 +3989,30 @@ function Factory()
 											
 										var myCore = this;
 										
+										if(undefined==myCore.pubRec) 
+										{
+											myCore.pubRec = [];
+										}
+										
 										if( arguments.length == 1 ) 
 										{
 											records = loadDB();
 											var len = records.length;
 											for ( var i = 0; i < len; i++ ) 
 											{
-												var item = records[ i ];
+												var item = records[i];
 												if( item.key == key && item.value.meta.branch == "/" ) 
 												{
-													if( myCore.Public[ key ] == undefined ) 
+													if( myCore.pubRec[key] == undefined ) 
 													{
-														myCore.Public[ key ] = element5.Extend( item, recordModifier );
+														myCore.pubRec[key] = element5.Extend(item, recordModifier);
 													}
-													return myCore.Public[ key ]; 
+													return myCore.pubRec[key]; 
 												}
 											}
-											if( myCore.Public[ key ] != undefined ) 
+											if( myCore.pubRec[key] != undefined ) 
 											{
-												myCore.Public[ key ].Destroy();
+												myCore.pubRec[key].Destroy();
 											}
 											return;
 										} 
@@ -4037,40 +4042,42 @@ function Factory()
 										}; 
 										
 										var record = { 'key': key, 'value': data };
-										
 										var cookieString = [
 											key + '=' + JSON.stringify( data ), 
 											'expires=' + data.meta.expires, 
 											'path=/', 
-										].join( '; ' );
-																				
+										].join( '; ' );									
 										document.cookie = cookieString; 
-										
-										return myCore.Public[ key ] = element5.Extend( record, recordModifier );;
+										return myCore.pubRec[key] = element5.Extend(record, recordModifier);
 									}, 
 									
 									Private: function() 
 									{
-										var key = arguments[ 0 ], 
-											value = arguments[ 1 ], 
-											expires = arguments[ 2 ]; 
+										var key = arguments[0], 
+											value = arguments[1], 
+											expires = arguments[2]; 
 										
 										var myCore = this;
 										
+										if(undefined==myCore.priRec) 
+										{
+											myCore.priRec = [];
+										}
+										
 										if( arguments.length == 1 ) 
 										{
-											if( myCore.Private[ key ] != undefined ) 
+											if( myCore.priRec[key] != undefined ) 
 											{
-												return myCore.Private[ key ];
+												return myCore.priRec[key];
 											}
 											
 											var len = records.length;
 											
 											for ( var i = 0; i < len; i++ ) 
 											{
-												if( records[ i ].key == key && records[ i ].value.meta.branch == branch ) 
+												if( records[i].key == key && records[i].value.meta.branch == branch ) 
 												{
-													return myCore.Private[ key ] = element5.Extend( records[ i ], recordModifier );
+													return myCore.priRec[key] = element5.Extend(records[i], recordModifier);
 												}
 											}
 											return;
@@ -4101,16 +4108,13 @@ function Factory()
 										}; 
 										
 										var record = { 'key': key, 'value': data };
-										
 										var cookieString = [
 											key + '=' + JSON.stringify( data ), 
 											'expires=' + data.meta.expires, 
 											'path=' + branch, 
-										].join( '; ' );
-																				
+										].join( '; ' );		
 										document.cookie = cookieString;
-										
-										return myCore.Private[ key ] = element5.Extend( record, recordModifier );;
+										return myCore.priRec[key] = element5.Extend(record, recordModifier);
 									}, 
 								}; 
 								
