@@ -3813,12 +3813,10 @@ function Factory()
 								
 								if( document.cookie === '' ) 
 								{
-									console.log( 'Initialize the Database!' );
 									initDB();
 								} 
 								else 
 								{
-									console.log( 'DS has exist. All Ready!!!' );
 									records = loadDB();
 								} 
 								
