@@ -4299,16 +4299,19 @@ function Factory()
 										var dataInput = 0;
 										var keyId = 0;
 										var keyInput = 0;
-										
-										if( myCore.Public[ key ] != undefined )  
+										if(undefined==myCore.pubRec) 
+										{
+											myCore.pubRec = []; 
+										}
+										if( myCore.pubRec[key] != undefined )  
 										{
 											if( arguments.length == 1 ) 
 											{
-												return myCore.Public[ key ];
+												return myCore.pubRec[key];
 											}
 											else 
 											{
-												item = myCore.Public[ key ];
+												item = myCore.pubRec[key];
 												keyInput = 'lds_id ' + item.id + ' ' + item.key; 
 												dataInput = item.value;
 											} 
@@ -4328,7 +4331,7 @@ function Factory()
 											{
 												if( arguments.length == 1 ) 
 												{
-													return myCore.Public[ key ] = element5.Extend( item, variableModifier );
+													return myCore.pubRec[key] = element5.Extend( item, variableModifier );
 												}
 												else 
 												{
@@ -4383,7 +4386,7 @@ function Factory()
 										
 										storageAdapter.setItem( keyInput, JSON.stringify( dataInput ) ); 
 										
-										return myCore.Public[ key ] = element5.Extend( item, variableModifier ); 
+										return myCore.pubRec[key] = element5.Extend( item, variableModifier ); 
 									}, 
 									
 									Private: function() 
@@ -4413,15 +4416,19 @@ function Factory()
 										var keyId = 0;
 										var keyInput = 0;
 										var item;
-										if( myCore.Private[ key ] != undefined )  
+										if(undefined==myCore.priRec) 
+										{
+											myCore.priRec = []; 
+										}
+										if( myCore.priRec[key] != undefined )  
 										{
 											if( arguments.length == 1 ) 
 											{
-												return myCore.Private[ key ];
+												return myCore.priRec[key];
 											}
 											else 
 											{
-												item = myCore.Private[ key ];
+												item = myCore.priRec[key];
 												keyInput = 'lds_id ' + item.id + ' ' + item.key; 
 												dataInput = item.value;
 											} 
@@ -4429,19 +4436,19 @@ function Factory()
 										
 										for( var i = 0; i < len; i++ ) 
 										{
-											if( records[ i ] == undefined ) 
+											if( records[i] == undefined ) 
 											{
 												continue;
 											} 
 											
-											item = records[ i ]; 
+											item = records[i]; 
 											var scope = item.value.value.meta.branch;
 											
 											if( item.key == key && scope == branch ) 
 											{
 												if( arguments.length == 1 ) 
 												{
-													return myCore.Private[ key ] = element5.Extend( item, variableModifier );
+													return myCore.priRec[key] = element5.Extend( item, variableModifier );
 												}
 												else 
 												{
@@ -4495,7 +4502,7 @@ function Factory()
 										
 										storageAdapter.setItem( keyInput, JSON.stringify( dataInput ) ); 
 										
-										return myCore.Private[ key ] = element5.Extend( item, variableModifier ); 
+										return myCore.priRec[key] = element5.Extend( item, variableModifier ); 
 									}, 
 									
 									Empty: function() 
@@ -4540,7 +4547,7 @@ function Factory()
 											var scope = item.value.value.meta.branch;
 											if( scope == '/' || scope == branch ) 
 											{ 
-												coreDS.Public[ key ] = element5.Extend( item, variableModifier );
+												coreDS.pubRec[key] = element5.Extend( item, variableModifier );
 											}
 										}
 									}
@@ -4555,7 +4562,6 @@ function Factory()
 								{
 									records = initDB();
 								} 
-								
 								return element5.Extend( DSDescription, coreDS );
 							}
 							
@@ -4565,7 +4571,7 @@ function Factory()
 								{
 									return;
 								} 
-								suftByLocalDS( storageType );
+								return suftByLocalDS( storageType );
 							}
 							
 							function suftByIndexedDB() 
@@ -4609,7 +4615,29 @@ function Factory()
 										if( this.objectStoreNames.contains (tableName) )
 										{
 											var transaction = this.transaction( tableName, method );
-											return transaction.objectStore( tableName ); 
+											var objectStore = transaction.objectStore(tableName);
+											objectStore.update = function(data, key, success) 
+											{
+												var getRequest = objectStore.get(key); 
+												getRequest.onsuccess = function() 
+												{
+													var result = getRequest.result;
+													for(x in data) 
+													{
+														result[x] = data[x];
+													}
+													var updateRequest = objectStore.put(result);
+													if(success) 
+													{
+														updateRequest.onsuccess = function() 
+														{
+															success(updateRequest);
+														}
+													}
+												} 
+												return objectStore;
+											}
+											return objectStore; 
 										} 
 										return 0;								
 									}, 
@@ -4701,7 +4729,10 @@ function Factory()
 												}
 											} 
 											
-											var objectStore = db.createObjectStore( item.name, { keyPath: item.key } ); 
+											var objectStore = db.createObjectStore(item.name, {
+												keyPath: item.key, 
+												autoIncrement: (item.autoIncrement || false) 
+											}); 
 											
 											var lenj = item.structure.length;
 											for( var j = 0; j < lenj; j++ ) 
