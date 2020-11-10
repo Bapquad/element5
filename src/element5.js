@@ -3692,7 +3692,6 @@ function Factory()
 						try 
 						{
 							if( arguments.length <= 0 ) throw "storageType is undefined."; 
-							
 							if( GetTypeRequest( storageType ) ) 
 							{
 								return false;
@@ -3701,6 +3700,7 @@ function Factory()
 							// Open new a database.
 							var storageType = storageTypes[ current ][ 2 ]; 
 							var dbName;
+							var dbVersion;
 							///////////////////////////////////
 							var secondUnit = 1000;
 							var minuteUnit = 60 * secondUnit;
@@ -3748,8 +3748,8 @@ function Factory()
 									{
 										throw "dbName is undefined."; 
 									}
-									dbName = arguments[ 1 ]; 
-									dbVersion = arguments[ 2 ]; 
+									dbName = arguments[1]; 
+									dbVersion = arguments[2]; 
 									return suftByIndexedDB(); 
 									
 								case 'ClientDatabase': 	// Apply the clientDB.
@@ -4599,182 +4599,108 @@ function Factory()
 									IDBTransaction.READ_ONLY = 'readonly';
 								}
 								
-								var request, db;
-								
-								if( dbVersion ) 
+								var dbUsed, 
+								dbOpenRequest = indexedDB.open(dbName, dbVersion); 
+								dbOpenRequest.onupgradeneeded = function(event) 
 								{
-									request = indexedDB.open( dbName, dbVersion ); 
-								} 
-								else 
-								{
-									request = indexedDB.open( dbName ); 
-								}
-								
-								var databaseModifier = 
-								{
-									GetTable: function() 
+									// This event callback function called when 
+									// the database was changed the version
+									if(undefined!=event.target.dbSchema) 
 									{
-										var tableName = arguments[ 0 ]; 
-										var method = arguments[ 1 ] || IDBTransaction.READ_WRITE;
-										if( this.objectStoreNames.contains (tableName) )
+										dbUsed = event.target.result;
+										var schemas = event.target.dbSchema;
+										for(var i in schemas) 
 										{
-											var transaction = this.transaction( tableName, method );
-											var objectStore = transaction.objectStore(tableName);
-											objectStore.update = function(data, key, success) 
+											var item = schemas[i];
+											
+											if(dbUsed.objectStoreNames.contains(item.name)) 
 											{
-												var getRequest = objectStore.get(key); 
-												getRequest.onsuccess = function() 
-												{
-													var result = getRequest.result;
-													for(x in data) 
-													{
-														result[x] = data[x];
-													}
-													var updateRequest = objectStore.put(result);
-													if(success) 
-													{
-														updateRequest.onsuccess = function() 
-														{
-															success(updateRequest);
-														}
-													}
-												} 
-												return objectStore;
+												dbUsed.deleteObjectStore(item.name);
 											}
-											return objectStore; 
-										} 
-										return 0;								
-									}, 
-									From: function() 
+											
+											if(item.active) 
+											{
+												var objectStore = dbUsed.createObjectStore(item.name, {
+													keyPath: item.primaryKey, 
+													autoIncrement: (item.autoIncrement || false)
+												}); 
+												item.fields.forEach(function(field) {
+													objectStore.createIndex(field.name, field.data, field.type); 
+												});
+											}
+										}
+									}
+								};
+								dbOpenRequest.onerror = function(event) 
+								{ 
+									event.error = event.target.error;
+									var cb = event.target.failure;
+									if("function"===typeof cb) 
 									{
-										return this.GetTable.apply( this, arguments );
-									}, 
-									from: function() 
+										cb.call(null, event);
+									}
+								};
+								dbOpenRequest.onsuccess = function(event) 
+								{
+									var dbModifier = {
+										From: function() 
+										{
+											var objStoreName = arguments[0];
+											var objStoreMode = arguments[1] || IDBTransaction.READ_WRITE; 
+											var database = this;
+											if(database.objectStoreNames.contains(objStoreName)) 
+											{ 
+												var transaction = database.transaction(objStoreName, objStoreMode); 
+												transaction = transaction.objectStore(objStoreName);
+												transaction.update = function(data, key, success) 
+												{
+													var getRequest = transaction.get(key); 
+													getRequest.onsuccess = function() 
+													{
+														var result = getRequest.result;
+														for(x in data) 
+														{
+															result[x] = data[x];
+														}
+														var updateRequest = transaction.put(result);
+														if(success) 
+														{
+															updateRequest.onsuccess = function() 
+															{
+																success(updateRequest);
+															}
+														}
+													} 
+													return transaction;
+												};
+												return transaction;
+											} 
+										}, 
+										Table: function() 
+										{
+											return this.From.apply(this, arguments);
+										}
+									};
+									dbUsed = element5.extend(event.target.result, dbModifier);
+									event.database = dbUsed; 
+									event.target.database = dbUsed;
+									var cb = event.target.success;
+									if("function"===typeof cb) 
 									{
-										return this.GetTable.apply( this, arguments );
-									},
-								}
-								
+										cb.call(null, event);
+									}
+								};
 								var CoreDB = 
 								{
-									close: function() 
+									Schema: function() 
 									{
-										var myCore = this;
-										db.close(); 
-										return myCore;
-									}, 
-									init: function() 
-									{
-										var myCore = this; 
-										request.tables = arguments;
-										return myCore;
-									}, 
-									drop: function() 
-									{
-										var myCore = this;
-										
-										db.close();
-										
-										var request = indexedDB.deleteDatabase( db.name ); 
-										
-										request.onsuccess = function( e ) 
-										{
-											console.log( "Database deleted." );
-										}; 
-										
-										request.onerror = function( e ) 
-										{
-											console.log( "Database deleting is failure!" );
-										};
-										
-										return myCore;
-									}, 
-									upgrade: function() 
-									{
-										var myCore = this; 
-										
-										db.close(); 
-										
-										var connect = request.connect;
-										
-										var args = Array.from(arguments); 
-										
-										var upgradeVersion = args.splice( 0, 1 ) [ 0 ]; 
-										
-										request = store5.open( 'indexed_db', 'program', upgradeVersion ); 
-										
-										myCore.init.apply( request, args.splice( 0 ) ); 
-										
-										if( connect ) 
-										{
-											request.connect = connect;
-										}
-										
-										return request;
+										var store = this;
+										store.dbSchema = arguments;
+										return store;
 									}
 								};
 								
-								request.addEventListener( 'upgradeneeded', function( e ) 
-								{
-									if( request.tables != undefined ) 
-									{
-										db = e.target.result;
-										var len = request.tables.length;
-										for( var i = 0; i < len; i++ ) 
-										{
-											var item = request.tables[ i ]; 
-											
-											if( db.objectStoreNames.contains( item.name ) )
-											{
-												db.deleteObjectStore( item.name );
-												if( item.key == undefined )
-												{
-													continue;
-												}
-											} 
-											
-											var objectStore = db.createObjectStore(item.name, {
-												keyPath: item.key, 
-												autoIncrement: (item.autoIncrement || false) 
-											}); 
-											
-											var lenj = item.structure.length;
-											for( var j = 0; j < lenj; j++ ) 
-											{
-												var index = item.structure[ j ];
-												objectStore.createIndex( index.name, index.key, index.types );
-											} 
-										} 
-										delete request.tables;
-									}
-									
-								}, false );
-								
-								request.addEventListener( 'error', function( e ) 
-								{
-									console.log( 'Connect Database Fail!' );
-								});
-
-								request.addEventListener( 'success', function( e ) 
-								{
-									db = e.target.result; 
-									
-									if( request.connect ) 
-									{
-										var callback = request.connect;
-										
-										if( typeof callback != 'function' ) throw "The connect must be a function.";
-										
-										callback.call( element5.Extend( db, databaseModifier ) );
-									}
-								}, false ); 
-								
-								CoreDB.Init = CoreDB.init;
-								CoreDB.Close = CoreDB.close;
-								CoreDB.Drop = CoreDB.drop;
-								CoreDB.Upgrade = CoreDB.upgrade;
-								
-								return element5.Extend( request, CoreDB );
+								return element5.Extend( dbOpenRequest, CoreDB );
 							}
 							
 							function suftByClientDB() 
@@ -4788,7 +4714,7 @@ function Factory()
 							
 							return;
 							
-							Store[ storageTypes[ len ][ 2 ] ] = new Array(); 
+							Store[storageTypes[len][2]] = new Array(); 
 							
 							var database = new Array(); 
 							
@@ -4808,16 +4734,16 @@ function Factory()
 								'address:string:127',
 							]; 
 							
-							schoolTable . insert = function ( ) 
+							schoolTable.insert = function() 
 							{
-								console.log( this );
+								console.log(this);
 							};
 							
-							database[ 'cdb5_table_schools' ] = schoolTable;
+							database['cdb5_table_schools'] = schoolTable;
 							
-							Store[ 'ClientDB' ].push( database ); 
+							Store['ClientDB'].push( database ); 
 							
-							return Store[ 'ClientDB' ];
+							return Store['ClientDB'];
 						} 
 						catch( err ) 
 						{
