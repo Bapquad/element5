@@ -3439,6 +3439,31 @@ function Factory()
 			}, 
 			function( module, __require_pak__ ) 		// pack require ( 6 ) 
 			{
+				var uas = navigator.userAgent.toLowerCase();
+				var bits = function()
+				{
+					var _to_check = [] ;
+					if ( window.navigator.cpuClass ) _to_check.push( ( window.navigator.cpuClass + "" ).toLowerCase() ) ;
+					if ( window.navigator.platform ) _to_check.push( ( window.navigator.platform + "" ).toLowerCase() ) ;
+					if ( navigator.userAgent ) _to_check.push( ( navigator.userAgent + "" ).toLowerCase() ) ;
+
+					var _64bits_signatures = [ "x86_64", "x86-64", "Win64", "x64;", "amd64", "AMD64", "WOW64", "x64_64", "ia64", "sparc64", "ppc64", "IRIX64" ] ;
+					var _bits = 32, _i, _c ;
+					outer_loop:
+					for( var _c = 0 ; _c < _to_check.length ; _c++ )
+					{
+						for( _i = 0 ; _i < _64bits_signatures.length ; _i++ )
+						{
+							if ( _to_check[_c].indexOf( _64bits_signatures[_i].toLowerCase() ) != -1 )
+							{
+							   _bits = 64 ;
+							   break outer_loop;
+							}
+						}
+					}
+					return _bits ; 
+				};
+				
 				var Bom = 			// Browser Object Model.
 				{
 					Browser: 
@@ -3446,7 +3471,7 @@ function Factory()
 						// Opera 8.0+
 						IsOpera: (function() 
 						{
-							return ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0);
+							return (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
 						})(),
 						
 						// Firefox 1.0+ 
@@ -3470,67 +3495,111 @@ function Factory()
 						// Edge 20+
 						IsEdge: (function()
 						{
-							return (!(/*@cc_on!@*/false || !!document.documentMode) && !!window.StyleMedia);
+							return (!(/*@cc_on!@*/false || !!document.documentMode) && /(Edge|Edg)/.test(navigator.userAgent));
 						})(), 
 						
 						// Chrome 1+
 						IsChrome: (function()
 						{
-							return (!!window.chrome && !!window.chrome.webstore);
+							return (!!window.chrome && !!window.chrome.webstore)||(/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor) && navigator.userAgent.indexOf(' OPR/')===-1 && navigator.userAgent.indexOf('Edg/')===-1);
+						})(),
+						
+						IsOperaMini: (function()
+						{
+							return (navigator.userAgent.match(/Opera Mini/i));
 						})(), 
 						
 						// Blink engine detection
 						IsBlink: (function()
 						{
-							return (((!!window.chrome && !!window.chrome.webstore) || ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0)) && !!window.CSS);
+							var out =	!(navigator.userAgent.match(/Opera|OPR\//) ? true : false) && 
+									!(typeof InstallTrigger !== 'undefined') && 
+									!(Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) && 
+									!(/*@cc_on!@*/false || !!document.documentMode) && !(!(/*@cc_on!@*/false || !!document.documentMode) && /(Edge|Edg)/.test(navigator.userAgent)) && 
+									!(navigator.userAgent.match(/Opera Mini/i));
+							if(out) 
+							{
+								out = !((!!window.chrome && !!window.chrome.webstore)||(/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor) && navigator.userAgent.indexOf(' OPR/')===-1 && navigator.userAgent.indexOf('Edg/')===-1));
+							}
+							return out;
 						})(), 
-						
-						IsOperaMini: (function()
-						{
-							return (navigator.userAgent.match(/Opera Mini/i));
-						})(),
 					}, 
 					
 					Device: 
 					{
+						IsWin: (function()
+						{
+							return /win/i.test(uas);
+						})(), 
+						
+						IsMac: (function()
+						{
+							return /mac/i.test(uas);
+						})(), 
+						
+						IsUnix: (function()
+						{
+							return /x11/i.test(uas);
+						})(), 
+						
+						IsLinux: (function()
+						{
+							return /linux/i.test(uas);
+						})(), 
+						
+						Is64BitsArch: (function()
+						{
+							return bits()===64;
+						})(), 
+						
+						Is32BitsArch: (function()
+						{
+							return bits()===32;
+						})(), 
+						
 						IsAndroid: (function()
 						{
-							return (/android/i.test(navigator.userAgent.toLowerCase()));
+							return (/android/i.test(uas)) && uas.indexOf("windows phone")===-1;
 						})(), 
 						
-						IsBlackBerry: (function()
+						IsiOS: (function()
 						{
-							return (/blackberry/i.test(navigator.userAgent.toLowerCase()));
-						})(),
-						
-						IsiOs: (function()
-						{
-							return (/ipad|iphone|ipod/i.test(navigator.userAgent.toLowerCase())); 
-						})(), 
-						
-						IsiPhone: (function()
-						{
-							return (/iphone/i.test(navigator.userAgent.toLowerCase()));
-						})(), 
-						
-						IsiPad: (function()
-						{
-							return (/ipad/i.test(navigator.userAgent.toLowerCase()));
-						})(), 
-						
-						IsiPos: (function()
-						{
-							return (/ipod/i.test(navigator.userAgent.toLowerCase()));
+							return (/(ipad|iphone|ipod)/i.test(uas)); 
 						})(), 
 						
 						IsWP: (function()
 						{
-							return (/windows phone/i.test(navigator.userAgent.toLowerCase()));
+							return (/(windows phone|iemobile)/i.test(uas));
+						})(), 
+						
+						IsBlackBerry: (function()
+						{
+							return (/(blackberry|bb|playbook)/i.test(uas));
+						})(), 
+						
+						IsiPhone: (function()
+						{
+							return (/iphone/i.test(uas));
+						})(), 
+						
+						IsiPad: (function()
+						{
+							return (/ipad/i.test(uas));
+						})(), 
+						
+						IsiPod: (function()
+						{
+							return (/ipod/i.test(uas));
 						})(), 
 						
 						IsWebOS: (function()
 						{
-							return (/webos/i.test(navigator.userAgent.toLowerCase()));
+							return (/webos/i.test(uas));
+						})(), 
+						
+						IsTablet: (function()
+						{
+							return /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/i.test(navigator.userAgent);
 						})(), 
 						
 						IsMobile: (function()
