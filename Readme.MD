@@ -13,7 +13,7 @@ npm install --save @bapquad/element5
 * *[Constructing the StyleSheet](https://github.com/bapquad/element5/wiki/Constructing-the-Stylesheet)*
 * *[Working with Sprite](https://github.com/bapquad/element5/wiki/Working-with-Sprite)*
 * *[Working with Timeline](https://github.com/bapquad/element5/wiki/Working-with-Timeline)*
-* *[Working with Scroll](https://github.com/bapquad/element5/wiki/Working-with-Scroll)*
+* *[Working with Scroller](https://github.com/bapquad/element5/wiki/Working-with-Scroller)*
 * *[Working with Camera](https://github.com/bapquad/element5/wiki/Working-with-Camera)*
 * *[Working with Microphone](https://github.com/bapquad/element5/wiki/Working-with-Microphone)*
 * *[Making the Ajax Request](https://github.com/bapquad/element5/wiki/Making-the-Ajax-Request)*
