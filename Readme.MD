@@ -25,14 +25,13 @@ npm install --save @bapquad/element5
 * *[Playing the Stream](https://github.com/bapquad/element5/wiki/Playing-the-Stream)*
 
 ## Modules whose be in element5js
-* `element5` - Manipulating with DOM elements
-* `style5` - Manipulating with the stylesheets
-* `timeline5` - Create new timeline for animation
-* `motion5` - Create anime elements
-* `media5` - Working with camera and microphone
-* `request5` - Create AJAX Request
-* `bom5` - Manipulating with BOM elements
-* `store5` - Working data storage on web technology
-* `geo5` - Working with GPS on web technology
-* `solution5` - Solutions and other utilities
-![Element5JS](https://repository-images.githubusercontent.com/285154806/8a207580-e16d-11eb-9a7b-1435a1344fd7)
+* [`element5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Belement5%5D) - Manipulating with DOM elements
+* [`style5`](https://github.com/bapquad/element5/wiki/) - Manipulating with the stylesheets
+* [`timeline5`](https://github.com/bapquad/element5/wiki/) - Create new timeline for animation
+* [`motion5`](https://github.com/bapquad/element5/wiki/) - Create anime elements
+* [`media5`](https://github.com/bapquad/element5/wiki/) - Working with camera and microphone
+* [`request5`](https://github.com/bapquad/element5/wiki/) - Create AJAX Request
+* [`bom5`](https://github.com/bapquad/element5/wiki/) - Manipulating with BOM elements
+* [`store5`](https://github.com/bapquad/element5/wiki/) - Working data storage on web technology
+* [`geo5`](https://github.com/bapquad/element5/wiki/) - Working with GPS on web technology
+* [`solution5`](https://github.com/bapquad/element5/wiki/) - Solutions and other utilities
