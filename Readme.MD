@@ -26,12 +26,12 @@ npm install --save @bapquad/element5
 
 ## Modules whose be in element5js
 * [`element5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Belement5%5D) - Manipulating with DOM elements
-* [`style5`](https://github.com/bapquad/element5/wiki/) - Manipulating with the stylesheets
-* [`timeline5`](https://github.com/bapquad/element5/wiki/) - Create new timeline for animation
-* [`motion5`](https://github.com/bapquad/element5/wiki/) - Create anime elements
-* [`media5`](https://github.com/bapquad/element5/wiki/) - Working with camera and microphone
-* [`request5`](https://github.com/bapquad/element5/wiki/) - Create AJAX Request
-* [`bom5`](https://github.com/bapquad/element5/wiki/) - Manipulating with BOM elements
-* [`store5`](https://github.com/bapquad/element5/wiki/) - Working data storage on web technology
-* [`geo5`](https://github.com/bapquad/element5/wiki/) - Working with GPS on web technology
-* [`solution5`](https://github.com/bapquad/element5/wiki/) - Solutions and other utilities
+* [`style5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bstyle5%5D) - Manipulating with the stylesheets
+* [`timeline5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Btimeline5%5D) - Create new timeline for animation
+* [`motion5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bmotion5%5D) - Create anime elements
+* [`media5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bmedia5%5D) - Working with camera and microphone
+* [`request5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Brequest5%5D) - Create AJAX Request
+* [`bom5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bbom5%5D) - Manipulating with BOM elements
+* [`store5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bstore5%5D) - Working data storage on web technology
+* [`geo5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bgeo5%5D) - Working with GPS on web technology
+* [`solution5`](https://github.com/bapquad/element5/wiki/API-Cheat-Sheet-%5Bsolution5%5D) - Solutions and other utilities
