@@ -384,6 +384,19 @@ function Factory()
 						} 
 						return el;
 					},
+					LastChild: function() 
+					{
+						var el = this.lastElementChild;
+						if( el == null ) 
+						{
+							return null;
+						}
+						if( !el.el5 ) 
+						{
+							return element5( el );
+						} 
+						return el;
+					},
 					Next: function() 
 					{
 						var el = this.nextElementSibling; 
