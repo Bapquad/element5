@@ -2519,12 +2519,11 @@ function Factory()
 					SetStyles: function( styles ) 
 					{
 						var rule = this;
-						for( x in styles) 
-						{
-							rule.SetStyle( x, styles[x] );
-						} 
+						Object.keys(styles).forEach(function(key) {
+							rule.SetStyle(key, styles[key]);
+						});
 						return rule;
-					}, 
+					},
 				}; 
 				
 				Style.CreateDevice = function( media ) 
