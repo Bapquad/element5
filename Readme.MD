@@ -6,6 +6,13 @@ You can quickly install the Element5JS by using
 ```javascript
 npm install --save @bapquad/element5
 ```
+Or you can use
+
+```javascript
+ "dependencies": {
+    "@bapquad/element5": "^1.0.19"
+  },
+```
 
 ## Table of contents
 * *[Get Started](https://github.com/Bapquad/element5/wiki/Get-Started)*
