@@ -1548,6 +1548,13 @@ function Factory()
 						return el;
 					},
 					
+					Hover: function(hIn, hOut) {
+						var el = this;
+						el.On("mouseenter", hIn);
+						el.On("mouseleave", hOut || hIn);
+						return el;
+					},
+					
 					RemoveEvent: function( e, h ) 
 					{
 						var el = this;
